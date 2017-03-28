@@ -47,7 +47,7 @@ public class AdminProductView extends GridPane
         productStockLevelLabel = new Label(product.getCurrentQuantity() + " / " + product.getInitialQuantity());
         productStockLevel = new ProgressBar();
         purchasePriceLabel = new Label("$" + product.getPurchasePrice().toString());
-        salePriceLabel = new Label("$" + product.getPrice().toString());
+        salePriceLabel = new Label("$" + product.getSalePrice().toString());
         productSaleLabel = new Label();
         productCategoryLabel = new Label("(" + product.getCategory() + ")");
         expirationDateLabel = new Label("Expires: " + product.getExpirationDate());

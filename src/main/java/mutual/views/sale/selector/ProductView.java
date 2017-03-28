@@ -44,7 +44,7 @@ public class ProductView extends GridPane
         this.product = product;
 
         productNameLabel = new Label();
-        productPriceLabel = new Label("$" + product.getPrice().toString());
+        productPriceLabel = new Label("$" + product.getSalePrice().toString());
         productDiscountLabel = new Label();
 
         initComponents();
@@ -107,7 +107,7 @@ public class ProductView extends GridPane
         if(discountVersion)
         {
             productDiscountLabel.setText("On Sale!");
-            productPriceLabel.setText("$" + product.getSalePrice().toString());
+            productPriceLabel.setText("$" + product.getDiscountPrice().toString());
 
             add(productNameLabel, 0, 0);
             add(new Separator(Orientation.HORIZONTAL), 0, 1);
@@ -117,7 +117,7 @@ public class ProductView extends GridPane
         }
         else
         {
-            productPriceLabel.setText("$" + product.getPrice().toString());
+            productPriceLabel.setText("$" + product.getSalePrice().toString());
 
             add(productNameLabel, 0, 0);
             add(new Separator(Orientation.HORIZONTAL), 0, 1);

@@ -7,7 +7,7 @@ package database.tables;
 import database.DatabaseExecutor;
 import jooq.public_.tables.DailyStats;
 import jooq.public_.tables.records.DailyStatsRecord;
-import mutual.stats.trackers.StatisticsTracker;
+import mutual.views.statistics.StatisticsTracker;
 import org.jooq.DSLContext;
 import org.jooq.InsertValuesStep16;
 import org.jooq.Record;

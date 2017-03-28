@@ -1,4 +1,4 @@
-package mutual.stats.trackers;
+package mutual.views.statistics;
 
 /*
  * Created by Jonah on 3/3/2017.
@@ -47,7 +47,7 @@ public class StatisticsTracker
             numOfItemsSold += orderFragment.getQuantity();
 
             totalIncome = totalIncome.add(calculateIncome(orderFragment));
-            totalProfit = totalProfit.add(calculateProfit(orderFragment));
+            totalProfit = totalProfit.add(totalIncome.subtract(calculateProfit(orderFragment)));
 
             Category category = Category.valueOf(orderFragment.getProduct().getCategory());
 
@@ -120,7 +120,7 @@ public class StatisticsTracker
         }
         else
         {
-            income = income.add(orderFragment.getPrice().multiply(new BigDecimal(orderFragment.getQuantity())));
+            income = income.add(orderFragment.getSalePrice().multiply(new BigDecimal(orderFragment.getQuantity())));
         }
 
         return income;

@@ -110,7 +110,7 @@ public class OrderPanel extends BorderPane
             }
             else
             {
-                total = total.add(orderFragment.getPrice().multiply(new BigDecimal(orderFragment.getQuantity())));
+                total = total.add(orderFragment.getSalePrice().multiply(new BigDecimal(orderFragment.getQuantity())));
             }
         }
 

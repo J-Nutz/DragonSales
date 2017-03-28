@@ -15,7 +15,7 @@ public class OrderFragment
     private SimpleIntegerProperty quantity;
     private SimpleObjectProperty<Product> product;
     private SimpleStringProperty productName;
-    private SimpleObjectProperty<BigDecimal> price;
+    private SimpleObjectProperty<BigDecimal> salePrice;
     private SimpleObjectProperty<BigDecimal> discountPrice;
 
     private boolean hasDiscount;
@@ -87,25 +87,25 @@ public class OrderFragment
         productNameProperty().set(name);
     }
 
-    public SimpleObjectProperty<BigDecimal> priceProperty()
+    public SimpleObjectProperty<BigDecimal> salePriceProperty()
     {
-        if(price == null)
+        if(salePrice == null)
         {
-            price = new SimpleObjectProperty<>(this, "price", getProduct().getPrice());
+            salePrice = new SimpleObjectProperty<>(this, "salePrice", getProduct().getSalePrice());
         }
-        return price;
+        return salePrice;
     }
 
-    public BigDecimal getPrice()
+    public BigDecimal getSalePrice()
     {
-        return priceProperty().get();
+        return salePriceProperty().get();
     }
 
     public SimpleObjectProperty<BigDecimal> discountPriceProperty()
     {
         if(discountPrice == null)
         {
-            discountPrice = new SimpleObjectProperty<>(this, "discountPrice", getProduct().getSalePrice());
+            discountPrice = new SimpleObjectProperty<>(this, "discountPrice", getProduct().getDiscountPrice());
         }
         return discountPrice;
     }

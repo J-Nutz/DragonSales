@@ -218,8 +218,11 @@ public class StockInventoryView extends GridPane
         String productCategory = categoryComboBox.getSelectionModel().getSelectedItem().toString();
         product.setCategory(productCategory);
 
-        BigDecimal productPrice = salePriceSpinner.getValue();
-        product.setPrice(productPrice);
+        BigDecimal purchasePrice = purchasePriceSpinner.getValue();
+        product.setPurchasePrice(purchasePrice);
+
+        BigDecimal salePrice = salePriceSpinner.getValue();
+        product.setSalePrice(salePrice);
 
         int productInitQuantity = initialQuantitySpinner.getValue();
         product.setInitialQuantity(productInitQuantity);

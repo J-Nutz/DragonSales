@@ -77,11 +77,11 @@ public class SaleDialog extends Dialog<OrderFragment>
                 this.setValue(currentValue);
                 if(hasDiscount)
                 {
-                    productPrice.setText("$" + product.getSalePrice().multiply(new BigDecimal(currentValue)));
+                    productPrice.setText("$" + product.getDiscountPrice().multiply(new BigDecimal(currentValue)));
                 }
                 else
                 {
-                    productPrice.setText("$" + product.getPrice().multiply(new BigDecimal(currentValue)));
+                    productPrice.setText("$" + product.getSalePrice().multiply(new BigDecimal(currentValue)));
                 }
             }
 
@@ -104,11 +104,11 @@ public class SaleDialog extends Dialog<OrderFragment>
 
                 if(hasDiscount)
                 {
-                    productPrice.setText("$" + product.getSalePrice().multiply(new BigDecimal(currentValue)));
+                    productPrice.setText("$" + product.getDiscountPrice().multiply(new BigDecimal(currentValue)));
                 }
                 else
                 {
-                    productPrice.setText("$" + product.getPrice().multiply(new BigDecimal(currentValue)));
+                    productPrice.setText("$" + product.getSalePrice().multiply(new BigDecimal(currentValue)));
                 }
             }
         });
@@ -116,11 +116,11 @@ public class SaleDialog extends Dialog<OrderFragment>
 
         if(this.hasDiscount)
         {
-            productPrice.setText("$" + product.getSalePrice().toString());
+            productPrice.setText("$" + product.getDiscountPrice().toString());
         }
         else
         {
-            productPrice.setText("$" + product.getPrice().toString());
+            productPrice.setText("$" + product.getSalePrice().toString());
         }
     }
 

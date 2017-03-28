@@ -1,14 +1,15 @@
 package mutual.views.statistics;
 
 /*
- * Created by Jonah on 3/19/2017.
+ * Created by Jonah on 3/27/2017.
  */
 
 import javafx.scene.layout.BorderPane;
 
-public class IncomeStats extends BorderPane
+public class ProductStatsView extends BorderPane
 {
-    public IncomeStats()
+
+    public ProductStatsView()
     {
 
         initComponents();

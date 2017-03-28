@@ -18,8 +18,8 @@ public class Product
     private SimpleStringProperty name;
     private SimpleStringProperty category;
     private SimpleObjectProperty<BigDecimal> purchasePrice;
-    private SimpleObjectProperty<BigDecimal> price;
     private SimpleObjectProperty<BigDecimal> salePrice;
+    private SimpleObjectProperty<BigDecimal> discountPrice;
     private SimpleIntegerProperty initialQuantity;
     private SimpleIntegerProperty currentQuantity;
     private SimpleIntegerProperty totalSold;
@@ -104,25 +104,6 @@ public class Product
         return purchasePriceProperty().get();
     }
 
-    private SimpleObjectProperty<BigDecimal> priceProperty()
-    {
-        if(price == null)
-        {
-            price = new SimpleObjectProperty<>(this, "price", new BigDecimal("0.00"));
-        }
-        return price;
-    }
-
-    public void setPrice(BigDecimal price)
-    {
-        priceProperty().set(price);
-    }
-
-    public BigDecimal getPrice()
-    {
-        return priceProperty().get();
-    }
-
     private SimpleObjectProperty<BigDecimal> salePriceProperty()
     {
         if(salePrice == null)
@@ -140,6 +121,25 @@ public class Product
     public BigDecimal getSalePrice()
     {
         return salePriceProperty().get();
+    }
+
+    private SimpleObjectProperty<BigDecimal> discountPriceProperty()
+    {
+        if(discountPrice == null)
+        {
+            discountPrice = new SimpleObjectProperty<>(this, "discountPrice", new BigDecimal("0.00"));
+        }
+        return discountPrice;
+    }
+
+    public void setDiscountPrice(BigDecimal discountPrice)
+    {
+        discountPriceProperty().set(discountPrice);
+    }
+
+    public BigDecimal getDiscountPrice()
+    {
+        return discountPriceProperty().get();
     }
 
     private SimpleIntegerProperty initialQuantityProperty()

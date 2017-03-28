@@ -33,10 +33,9 @@ public enum FullAccess
     YEARLY_STATS,
     ALL_TIME_STATS,
 
+    SALE_STATS,
     PRODUCT_STATS,
-    INCOME_STATS,
     EMPLOYEE_STATS,
-    //PROFIT_STATS,
 
     SETTINGS
 }

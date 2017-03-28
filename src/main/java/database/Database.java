@@ -44,7 +44,7 @@ public class Database
                     .column("PASSWORD", H2DataType.BINARY)
                     .execute();
 
-            database.createTableIfNotExists("EMPLOYEES") // TODO: Talk To Ms. Molly
+            database.createTableIfNotExists("EMPLOYEES")
                     .column("IMAGE_PATH", H2DataType.VARCHAR_CASESENSITIVE)
                     .column("NAME", H2DataType.VARCHAR_IGNORECASE)
                     .column("EMAIL", H2DataType.VARCHAR_CASESENSITIVE)
@@ -100,18 +100,53 @@ public class Database
                     .column("MISC_SOLD", H2DataType.INTEGER)
                     .column("TOTAL_SALES", H2DataType.INTEGER)
                     .column("TOTAL_ITEMS_SOLD", H2DataType.INTEGER)
-                    .column("TOTAL_INCOME", H2DataType.DECIMAL) // Total Income
-                    .column("TOTAL_PROFIT", H2DataType.DECIMAL)   // Total profit
+                    .column("TOTAL_INCOME", H2DataType.DECIMAL)
+                    .column("TOTAL_PROFIT", H2DataType.DECIMAL)
                     .execute();
 
-            // TODO: Tables Deleted To Be Created At A Later Dated
-            // TODO: Settings, DAILY_STATS, WEEKLY_STATS, MONTHLY_STATS, YEARLY_STATS, TOTAL_STATS <- Store each year stats in
-            // TODO: Screen Shot Saved Just In Case
+            database.createTableIfNotExists("YEAR_STATS")
+                    .column("YEAR", H2DataType.INTEGER)
+                    .column("FOOD_SOLD", H2DataType.INTEGER)
+                    .column("BAKERY_SOLD", H2DataType.INTEGER)
+                    .column("CANDY_SOLD", H2DataType.INTEGER)
+                    .column("CHIPS_SOLD", H2DataType.INTEGER)
+                    .column("DRINKS_SOLD", H2DataType.INTEGER)
+                    .column("SODAS_SOLD", H2DataType.INTEGER)
+                    .column("WATERS_SOLD", H2DataType.INTEGER)
+                    .column("JUICES_SOLD", H2DataType.INTEGER)
+                    .column("COFFEES_SOLD", H2DataType.INTEGER)
+                    .column("FROZEN_SOLD", H2DataType.INTEGER)
+                    .column("MISC_SOLD", H2DataType.INTEGER)
+                    .column("TOTAL_SALES", H2DataType.INTEGER)
+                    .column("TOTAL_ITEMS_SOLD", H2DataType.INTEGER)
+                    .column("TOTAL_INCOME", H2DataType.DECIMAL)
+                    .column("TOTAL_PROFIT", H2DataType.DECIMAL)
+                    .execute();
+
+            database.createTableIfNotExists("ALL_TIME_STATS")
+                    .column("FOOD_SOLD", H2DataType.INTEGER)
+                    .column("BAKERY_SOLD", H2DataType.INTEGER)
+                    .column("CANDY_SOLD", H2DataType.INTEGER)
+                    .column("CHIPS_SOLD", H2DataType.INTEGER)
+                    .column("DRINKS_SOLD", H2DataType.INTEGER)
+                    .column("SODAS_SOLD", H2DataType.INTEGER)
+                    .column("WATERS_SOLD", H2DataType.INTEGER)
+                    .column("JUICES_SOLD", H2DataType.INTEGER)
+                    .column("COFFEES_SOLD", H2DataType.INTEGER)
+                    .column("FROZEN_SOLD", H2DataType.INTEGER)
+                    .column("MISC_SOLD", H2DataType.INTEGER)
+                    .column("TOTAL_SALES", H2DataType.INTEGER)
+                    .column("TOTAL_ITEMS_SOLD", H2DataType.INTEGER)
+                    .column("TOTAL_INCOME", H2DataType.DECIMAL)
+                    .column("TOTAL_PROFIT", H2DataType.DECIMAL)
+                    .execute();
+
+            // TODO: Settings
         }
         catch(SQLException e)
         {
             e.printStackTrace();
-            throw new NullPointerException("\n Issue Checking Or Creating Tables \n");
+            throw new NullPointerException("\nIssue Checking Or Creating Tables\n");
         }
     }
 }

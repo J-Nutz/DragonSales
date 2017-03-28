@@ -17,7 +17,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import mutual.stats.trackers.StatisticsTracker;
+import mutual.views.statistics.StatisticsTracker;
 import mutual.views.FullAccess;
 
 import java.math.BigDecimal;

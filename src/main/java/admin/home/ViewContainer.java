@@ -26,6 +26,7 @@ import mutual.views.login.NewUserView;
 import mutual.views.sale.SaleView;
 import mutual.views.sale.selector.ProductSelectorPanel;
 import mutual.views.sale.selector.ProductView;
+import mutual.views.statistics.SaleStatsView;
 
 import java.util.Optional;
 
@@ -159,17 +160,13 @@ public class ViewContainer extends BorderPane
                 checkLock(new BorderPane(), false);
                 break;
 
+            case SALE_STATS:
+                checkLock(new SaleStatsView(), false);
+                break;
+
             case PRODUCT_STATS:
                 checkLock(new BorderPane(), false);
                 break;
-
-            /*case SALE_STATS:
-                checkLock(new BorderPane(), false);
-                break;
-
-            case PROFIT_STATS:
-                checkLock(new BorderPane(), false);
-                break;*/
 
             /////////////////////////////////////////////////////
 

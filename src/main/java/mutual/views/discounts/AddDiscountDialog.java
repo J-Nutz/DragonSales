@@ -104,7 +104,7 @@ public class AddDiscountDialog extends Dialog<Discount>
         productLabel.setText(product.getName());
         productLabel.setFont(new Font(16));
 
-        oldPriceLabel.setText("Old Price: $" + product.getPrice().toString());
+        oldPriceLabel.setText("Old Price: $" + product.getSalePrice().toString());
 
         discountPriceSpinner.getEditor().setAlignment(Pos.CENTER);
         discountPriceSpinner.setMaxWidth(70);
@@ -215,12 +215,12 @@ public class AddDiscountDialog extends Dialog<Discount>
         BigDecimal discountPrice = discountPriceSpinner.getValue();
         Repeat repeat = Repeat.valueOf(repeatComboBox.getSelectionModel().getSelectedItem());
 
-        product.setSalePrice(discountPrice);
+        product.setDiscountPrice(discountPrice);
         ProductsTable.updateProduct(product.getName(), product);
         ProductsHeld.updateProducts();
 
         discount.setProduct(this.product);
-        discount.setOldPrice(product.getPrice());
+        discount.setOldPrice(product.getSalePrice());
         discount.setDiscountPrice(discountPrice);
         discount.setDaysOfDiscount(daysOfDiscount);
         discount.setRepeat(repeat);

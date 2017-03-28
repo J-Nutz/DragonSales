@@ -64,8 +64,8 @@ public class ProductsTable
                 addProductStep.values(product.getName(),
                                       product.getCategory(),
                                       product.getPurchasePrice(),
-                                      product.getPrice(),
                                       product.getSalePrice(),
+                                      product.getDiscountPrice(),
                                       product.getInitialQuantity(),
                                       product.getCurrentQuantity(),
                                       product.getTotalSold(),
@@ -103,8 +103,8 @@ public class ProductsTable
                         product.setName(r.get(products.NAME));
                         product.setCategory(r.get(products.CATEGORY));
                         product.setPurchasePrice(r.get(products.PURCHASE_PRICE));
-                        product.setPrice(r.get(products.PRICE));
-                        product.setSalePrice(r.get(products.SALE_PRICE));
+                        product.setSalePrice(r.get(products.PRICE));
+                        product.setDiscountPrice(r.get(products.SALE_PRICE));
                         product.setInitialQuantity(r.get(products.INIT_QUANTITY));
                         product.setCurrentQuantity(r.get(products.CUR_QUANTITY));
                         product.setTotalSold(r.get(products.TOTAL_SOLD));
@@ -149,8 +149,8 @@ public class ProductsTable
                                      row(product.getName(),
                                          product.getCategory(),
                                          product.getPurchasePrice(),
-                                         product.getPrice(),
                                          product.getSalePrice(),
+                                         product.getDiscountPrice(),
                                          product.getInitialQuantity(),
                                          product.getCurrentQuantity(),
                                          product.getTotalSold(),
@@ -204,8 +204,8 @@ public class ProductsTable
                     product.setName(record.get(products.NAME));
                     product.setCategory(record.get(products.CATEGORY));
                     product.setPurchasePrice(record.get(products.PURCHASE_PRICE));
-                    product.setPrice(record.get(products.PRICE));
-                    product.setSalePrice(record.get(products.SALE_PRICE));
+                    product.setSalePrice(record.get(products.PRICE));
+                    product.setDiscountPrice(record.get(products.SALE_PRICE));
                     product.setInitialQuantity(record.get(products.INIT_QUANTITY));
                     product.setCurrentQuantity(record.get(products.CUR_QUANTITY));
                     product.setTotalSold(record.get(products.TOTAL_SOLD));
@@ -243,8 +243,8 @@ public class ProductsTable
                     product.setName(record.get(products.NAME));
                     product.setCategory(record.get(products.CATEGORY));
                     product.setPurchasePrice(record.get(products.PURCHASE_PRICE));
-                    product.setPrice(record.get(products.PRICE));
-                    product.setSalePrice(record.get(products.SALE_PRICE));
+                    product.setSalePrice(record.get(products.PRICE));
+                    product.setDiscountPrice(record.get(products.SALE_PRICE));
                     product.setInitialQuantity(record.get(products.INIT_QUANTITY));
                     product.setCurrentQuantity(record.get(products.CUR_QUANTITY));
                     product.setTotalSold(record.get(products.TOTAL_SOLD));
@@ -282,8 +282,8 @@ public class ProductsTable
                     product.setName(record.get(products.NAME));
                     product.setCategory(record.get(products.CATEGORY));
                     product.setPurchasePrice(record.get(products.PURCHASE_PRICE));
-                    product.setPrice(record.get(products.PRICE));
-                    product.setSalePrice(record.get(products.SALE_PRICE));
+                    product.setSalePrice(record.get(products.PRICE));
+                    product.setDiscountPrice(record.get(products.SALE_PRICE));
                     product.setInitialQuantity(record.get(products.INIT_QUANTITY));
                     product.setCurrentQuantity(record.get(products.CUR_QUANTITY));
                     product.setTotalSold(record.get(products.TOTAL_SOLD));
@@ -321,8 +321,8 @@ public class ProductsTable
                     product.setName(record.get(products.NAME));
                     product.setCategory(record.get(products.CATEGORY));
                     product.setPurchasePrice(record.get(products.PURCHASE_PRICE));
-                    product.setPrice(record.get(products.PRICE));
-                    product.setSalePrice(record.get(products.SALE_PRICE));
+                    product.setSalePrice(record.get(products.PRICE));
+                    product.setDiscountPrice(record.get(products.SALE_PRICE));
                     product.setInitialQuantity(record.get(products.INIT_QUANTITY));
                     product.setCurrentQuantity(record.get(products.CUR_QUANTITY));
                     product.setTotalSold(record.get(products.TOTAL_SOLD));

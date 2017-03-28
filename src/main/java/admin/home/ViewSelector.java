@@ -25,8 +25,8 @@ public class ViewSelector extends HBox
         saleView = new View("/sale.png", "Make Sale", FullAccess.SALE, new String[] {"Quick Sale", "Discounts"}, new FullAccess[] {FullAccess.QUICK_SALE, FullAccess.ADD_ITEM_DISCOUNT});
         inventoryView = new View("/inventory.png", "Inventory", FullAccess.INVENTORY, new String[] {"Stock"}, new FullAccess[]{FullAccess.RESTOCK});
         employeeView = new View("/employees.png", "Employees", FullAccess.MANAGE, new String[] {"Manage", "Schedule", "Hire", "Stats"}, new FullAccess[]{FullAccess.MANAGE, FullAccess.SCHEDULE, FullAccess.HIRE_EMPLOYEE, FullAccess.EMPLOYEE_STATS});
-        statisticsView = new View("/statistics.png", "Statistics", FullAccess.STATS, new String[] {"Coming Soon!"}, new FullAccess[]{FullAccess.PRODUCT_STATS});
-        settingsView = new View("/settings.png", "Settings", FullAccess.SETTINGS, new String[] {"Daily", "Weekly", "Monthly", "Yearly", "All Time"}, new FullAccess[] {FullAccess.NULL});
+        statisticsView = new View("/statistics.png", "Statistics", FullAccess.STATS, new String[] {"Sales", "Products"}, new FullAccess[]{FullAccess.SALE_STATS, FullAccess.PRODUCT_STATS});
+        settingsView = new View("/settings.png", "Settings", FullAccess.SETTINGS, new String[] {"Coming Soon!"}, new FullAccess[] {FullAccess.NULL});
         closeView = new View("/close.png", "Close", new Alert(Alert.AlertType.WARNING, "About To Close Dragon Sales!\n\nDo You Want To Continue?", ButtonType.YES, ButtonType.NO), new String[]{"Lock", "Logout"}, new FullAccess[]{FullAccess.LOCKED, FullAccess.LOGIN});
 
         initComponents();
