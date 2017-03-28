@@ -82,9 +82,6 @@ public class TotalView extends VBox
             //TODO: Log Stats
             //Alert to make sure payed??
 
-            //StatisticsTracker statisticsTracker = new StatisticsTracker();
-            //statisticsTracker.logSale(getProducts());
-
             statisticsTracker.logSale(getProducts());
 
             DailyStatsTable.logSale(statisticsTracker);

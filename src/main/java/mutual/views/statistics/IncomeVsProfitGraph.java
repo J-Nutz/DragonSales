@@ -10,8 +10,11 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import mutual.types.Interval;
+import mutual.types.WeekStats;
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 
 public class IncomeVsProfitGraph
 {
@@ -38,9 +41,6 @@ public class IncomeVsProfitGraph
         yAxis.setLabel("Amount In $");
 
         barGraph.setTitle("Income VS Profit");
-        //barGraph.setMaxSize(500, 300);
-        //barGraph.setBarGap(20);
-        barGraph.setCategoryGap(1);
     }
 
     private void addComponents()
@@ -52,24 +52,45 @@ public class IncomeVsProfitGraph
     {
         if(interval.equals(Interval.DAILY))
         {
-            StatisticsTracker dayStats = DailyStatsTable.getDayStats();
-            setDayValues(dayStats.getDay(), dayStats.getTotalIncome(), dayStats.getTotalProfit());
+            StatisticsTracker dayStats = DailyStatsTable.getDayStats(Date.valueOf(LocalDate.now()));
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMM-dd-yyyy");
+            String date = simpleDateFormat.format(dayStats.getDay());
+
+            setDayValues(date, dayStats.getTotalIncome(), dayStats.getTotalProfit());
+
+            xAxis.setLabel(date);
             barGraph.setMaxSize(300, 500);
         }
     }
 
-    public void setDayValues(Date day, Number income, Number profit)
+    private void setDayValues(String day, Number income, Number profit)
     {
         XYChart.Series<String, Number> incomeData = new XYChart.Series<>();
         incomeData.setName("Income");
-        incomeData.getData().add(new XYChart.Data<>(day.toString() + " Income", income));
+        incomeData.getData().add(new XYChart.Data<>(day, income));
 
         XYChart.Series<String, Number> profitData = new XYChart.Series<>();
         profitData.setName("Profit");
-        profitData.getData().add(new XYChart.Data<>(day.toString() + "Profit", profit));
+        profitData.getData().add(new XYChart.Data<>(day, profit));
 
         barGraph.getData().add(incomeData);
         barGraph.getData().add(profitData);
+
+        //Doesn't change the color of the legend
+        /*for(Node node : barGraph.lookupAll(".default-color0.chart-bar"))
+        {
+            node.setStyle("-fx-bar-fill: purple;");
+        }
+
+        for(Node node : barGraph.lookupAll(".default-color1.chart-bar"))
+        {
+            node.setStyle("-fx-bar-fill: green;");
+        }*/
+    }
+
+    private void setWeekValues(String week, WeekStats stats)
+    {
+
     }
 
     public BarChart getBarGraph()

@@ -126,7 +126,7 @@ public class StockInventoryView extends GridPane
                 ProductsHeld.addProduct(product);
 
                 AdminInventoryView inventoryView = (AdminInventoryView) this.getParent();
-                inventoryView.setProducts(ProductsHeld.getProducts());
+                inventoryView.setProducts(ProductsTable.getProducts());
 
                 clearFields();
             }

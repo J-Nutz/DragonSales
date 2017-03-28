@@ -25,32 +25,13 @@ public class DailyStatsTable
 {
     private static final DailyStats dailyStats = DailyStats.DAILY_STATS;
 
-    public static boolean addEmptySale()
+    public static boolean startNewLog(StatisticsTracker saleLog)
     {
         return DatabaseExecutor.submitBoolean(() ->
                {
                    try(Connection connection = DatabaseExecutor.getConnection();
                        DSLContext database = H2DSL.using(connection))
                    {
-                       StatisticsTracker emptyStats = new StatisticsTracker();
-
-                       emptyStats.setDay(Date.valueOf(LocalDate.now()));
-                       emptyStats.setFoodSold(0);
-                       emptyStats.setBakerySold(0);
-                       emptyStats.setCandySold(0);
-                       emptyStats.setChipsSold(0);
-                       emptyStats.setDrinksSold(0);
-                       emptyStats.setSodaSold(0);
-                       emptyStats.setWaterSold(0);
-                       emptyStats.setJuiceSold(0);
-                       emptyStats.setCoffeeSold(0);
-                       emptyStats.setFrozenSold(0);
-                       emptyStats.setMiscSold(0);
-                       emptyStats.setNumOfSales(0);
-                       emptyStats.setNumOfItemsSold(0);
-                       emptyStats.setTotalIncome(new BigDecimal("0.00"));
-                       emptyStats.setTotalProfit(new BigDecimal("0.00"));
-
                        InsertValuesStep16<DailyStatsRecord,
                                Date,
                                Integer,
@@ -87,22 +68,22 @@ public class DailyStatsTable
                                                                  dailyStats.TOTAL_INCOME,
                                                                  dailyStats.TOTAL_PROFIT);
 
-                       logSaleStep.values(emptyStats.getDay(),
-                                          emptyStats.getFoodSold(),
-                                          emptyStats.getBakerySold(),
-                                          emptyStats.getCandySold(),
-                                          emptyStats.getChipsSold(),
-                                          emptyStats.getDrinksSold(),
-                                          emptyStats.getSodaSold(),
-                                          emptyStats.getWaterSold(),
-                                          emptyStats.getJuiceSold(),
-                                          emptyStats.getCoffeeSold(),
-                                          emptyStats.getFrozenSold(),
-                                          emptyStats.getMiscSold(),
-                                          emptyStats.getNumOfSales(),
-                                          emptyStats.getNumOfItemsSold(),
-                                          emptyStats.getTotalIncome(),
-                                          emptyStats.getTotalProfit());
+                       logSaleStep.values(saleLog.getDay(),
+                                          saleLog.getFoodSold(),
+                                          saleLog.getBakerySold(),
+                                          saleLog.getCandySold(),
+                                          saleLog.getChipsSold(),
+                                          saleLog.getDrinksSold(),
+                                          saleLog.getSodaSold(),
+                                          saleLog.getWaterSold(),
+                                          saleLog.getJuiceSold(),
+                                          saleLog.getCoffeeSold(),
+                                          saleLog.getFrozenSold(),
+                                          saleLog.getMiscSold(),
+                                          saleLog.getNumOfSales(),
+                                          saleLog.getNumOfItemsSold(),
+                                          saleLog.getTotalIncome(),
+                                          saleLog.getTotalProfit());
 
                        int logSaleResult = logSaleStep.execute();
 
@@ -112,24 +93,17 @@ public class DailyStatsTable
         );
     }
 
-    public static StatisticsTracker getDayStats()
+    public static StatisticsTracker getDayStats(Date date)
     {
         return DatabaseExecutor.submitObject(() ->
                {
                     try(Connection connection = DatabaseExecutor.getConnection();
                         DSLContext database = H2DSL.using(connection))
                     {
-                        int numOfStats = database.selectCount().from(dailyStats).fetchOne(0, int.class);
-
-                        if(numOfStats == 0)
-                        {
-                            addEmptySale();
-                        }
-
                         Result<Record> fetchedStats =
                                 database.select()
                                         .from(dailyStats)
-                                        .where()
+                                        .where(dailyStats.DAY.eq(date))
                                         .fetch();
 
                         if(fetchedStats.isNotEmpty())
@@ -173,47 +147,59 @@ public class DailyStatsTable
             try(Connection connection = DatabaseExecutor.getConnection();
                 DSLContext database = H2DSL.using(connection))
             {
-                StatisticsTracker currentStats = getDayStats();
+                StatisticsTracker currentStats = getDayStats(saleLog.getDay());
 
-                int result = database.update(dailyStats)
-                                     .set(row(dailyStats.DAY,
-                                              dailyStats.FOOD_SOLD,
-                                              dailyStats.BAKERY_SOLD,
-                                              dailyStats.CANDY_SOLD,
-                                              dailyStats.CHIPS_SOLD,
-                                              dailyStats.DRINKS_SOLD,
-                                              dailyStats.SODAS_SOLD,
-                                              dailyStats.WATERS_SOLD,
-                                              dailyStats.JUICES_SOLD,
-                                              dailyStats.COFFEES_SOLD,
-                                              dailyStats.FROZEN_SOLD,
-                                              dailyStats.MISC_SOLD,
-                                              dailyStats.TOTAL_SALES,
-                                              dailyStats.TOTAL_ITEMS_SOLD,
-                                              dailyStats.TOTAL_INCOME,
-                                              dailyStats.TOTAL_PROFIT),
+                Result<DailyStatsRecord> dayStatsStarted =
+                        database.selectFrom(dailyStats)
+                                .where(dailyStats.DAY.eq(Date.valueOf(LocalDate.now())))
+                                .fetch();
 
-                                          row(saleLog.getDay(),
-                                              currentStats.getFoodSold() + saleLog.getFoodSold(),
-                                              currentStats.getBakerySold() + saleLog.getBakerySold(),
-                                              currentStats.getCandySold() + saleLog.getCandySold(),
-                                              currentStats.getChipsSold() + saleLog.getChipsSold(),
-                                              currentStats.getDrinksSold() + saleLog.getDrinksSold(),
-                                              currentStats.getSodaSold() + saleLog.getSodaSold(),
-                                              currentStats.getWaterSold() + saleLog.getWaterSold(),
-                                              currentStats.getJuiceSold() + saleLog.getJuiceSold(),
-                                              currentStats.getCoffeeSold() + saleLog.getCoffeeSold(),
-                                              currentStats.getFrozenSold() + saleLog.getFrozenSold(),
-                                              currentStats.getMiscSold() + saleLog.getMiscSold(),
-                                              currentStats.getNumOfSales() + saleLog.getNumOfSales(),
-                                              currentStats.getNumOfItemsSold() + saleLog.getNumOfItemsSold(),
-                                              currentStats.getTotalIncome().add(saleLog.getTotalIncome()),
-                                              currentStats.getTotalProfit().add(saleLog.getTotalProfit())))
+                if(dayStatsStarted.isNotEmpty())
+                {
+                    int result = database.update(dailyStats)
+                                         .set(row(dailyStats.DAY,
+                                                  dailyStats.FOOD_SOLD,
+                                                  dailyStats.BAKERY_SOLD,
+                                                  dailyStats.CANDY_SOLD,
+                                                  dailyStats.CHIPS_SOLD,
+                                                  dailyStats.DRINKS_SOLD,
+                                                  dailyStats.SODAS_SOLD,
+                                                  dailyStats.WATERS_SOLD,
+                                                  dailyStats.JUICES_SOLD,
+                                                  dailyStats.COFFEES_SOLD,
+                                                  dailyStats.FROZEN_SOLD,
+                                                  dailyStats.MISC_SOLD,
+                                                  dailyStats.TOTAL_SALES,
+                                                  dailyStats.TOTAL_ITEMS_SOLD,
+                                                  dailyStats.TOTAL_INCOME,
+                                                  dailyStats.TOTAL_PROFIT),
 
-                                     .where(dailyStats.DAY.equal(saleLog.getDay()))
-                                     .execute();
+                                              row(saleLog.getDay(),
+                                                  currentStats.getFoodSold() + saleLog.getFoodSold(),
+                                                  currentStats.getBakerySold() + saleLog.getBakerySold(),
+                                                  currentStats.getCandySold() + saleLog.getCandySold(),
+                                                  currentStats.getChipsSold() + saleLog.getChipsSold(),
+                                                  currentStats.getDrinksSold() + saleLog.getDrinksSold(),
+                                                  currentStats.getSodaSold() + saleLog.getSodaSold(),
+                                                  currentStats.getWaterSold() + saleLog.getWaterSold(),
+                                                  currentStats.getJuiceSold() + saleLog.getJuiceSold(),
+                                                  currentStats.getCoffeeSold() + saleLog.getCoffeeSold(),
+                                                  currentStats.getFrozenSold() + saleLog.getFrozenSold(),
+                                                  currentStats.getMiscSold() + saleLog.getMiscSold(),
+                                                  currentStats.getNumOfSales() + saleLog.getNumOfSales(),
+                                                  currentStats.getNumOfItemsSold() + saleLog.getNumOfItemsSold(),
+                                                  currentStats.getTotalIncome().add(saleLog.getTotalIncome()),
+                                                  currentStats.getTotalProfit().add(saleLog.getTotalProfit())))
 
-                return result == 1;
+                                         .where(dailyStats.DAY.equal(saleLog.getDay()))
+                                         .execute();
+
+                    return result == 1;
+                }
+                else
+                {
+                    return startNewLog(saleLog);
+                }
             }
         });
     }
