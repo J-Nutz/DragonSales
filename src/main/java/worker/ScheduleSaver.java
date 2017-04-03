@@ -50,9 +50,18 @@ public class ScheduleSaver
     {
         ArrayList<String> schedule = ScheduleTable.getScheduleFor(dayOfWeek);
 
-        if(schedule != null)
+        if(schedule.size() == 1 && schedule.contains("Empty"))
         {
-            for(int i = 0; i < schedule.size(); i++)
+            for(Label label : labels)
+            {
+                label.setText("Empty");
+            }
+
+            return true;
+        }
+        else if(schedule.size() > 1)
+        {
+            for(int i = 0; i < labels.size(); i++)
             {
                 Label label = labels.get(i);
                 label.setText(schedule.get(i));

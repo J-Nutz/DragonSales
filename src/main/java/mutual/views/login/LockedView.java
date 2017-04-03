@@ -43,7 +43,6 @@ public class LockedView extends VBox
 
     private void initComponents()
     {
-        //This
         setAlignment(Pos.CENTER);
         setSpacing(10);
         setOnMousePressed(event -> requestFocus());
@@ -57,7 +56,6 @@ public class LockedView extends VBox
             }
         });
 
-        //Components
         passwordField.setPromptText("Password");
         passwordField.setMaxWidth(150);
 

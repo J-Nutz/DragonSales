@@ -47,7 +47,7 @@ public class StatisticsTracker
             numOfItemsSold += orderFragment.getQuantity();
 
             totalIncome = totalIncome.add(calculateIncome(orderFragment));
-            totalProfit = totalProfit.add(totalIncome.subtract(calculateProfit(orderFragment)));
+            totalProfit = totalProfit.add(calculateProfit(orderFragment));
 
             Category category = Category.valueOf(orderFragment.getProduct().getCategory());
 
@@ -132,11 +132,17 @@ public class StatisticsTracker
 
         if(orderFragment.hasDiscount())
         {
-            profit = profit.add(orderFragment.getProduct().getPurchasePrice().multiply(new BigDecimal(orderFragment.getQuantity())));
+            BigDecimal discountPrice = orderFragment.getDiscountPrice().multiply(BigDecimal.valueOf(orderFragment.getQuantity()));
+            BigDecimal purchasePrice = orderFragment.getProduct().getPurchasePrice().multiply(BigDecimal.valueOf(orderFragment.getQuantity()));
+
+            profit = profit.add(discountPrice.subtract(purchasePrice));
         }
         else
         {
-            profit = profit.add(orderFragment.getProduct().getPurchasePrice().multiply(new BigDecimal(orderFragment.getQuantity())));
+            BigDecimal salePrice = orderFragment.getSalePrice().multiply(BigDecimal.valueOf(orderFragment.getQuantity()));
+            BigDecimal purchasePrice = orderFragment.getProduct().getPurchasePrice().multiply(BigDecimal.valueOf(orderFragment.getQuantity()));
+
+            profit = profit.add(salePrice.subtract(purchasePrice));
         }
 
         return profit;

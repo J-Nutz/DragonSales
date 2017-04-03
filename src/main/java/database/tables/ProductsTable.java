@@ -35,18 +35,11 @@ public class ProductsTable
                 DSLContext database = H2DSL.using(connection))
             {
                 InsertValuesStep12<ProductsRecord,
-                                        String,
-                                        String,
-                                        BigDecimal,
-                                        BigDecimal,
-                                        BigDecimal,
-                                        Integer,
-                                        Integer,
-                                        Integer,
-                                        Date,
-                                        Date,
-                                        Date,
-                                        Date>
+                                        String, String,
+                                        BigDecimal, BigDecimal, BigDecimal,
+                                        Integer, Integer, Integer,
+                                        Date, Date, Date, Date>
+
                         addProductStep = database.insertInto(products,
                                                              products.NAME,
                                                              products.CATEGORY,

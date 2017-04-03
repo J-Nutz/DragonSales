@@ -47,19 +47,18 @@ public class ScheduleTable
                                     schedule.AD_E2),
 
                                     row(dayOfWeek.toString(),
-                                            scheduleList.get(0),
-                                            scheduleList.get(1),
-                                            scheduleList.get(2),
-                                            scheduleList.get(3),
-                                            scheduleList.get(4),
-                                            scheduleList.get(5),
-                                            scheduleList.get(6),
-                                            scheduleList.get(7),
-                                            scheduleList.get(8),
-                                            scheduleList.get(9)))
+                                        scheduleList.get(0),
+                                        scheduleList.get(1),
+                                        scheduleList.get(2),
+                                        scheduleList.get(3),
+                                        scheduleList.get(4),
+                                        scheduleList.get(5),
+                                        scheduleList.get(6),
+                                        scheduleList.get(7),
+                                        scheduleList.get(8),
+                                        scheduleList.get(9)))
                             .where(schedule.DAY.equal(dayOfWeek.toString()))
-                            .execute()
-                            == 1;
+                            .execute() == 1;
                 }
                 else
                 {
@@ -140,7 +139,9 @@ public class ScheduleTable
                 }
                 else
                 {
-                    return null;
+                    ArrayList<String> emptySchedule = new ArrayList<>();
+                    emptySchedule.add("Empty");
+                    return emptySchedule;
                 }
             }
         });

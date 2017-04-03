@@ -8,6 +8,7 @@ import admin.employees.EmployeeScheduler;
 import admin.employees.HireEmployeeView;
 import admin.employees.ManageEmployeesView;
 import admin.inventory.AdminInventoryView;
+import admin.inventory.StockInventoryView;
 import database.tables.DiscountsTable;
 import database.tables.EmployeesTable;
 import javafx.scene.Node;
@@ -133,7 +134,9 @@ public class ViewContainer extends BorderPane
                 break;
 
             case RESTOCK:
-                checkLock(new BorderPane(), false);
+                AdminInventoryView adminInventoryView = new AdminInventoryView();
+                adminInventoryView.setRight(new StockInventoryView());
+                checkLock(adminInventoryView, false);
                 break;
 
             /////////////////////////////////////////////////////

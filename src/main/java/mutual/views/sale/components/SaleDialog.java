@@ -44,10 +44,9 @@ public class SaleDialog extends Dialog<OrderFragment>
     private void initComponents()
     {
         setTitle("Sale Dialog");
-        setResultConverter(dialogButton ->
-        {
-            return dialogButton == addToOrderBtn ? new OrderFragment(quantitySelector.getValue(), product, hasDiscount) : null;
-        });
+        setResultConverter(dialogButton -> dialogButton == addToOrderBtn ? new OrderFragment(quantitySelector.getValue(),
+                                                                                     product,
+                                                                                     hasDiscount) : null);
 
         container.setAlignment(Pos.CENTER);
         container.setPadding(new Insets(15));

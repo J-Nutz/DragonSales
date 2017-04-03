@@ -59,7 +59,7 @@ public class ScheduleShiftView extends VBox
     private Label ae1Label;
     private Label ae2Label;
 
-    private Button editAndSave;
+    private Button editAndSaveBtn;
 
     public ScheduleShiftView(ArrayList<String> employeesTemp, DayOfWeek dayOfWeek)
     {
@@ -102,7 +102,7 @@ public class ScheduleShiftView extends VBox
         ae1Label = new Label();
         ae2Label = new Label();
 
-        editAndSave = new Button();
+        editAndSaveBtn = new Button();
 
         initComponents();
         loadSchedule();
@@ -123,22 +123,22 @@ public class ScheduleShiftView extends VBox
 
         advertiser.setFont(new Font(16));
 
-        editAndSave.setOnAction(event ->
+        editAndSaveBtn.setOnAction(event ->
         {
-            if(editAndSave.getText().equals("Save"))
+            if(editAndSaveBtn.getText().equals("Save"))
             {
                 saveSchedule(dayOfWeek, getComboBoxes());
                 addComponents(false);
                 loadUneditableSchedule(dayOfWeek, getLabels());
 
-                editAndSave.setText("Edit");
+                editAndSaveBtn.setText("Edit");
             }
             else
             {
                 addComponents(true);
                 loadEditableSchedule(dayOfWeek, getComboBoxes());
 
-                editAndSave.setText("Save");
+                editAndSaveBtn.setText("Save");
             }
         });
     }
@@ -160,7 +160,7 @@ public class ScheduleShiftView extends VBox
             getChildren().add(new Separator(Orientation.HORIZONTAL));
             getChildren().addAll(advertiser, advertiserEmployee1CB, advertiserEmployee2CB);
             getChildren().add(new Separator(Orientation.HORIZONTAL));
-            getChildren().add(editAndSave);
+            getChildren().add(editAndSaveBtn);
         }
         else
         {
@@ -175,7 +175,7 @@ public class ScheduleShiftView extends VBox
             getChildren().add(new Separator(Orientation.HORIZONTAL));
             getChildren().addAll(advertiser, new Separator(Orientation.HORIZONTAL), ae1Label, new Separator(Orientation.HORIZONTAL), ae2Label);
             getChildren().add(new Separator(Orientation.HORIZONTAL));
-            getChildren().add(editAndSave);
+            getChildren().add(editAndSaveBtn);
         }
     }
 
@@ -184,7 +184,7 @@ public class ScheduleShiftView extends VBox
         if(loadUneditableSchedule(dayOfWeek, getLabels()))
         {
             addComponents(false);
-            editAndSave.setText("Edit");
+            editAndSaveBtn.setText("Edit");
         }
         else
         {
@@ -195,7 +195,7 @@ public class ScheduleShiftView extends VBox
                 comboBox.getSelectionModel().selectLast();
             }
 
-            editAndSave.setText("Save");
+            editAndSaveBtn.setText("Save");
         }
     }
 

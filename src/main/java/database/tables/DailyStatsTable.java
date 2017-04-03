@@ -17,6 +17,7 @@ import org.jooq.util.h2.H2DSL;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 import static org.jooq.impl.DSL.row;
@@ -28,116 +29,127 @@ public class DailyStatsTable
     public static boolean startNewLog(StatisticsTracker saleLog)
     {
         return DatabaseExecutor.submitBoolean(() ->
+        {
+           try(Connection connection = DatabaseExecutor.getConnection();
+               DSLContext database = H2DSL.using(connection))
+           {
+               if(LocalDate.now().getDayOfWeek().equals(DayOfWeek.SATURDAY)
+                  || LocalDate.now().getDayOfWeek().equals(DayOfWeek.SUNDAY))
                {
-                   try(Connection connection = DatabaseExecutor.getConnection();
-                       DSLContext database = H2DSL.using(connection))
-                   {
-                       InsertValuesStep16<DailyStatsRecord,
-                               Date,
-                               Integer,
-                               Integer,
-                               Integer,
-                               Integer,
-                               Integer,
-                               Integer,
-                               Integer,
-                               Integer,
-                               Integer,
-                               Integer,
-                               Integer,
-                               Integer,
-                               Integer,
-                               BigDecimal,
-                               BigDecimal>
-
-                               logSaleStep = database.insertInto(dailyStats,
-                                                                 dailyStats.DAY,
-                                                                 dailyStats.FOOD_SOLD,
-                                                                 dailyStats.BAKERY_SOLD,
-                                                                 dailyStats.CANDY_SOLD,
-                                                                 dailyStats.CHIPS_SOLD,
-                                                                 dailyStats.DRINKS_SOLD,
-                                                                 dailyStats.SODAS_SOLD,
-                                                                 dailyStats.WATERS_SOLD,
-                                                                 dailyStats.JUICES_SOLD,
-                                                                 dailyStats.COFFEES_SOLD,
-                                                                 dailyStats.FROZEN_SOLD,
-                                                                 dailyStats.MISC_SOLD,
-                                                                 dailyStats.TOTAL_SALES,
-                                                                 dailyStats.TOTAL_ITEMS_SOLD,
-                                                                 dailyStats.TOTAL_INCOME,
-                                                                 dailyStats.TOTAL_PROFIT);
-
-                       logSaleStep.values(saleLog.getDay(),
-                                          saleLog.getFoodSold(),
-                                          saleLog.getBakerySold(),
-                                          saleLog.getCandySold(),
-                                          saleLog.getChipsSold(),
-                                          saleLog.getDrinksSold(),
-                                          saleLog.getSodaSold(),
-                                          saleLog.getWaterSold(),
-                                          saleLog.getJuiceSold(),
-                                          saleLog.getCoffeeSold(),
-                                          saleLog.getFrozenSold(),
-                                          saleLog.getMiscSold(),
-                                          saleLog.getNumOfSales(),
-                                          saleLog.getNumOfItemsSold(),
-                                          saleLog.getTotalIncome(),
-                                          saleLog.getTotalProfit());
-
-                       int logSaleResult = logSaleStep.execute();
-
-                       return logSaleResult == 1;
-                   }
+                    return false;
                }
-        );
+               else
+               {
+                   InsertValuesStep16<DailyStatsRecord, Date, Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer, BigDecimal, BigDecimal>
+
+                           logSaleStep = database.insertInto(dailyStats,
+                                                             dailyStats.DAY,
+                                                             dailyStats.FOOD_SOLD,
+                                                             dailyStats.BAKERY_SOLD,
+                                                             dailyStats.CANDY_SOLD,
+                                                             dailyStats.CHIPS_SOLD,
+                                                             dailyStats.DRINKS_SOLD,
+                                                             dailyStats.SODAS_SOLD,
+                                                             dailyStats.WATERS_SOLD,
+                                                             dailyStats.JUICES_SOLD,
+                                                             dailyStats.COFFEES_SOLD,
+                                                             dailyStats.FROZEN_SOLD,
+                                                             dailyStats.MISC_SOLD,
+                                                             dailyStats.TOTAL_SALES,
+                                                             dailyStats.TOTAL_ITEMS_SOLD,
+                                                             dailyStats.TOTAL_INCOME,
+                                                             dailyStats.TOTAL_PROFIT);
+
+                   logSaleStep.values(saleLog.getDay(),
+                                      saleLog.getFoodSold(),
+                                      saleLog.getBakerySold(),
+                                      saleLog.getCandySold(),
+                                      saleLog.getChipsSold(),
+                                      saleLog.getDrinksSold(),
+                                      saleLog.getSodaSold(),
+                                      saleLog.getWaterSold(),
+                                      saleLog.getJuiceSold(),
+                                      saleLog.getCoffeeSold(),
+                                      saleLog.getFrozenSold(),
+                                      saleLog.getMiscSold(),
+                                      saleLog.getNumOfSales(),
+                                      saleLog.getNumOfItemsSold(),
+                                      saleLog.getTotalIncome(),
+                                      saleLog.getTotalProfit());
+
+                   int logSaleResult = logSaleStep.execute();
+
+                   return logSaleResult == 1;
+               }
+           }
+        });
     }
 
     public static StatisticsTracker getDayStats(Date date)
     {
         return DatabaseExecutor.submitObject(() ->
-               {
-                    try(Connection connection = DatabaseExecutor.getConnection();
-                        DSLContext database = H2DSL.using(connection))
+        {
+            try(Connection connection = DatabaseExecutor.getConnection();
+                DSLContext database = H2DSL.using(connection))
+            {
+                Result<Record> fetchedStats =
+                        database.select()
+                                .from(dailyStats)
+                                .where(dailyStats.DAY.eq(date))
+                                .fetch();
+
+                if(fetchedStats.isNotEmpty())
+                {
+                    StatisticsTracker currentStats = new StatisticsTracker();
+
+                    for(Record r : fetchedStats)
                     {
-                        Result<Record> fetchedStats =
-                                database.select()
-                                        .from(dailyStats)
-                                        .where(dailyStats.DAY.eq(date))
-                                        .fetch();
-
-                        if(fetchedStats.isNotEmpty())
-                        {
-                            StatisticsTracker currentStats = new StatisticsTracker();
-
-                            for(Record r : fetchedStats)
-                            {
-                                currentStats.setDay(r.get(dailyStats.DAY));
-                                currentStats.setFoodSold(r.get(dailyStats.FOOD_SOLD));
-                                currentStats.setBakerySold(r.get(dailyStats.BAKERY_SOLD));
-                                currentStats.setCandySold(r.get(dailyStats.CANDY_SOLD));
-                                currentStats.setChipsSold(r.get(dailyStats.CHIPS_SOLD));
-                                currentStats.setDrinksSold(r.get(dailyStats.DRINKS_SOLD));
-                                currentStats.setSodaSold(r.get(dailyStats.SODAS_SOLD));
-                                currentStats.setWaterSold(r.get(dailyStats.WATERS_SOLD));
-                                currentStats.setJuiceSold(r.get(dailyStats.JUICES_SOLD));
-                                currentStats.setCoffeeSold(r.get(dailyStats.COFFEES_SOLD));
-                                currentStats.setFrozenSold(r.get(dailyStats.FROZEN_SOLD));
-                                currentStats.setMiscSold(r.get(dailyStats.MISC_SOLD));
-                                currentStats.setNumOfSales(r.get(dailyStats.TOTAL_SALES));
-                                currentStats.setNumOfItemsSold(r.get(dailyStats.TOTAL_ITEMS_SOLD));
-                                currentStats.setTotalIncome(r.get(dailyStats.TOTAL_INCOME));
-                                currentStats.setTotalProfit(r.get(dailyStats.TOTAL_PROFIT));
-                            }
-
-                            return currentStats;
-                        }
-                        else
-                        {
-                            return null;
-                        }
+                        currentStats.setDay(r.get(dailyStats.DAY));
+                        currentStats.setFoodSold(r.get(dailyStats.FOOD_SOLD));
+                        currentStats.setBakerySold(r.get(dailyStats.BAKERY_SOLD));
+                        currentStats.setCandySold(r.get(dailyStats.CANDY_SOLD));
+                        currentStats.setChipsSold(r.get(dailyStats.CHIPS_SOLD));
+                        currentStats.setDrinksSold(r.get(dailyStats.DRINKS_SOLD));
+                        currentStats.setSodaSold(r.get(dailyStats.SODAS_SOLD));
+                        currentStats.setWaterSold(r.get(dailyStats.WATERS_SOLD));
+                        currentStats.setJuiceSold(r.get(dailyStats.JUICES_SOLD));
+                        currentStats.setCoffeeSold(r.get(dailyStats.COFFEES_SOLD));
+                        currentStats.setFrozenSold(r.get(dailyStats.FROZEN_SOLD));
+                        currentStats.setMiscSold(r.get(dailyStats.MISC_SOLD));
+                        currentStats.setNumOfSales(r.get(dailyStats.TOTAL_SALES));
+                        currentStats.setNumOfItemsSold(r.get(dailyStats.TOTAL_ITEMS_SOLD));
+                        currentStats.setTotalIncome(r.get(dailyStats.TOTAL_INCOME));
+                        currentStats.setTotalProfit(r.get(dailyStats.TOTAL_PROFIT));
                     }
-               });
+
+                    return currentStats;
+                }
+                else
+                {
+                    StatisticsTracker emptyLog = new StatisticsTracker();
+
+                    emptyLog.setDay(Date.valueOf(LocalDate.now()));
+                    emptyLog.setFoodSold(0);
+                    emptyLog.setBakerySold(0);
+                    emptyLog.setCandySold(0);
+                    emptyLog.setChipsSold(0);
+                    emptyLog.setDrinksSold(0);
+                    emptyLog.setSodaSold(0);
+                    emptyLog.setWaterSold(0);
+                    emptyLog.setJuiceSold(0);
+                    emptyLog.setCoffeeSold(0);
+                    emptyLog.setFrozenSold(0);
+                    emptyLog.setMiscSold(0);
+                    emptyLog.setNumOfSales(0);
+                    emptyLog.setNumOfItemsSold(0);
+                    emptyLog.setTotalIncome(new BigDecimal("0.00"));
+                    emptyLog.setTotalProfit(new BigDecimal("0.00"));
+
+                    startNewLog(emptyLog);
+                    return getDayStats(emptyLog.getDay());
+                }
+            }
+        });
     }
 
     public static boolean logSale(StatisticsTracker saleLog)
@@ -201,6 +213,55 @@ public class DailyStatsTable
                     return startNewLog(saleLog);
                 }
             }
+        });
+    }
+
+    public static Date getDateOfFirstStat()
+    {
+        return DatabaseExecutor.submitObject(() ->
+        {
+            try(Connection connection = DatabaseExecutor.getConnection();
+                DSLContext database = H2DSL.using(connection))
+            {
+                DailyStatsRecord fetchedDate = database.selectFrom(dailyStats)
+                        .limit(1)
+                        .fetchOne();
+
+                if(fetchedDate.getDay() != null)
+                {
+                    return fetchedDate.getDay();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        });
+    }
+
+    public static Date getDateOfLastStat()
+    {
+        return DatabaseExecutor.submitObject(() ->
+        {
+             try(Connection connection = DatabaseExecutor.getConnection();
+                 DSLContext database = H2DSL.using(connection))
+             {
+                 DailyStatsRecord fetchedDate = database.selectFrom(dailyStats)
+                                                        .orderBy(dailyStats.DAY.desc())
+                                                        .limit(1)
+                                                        .fetchOne();
+
+                 if(fetchedDate.getDay() != null)
+                 {
+                     System.out.println("Last Date Found!");
+
+                     return fetchedDate.getDay();
+                 }
+                 else
+                 {
+                     return null;
+                 }
+             }
         });
     }
 }

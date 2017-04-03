@@ -4,8 +4,8 @@ package database.tables;
  * Created by Jonah on 12/8/2016.
  */
 
-import jooq.public_.tables.CurrentUser;
 import database.DatabaseExecutor;
+import jooq.public_.tables.CurrentUser;
 import mutual.types.User;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -31,31 +31,26 @@ public class LoggedInUserTable
 
                 if(loggedInUsers == 0)
                 {
-                    database.insertInto(currentUser, currentUser.USER_NAME, currentUser.SALT, currentUser.PASSWORD)
+                    return (database.insertInto(currentUser, currentUser.USER_NAME, currentUser.SALT, currentUser.PASSWORD)
                             .values(user.getUsername(), user.getSalt(), user.getPassword())
-                            .execute();
-
-                    return true;
+                            .execute()) == 1;
                 }
                 else if(loggedInUsers == 1)
                 {
-                    database.update(currentUser)
+                    return (database.update(currentUser)
                             .set(row(currentUser.USER_NAME, currentUser.SALT, currentUser.PASSWORD),
-                                 row(user.getUsername(), user.getSalt(),user.getPassword()))
-                            .where(currentUser.USER_NAME.isNotNull());
-
-                    return true;
+                                 row(user.getUsername(), user.getSalt(), user.getPassword()))
+                            .where(currentUser.USER_NAME.isNotNull())
+                            .execute()) == 1;
                 }
                 else if(loggedInUsers > 1)
                 {
                     database.dropTableIfExists(currentUser).execute();
                     database.createTable(currentUser);
 
-                    database.insertInto(currentUser, currentUser.USER_NAME, currentUser.SALT, currentUser.PASSWORD)
+                    return (database.insertInto(currentUser, currentUser.USER_NAME, currentUser.SALT, currentUser.PASSWORD)
                             .values(user.getUsername(), user.getSalt(), user.getPassword())
-                            .execute();
-
-                    return true;
+                            .execute()) == 1;
                 }
                 else
                 {

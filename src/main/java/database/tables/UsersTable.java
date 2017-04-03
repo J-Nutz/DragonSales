@@ -19,8 +19,6 @@ public class UsersTable
 {
     private static Users users = Users.USERS;
 
-    public UsersTable() {}
-
     public static boolean addUser(User user)
     {
         return DatabaseExecutor.submitBoolean(() ->
@@ -109,11 +107,6 @@ public class UsersTable
                 return result == 1;
             }
         });
-    }
-
-    public static boolean userExists(String username)
-    {
-        return true;
     }
 
     public static Integer numberOfUsers()

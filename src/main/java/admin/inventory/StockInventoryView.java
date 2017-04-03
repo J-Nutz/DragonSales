@@ -203,7 +203,7 @@ public class StockInventoryView extends GridPane
     {
         boolean validName = !(nameTextField.getText().isEmpty());
         boolean validPrice = (salePriceSpinner.getValue().compareTo(zero) == 1);
-        boolean validQuantity = initialQuantitySpinner.getValue() > 0;
+        boolean validQuantity = (initialQuantitySpinner.getValue() > 0);
 
         return validName && validPrice && validQuantity;
     }
