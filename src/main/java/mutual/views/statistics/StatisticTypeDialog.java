@@ -65,13 +65,31 @@ public class StatisticTypeDialog extends Dialog<StatisticSelection>
         {
             if(selectedButton.getButtonData() == ButtonBar.ButtonData.OK_DONE)
             {
-
-
-                return new StatisticSelection(interval, Date.valueOf(startDatePicker.getValue()), toggleGroup.getSelectedToggle().toString());
+                if(startDatePicker != null)
+                {
+                    return new StatisticSelection(interval,
+                                                  Date.valueOf(startDatePicker.getValue()),
+                                                  toggleGroup.getSelectedToggle().toString());
+                }
+                else if(startWeekPicker != null)
+                {
+                    return new StatisticSelection(interval,
+                                                  Date.valueOf(startWeekPicker.getValue()),
+                                                  toggleGroup.getSelectedToggle().toString());
+                }
+                else if(startMonthPicker != null)
+                {
+                    return new StatisticSelection(interval,
+                                                  Date.valueOf(startMonthPicker.getValue()),
+                                                  toggleGroup.getSelectedToggle().toString());
+                }
+                else
+                {
+                    return null;
+                }
             }
             else
             {
-                System.out.println("Closing");
                 close();
                 return null;
             }
@@ -82,6 +100,7 @@ public class StatisticTypeDialog extends Dialog<StatisticSelection>
             chooseStartLabel.setText("Select Day");
             startDatePicker = new DatePicker(LocalDate.now());
             startDatePicker.setDayCellFactory(new DailyCellFactory());
+            startDatePicker.setMaxWidth(110);
 
             System.out.println("First Stat In Table: " + DailyStatsTable.getDateOfFirstStat().toString());
 
@@ -92,6 +111,7 @@ public class StatisticTypeDialog extends Dialog<StatisticSelection>
             chooseStartLabel.setText("Select Week");
             startWeekPicker = new DatePicker(LocalDate.now());
             startWeekPicker.setDayCellFactory(new WeeklyCellFactory());
+            startWeekPicker.setMaxWidth(110);
 
             leftContainer.getChildren().addAll(chooseStartLabel, startWeekPicker);
         }
@@ -100,6 +120,7 @@ public class StatisticTypeDialog extends Dialog<StatisticSelection>
             chooseStartLabel.setText("Select Month");
             startMonthPicker = new DatePicker(LocalDate.now());
             startMonthPicker.setDayCellFactory(new MonthlyCellFactory());
+            startMonthPicker.setMaxWidth(110);
 
             leftContainer.getChildren().addAll(chooseStartLabel, startMonthPicker);
         }
@@ -112,8 +133,11 @@ public class StatisticTypeDialog extends Dialog<StatisticSelection>
         }
 
         container.setAlignment(Pos.CENTER);
+        container.setSpacing(5);
         leftContainer.setAlignment(Pos.CENTER);
+        leftContainer.setSpacing(5);
         rightContainer.setAlignment(Pos.CENTER);
+        rightContainer.setSpacing(5);
 
         productsBtn.setToggleGroup(toggleGroup);
         salesBtn.setToggleGroup(toggleGroup);

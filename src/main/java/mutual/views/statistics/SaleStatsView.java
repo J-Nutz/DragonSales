@@ -146,6 +146,11 @@ public class SaleStatsView extends BorderPane
                 if((!button.equals(allBtn)))
                 {
                     Optional<StatisticSelection> selection = new StatisticTypeDialog(getInterval(button)).showAndWait();
+
+                    if(selection.isPresent())
+                    {
+                        incomeVsProfitGraph.setData(selection.get().getInterval(), selection.get().getStartDate().toLocalDate());
+                    }
                 }
             }
         });
@@ -158,6 +163,11 @@ public class SaleStatsView extends BorderPane
             if(!event.getSource().equals(allBtn))
             {
                 Optional<StatisticSelection> selection = new StatisticTypeDialog(getInterval(button)).showAndWait();
+
+                if(selection.isPresent())
+                {
+                    incomeVsProfitGraph.setData(selection.get().getInterval(), selection.get().getStartDate().toLocalDate());
+                }
             }
         });
     }

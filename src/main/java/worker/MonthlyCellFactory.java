@@ -26,6 +26,7 @@ public class MonthlyCellFactory implements Callback<DatePicker, DateCell>
             {
                 super.updateItem(date, empty);
 
+                //TODO: Multi-Thread ???
                 while(firstDay.getDayOfMonth() != 1)
                 {
                     firstDay = firstDay.minusDays(1);

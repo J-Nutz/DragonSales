@@ -27,6 +27,7 @@ public class WeeklyCellFactory implements Callback<DatePicker, DateCell>
             {
                 super.updateItem(date, empty);
 
+                //TODO: Multi-Thread ???
                 while(firstDay.getDayOfWeek() != (DayOfWeek.MONDAY))
                 {
                     firstDay = firstDay.minusDays(1);

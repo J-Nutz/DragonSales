@@ -19,7 +19,6 @@ public class StatisticSelection
         this.statisticsType = statisticsType;
     }
 
-
     public Interval getInterval()
     {
         return interval;
