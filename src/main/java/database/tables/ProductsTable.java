@@ -8,10 +8,7 @@ import database.DatabaseExecutor;
 import jooq.public_.tables.Products;
 import jooq.public_.tables.records.ProductsRecord;
 import mutual.types.Product;
-import org.jooq.DSLContext;
-import org.jooq.InsertValuesStep12;
-import org.jooq.Record;
-import org.jooq.Result;
+import org.jooq.*;
 import org.jooq.util.h2.H2DSL;
 
 import java.math.BigDecimal;
@@ -328,6 +325,45 @@ public class ProductsTable
                 }
 
                 return productsList;
+            }
+        });
+    }
+
+    public static Integer getAmountSold(String productName)
+    {
+        return DatabaseExecutor.submitObject(() ->
+        {
+            try(Connection connection = DatabaseExecutor.getConnection();
+             DSLContext database = H2DSL.using(connection))
+            {
+                Record1<Integer> fetchedAmount =
+                     database.select(products.TOTAL_SOLD)
+                             .from(products)
+                             .where(products.NAME.equal(productName))
+                             .fetchOne();
+
+                return fetchedAmount.value1();
+            }
+        });
+    }
+
+    public static boolean updateAmountSold(String productName, int amountToAdd)
+    {
+        return DatabaseExecutor.submitBoolean(() ->
+        {
+            try(Connection connection = DatabaseExecutor.getConnection();
+              DSLContext database = H2DSL.using(connection))
+            {
+                int currentAmount = getAmountSold(productName);
+
+                int result =
+                      database.update(products)
+                              .set(row(products.TOTAL_SOLD),
+                                   row(currentAmount + amountToAdd))
+                              .where(products.NAME.equal(productName))
+                              .execute();
+
+                return result == 1;
             }
         });
     }

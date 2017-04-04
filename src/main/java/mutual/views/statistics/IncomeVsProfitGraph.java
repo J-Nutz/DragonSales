@@ -23,7 +23,6 @@ public class IncomeVsProfitGraph
 
     private CategoryAxis xAxis;
     private NumberAxis yAxis;
-
     private BarChart<String, Number> barGraph;
 
     public IncomeVsProfitGraph()

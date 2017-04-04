@@ -4,6 +4,7 @@ package mutual.views.statistics;
  * Created by Jonah on 3/3/2017.
  */
 
+import database.tables.ProductsTable;
 import javafx.collections.ObservableList;
 import mutual.types.Category;
 import mutual.types.OrderFragment;
@@ -44,6 +45,8 @@ public class StatisticsTracker
 
         for(OrderFragment orderFragment : orderFragments)
         {
+            ProductsTable.updateAmountSold(orderFragment.getProductName(), orderFragment.getQuantity());
+
             numOfItemsSold += orderFragment.getQuantity();
 
             totalIncome = totalIncome.add(calculateIncome(orderFragment));
@@ -102,12 +105,12 @@ public class StatisticsTracker
             }
         }
 
-        System.out.println("Day: " + day);
-        System.out.println("Soda's Sold: " + sodaSold);
-        System.out.println("Candy Sold: " + candySold);
-        System.out.println("Items Sold: " + numOfItemsSold);
-        System.out.println("Num Of Sales: " + numOfSales);
-        System.out.println("Profit: " + totalProfit);
+        //System.out.println("Day: " + day);
+        //System.out.println("Soda's Sold: " + sodaSold);
+        //System.out.println("Candy Sold: " + candySold);
+        //System.out.println("Items Sold: " + numOfItemsSold);
+        //System.out.println("Num Of Sales: " + numOfSales);
+        //System.out.println("Profit: " + totalProfit);
     }
 
     private BigDecimal calculateIncome(OrderFragment orderFragment)
