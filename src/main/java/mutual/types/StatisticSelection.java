@@ -14,9 +14,9 @@ public class StatisticSelection
 
     public StatisticSelection(Interval interval, Date startDate, String statisticsType)
     {
-        this.interval = interval;
-        this.startDate = startDate;
-        this.statisticsType = statisticsType;
+        setInterval(interval);
+        setStartDate(startDate);
+        setStatisticsType(statisticsType);
     }
 
     public Interval getInterval()

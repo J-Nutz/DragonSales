@@ -36,10 +36,13 @@ public class DailyStatsTable
                if(LocalDate.now().getDayOfWeek().equals(DayOfWeek.SATURDAY)
                   || LocalDate.now().getDayOfWeek().equals(DayOfWeek.SUNDAY))
                {
+                   System.out.println("Weekend - Not Starting New Log");
                     return false;
                }
                else
                {
+                   System.out.println("Weekday - Starting Empty Log...");
+
                    InsertValuesStep16<DailyStatsRecord, Date, Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer, BigDecimal, BigDecimal>
 
                            logSaleStep = database.insertInto(dailyStats,
@@ -78,6 +81,8 @@ public class DailyStatsTable
                                       saleLog.getTotalProfit());
 
                    int logSaleResult = logSaleStep.execute();
+
+                   System.out.println("Empty Log Created");
 
                    return logSaleResult == 1;
                }
@@ -122,13 +127,15 @@ public class DailyStatsTable
                         currentStats.setTotalProfit(r.get(dailyStats.TOTAL_PROFIT));
                     }
 
+                    System.out.println("Day Stats Found. Returning Log...");
+
                     return currentStats;
                 }
                 else
                 {
                     StatisticsTracker emptyLog = new StatisticsTracker();
 
-                    emptyLog.setDay(Date.valueOf(LocalDate.now()));
+                    emptyLog.setDay(date);
                     emptyLog.setFoodSold(0);
                     emptyLog.setBakerySold(0);
                     emptyLog.setCandySold(0);
@@ -145,8 +152,20 @@ public class DailyStatsTable
                     emptyLog.setTotalIncome(new BigDecimal("0.00"));
                     emptyLog.setTotalProfit(new BigDecimal("0.00"));
 
-                    startNewLog(emptyLog);
-                    return getDayStats(emptyLog.getDay());
+                    if(date.toLocalDate().isEqual(LocalDate.now()))
+                    {
+                        System.out.println("Stats For Today Not Found. Starting New Log...");
+                        startNewLog(emptyLog);
+
+                        return getDayStats(emptyLog.getDay());
+                    }
+                    else
+                    {
+                        System.out.println("Trying To Get Early Date - Returning Empty Log...");
+
+                        return emptyLog;
+                    }
+
                 }
             }
         });
@@ -168,6 +187,8 @@ public class DailyStatsTable
 
                 if(dayStatsStarted.isNotEmpty())
                 {
+                    System.out.println("Day Stats Started - Updating...");
+
                     int result = database.update(dailyStats)
                                          .set(row(dailyStats.DAY,
                                                   dailyStats.FOOD_SOLD,
@@ -210,6 +231,8 @@ public class DailyStatsTable
                 }
                 else
                 {
+                    System.out.println("Day Stats Not Found. Starting New Log...");
+
                     return startNewLog(saleLog);
                 }
             }

@@ -4,6 +4,7 @@ package mutual.views.statistics;
  * Created by Jonah on 3/19/2017.
  */
 
+import database.tables.DailyStatsTable;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -20,6 +21,8 @@ import javafx.scene.text.Font;
 import mutual.types.Interval;
 import mutual.types.StatisticSelection;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Optional;
 
 public class SaleStatsView extends BorderPane
@@ -58,9 +61,9 @@ public class SaleStatsView extends BorderPane
         intervalGroup = new ToggleGroup();
 
         graphContainer = new BorderPane();
-        incomeVsProfitGraph = new IncomeVsProfitGraph(Interval.DAILY);
+        incomeVsProfitGraph = new IncomeVsProfitGraph();
 
-        dayStats = incomeVsProfitGraph.getDayStats();
+        dayStats = DailyStatsTable.getDayStats(Date.valueOf(LocalDate.now()));
         genStatsFont = new Font(16);
 
         genStatsCenterContainer = new VBox();
@@ -105,6 +108,8 @@ public class SaleStatsView extends BorderPane
         setSelfUntoggleable(allBtn);
         setToggleFunctionality(allBtn);
 
+        graphContainer.setPadding(new Insets(10));
+
         genStatsCenterContainer.setAlignment(Pos.CENTER);
         genStatsCenterContainer.setPadding(new Insets(15));
 
@@ -143,7 +148,7 @@ public class SaleStatsView extends BorderPane
             {
                 mouseEvent.consume();
 
-                if((!button.equals(allBtn)))
+                if(!button.equals(allBtn))
                 {
                     Optional<StatisticSelection> selection = new StatisticTypeDialog(getInterval(button)).showAndWait();
 

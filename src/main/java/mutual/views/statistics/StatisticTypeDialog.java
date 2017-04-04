@@ -4,9 +4,9 @@ package mutual.views.statistics;
  * Created by Jonah on 3/29/2017.
  */
 
-import database.tables.DailyStatsTable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import mutual.types.Interval;
@@ -21,7 +21,6 @@ import java.time.LocalDate;
 public class StatisticTypeDialog extends Dialog<StatisticSelection>
 {
     private Interval interval;
-
     private HBox container;
 
     private VBox leftContainer;
@@ -102,8 +101,6 @@ public class StatisticTypeDialog extends Dialog<StatisticSelection>
             startDatePicker.setDayCellFactory(new DailyCellFactory());
             startDatePicker.setMaxWidth(110);
 
-            System.out.println("First Stat In Table: " + DailyStatsTable.getDateOfFirstStat().toString());
-
             leftContainer.getChildren().addAll(chooseStartLabel, startDatePicker);
         }
         else if(interval.equals(Interval.WEEKLY))
@@ -140,7 +137,10 @@ public class StatisticTypeDialog extends Dialog<StatisticSelection>
         rightContainer.setSpacing(5);
 
         productsBtn.setToggleGroup(toggleGroup);
+        setSelfUntoggleable(productsBtn);
         salesBtn.setToggleGroup(toggleGroup);
+        salesBtn.setSelected(true);
+        setSelfUntoggleable(salesBtn);
     }
 
     private void addComponents()
@@ -152,5 +152,16 @@ public class StatisticTypeDialog extends Dialog<StatisticSelection>
         getDialogPane().setContent(container);
         getDialogPane().getButtonTypes().add(0, selectBtn);
         getDialogPane().getButtonTypes().add(1, ButtonType.CANCEL);
+    }
+
+    private void setSelfUntoggleable(ToggleButton button)
+    {
+        button.addEventFilter(MouseEvent.MOUSE_RELEASED, mouseEvent ->
+        {
+            if(button.equals(toggleGroup.getSelectedToggle()))
+            {
+                mouseEvent.consume();
+            }
+        });
     }
 }
