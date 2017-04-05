@@ -5,6 +5,7 @@ package jooq.public_;
 
 
 import jooq.DefaultCatalog;
+import jooq.public_.tables.AllTimeStats;
 import jooq.public_.tables.CurrentUser;
 import jooq.public_.tables.DailyStats;
 import jooq.public_.tables.Discounts;
@@ -12,6 +13,7 @@ import jooq.public_.tables.Employees;
 import jooq.public_.tables.Products;
 import jooq.public_.tables.Schedule;
 import jooq.public_.tables.Users;
+import jooq.public_.tables.YearStats;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,7 +40,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 705108209;
+    private static final long serialVersionUID = 1778876376;
 
     /**
      * The reference instance of <code>PUBLIC</code>
@@ -81,6 +83,16 @@ public class Public extends SchemaImpl {
     public final DailyStats DAILY_STATS = jooq.public_.tables.DailyStats.DAILY_STATS;
 
     /**
+     * The table <code>PUBLIC.YEAR_STATS</code>.
+     */
+    public final YearStats YEAR_STATS = jooq.public_.tables.YearStats.YEAR_STATS;
+
+    /**
+     * The table <code>PUBLIC.ALL_TIME_STATS</code>.
+     */
+    public final AllTimeStats ALL_TIME_STATS = jooq.public_.tables.AllTimeStats.ALL_TIME_STATS;
+
+    /**
      * No further instances allowed
      */
     private Public() {
@@ -105,7 +117,7 @@ public class Public extends SchemaImpl {
 
     private final List<Sequence<?>> getSequences0() {
         return Arrays.<Sequence<?>>asList(
-            Sequences.SYSTEM_SEQUENCE_3035F31C_4490_4273_8FBC_2D85ECCE6AE2);
+            Sequences.SYSTEM_SEQUENCE_BAE2226E_7A2D_4ECA_A302_A1D43ABC7C3B);
     }
 
     @Override
@@ -123,6 +135,8 @@ public class Public extends SchemaImpl {
             CurrentUser.CURRENT_USER,
             Discounts.DISCOUNTS,
             Schedule.SCHEDULE,
-            DailyStats.DAILY_STATS);
+            DailyStats.DAILY_STATS,
+            YearStats.YEAR_STATS,
+            AllTimeStats.ALL_TIME_STATS);
     }
 }

@@ -178,8 +178,6 @@ public class DailyStatsTable
             try(Connection connection = DatabaseExecutor.getConnection();
                 DSLContext database = H2DSL.using(connection))
             {
-                StatisticsTracker currentStats = getDayStats(saleLog.getDay());
-
                 Result<DailyStatsRecord> dayStatsStarted =
                         database.selectFrom(dailyStats)
                                 .where(dailyStats.DAY.eq(Date.valueOf(LocalDate.now())))
@@ -187,6 +185,8 @@ public class DailyStatsTable
 
                 if(dayStatsStarted.isNotEmpty())
                 {
+                    StatisticsTracker currentStats = getDayStats(saleLog.getDay());
+
                     System.out.println("Day Stats Started - Updating...");
 
                     int result = database.update(dailyStats)

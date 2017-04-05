@@ -4,6 +4,7 @@ package mutual.views.statistics;
  * Created by Jonah on 3/27/2017.
  */
 
+import database.tables.AllTimeStatsTable;
 import database.tables.DailyStatsTable;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
@@ -34,7 +35,6 @@ public class IncomeVsProfitGraph
 
         initComponents();
         setData(Interval.DAILY, LocalDate.now());
-        addComponents();
     }
 
     private void initComponents()
@@ -46,11 +46,9 @@ public class IncomeVsProfitGraph
         barGraph.setAnimated(false);
     }
 
-    private void addComponents() {}
-
     public void setData(Interval interval, LocalDate startDate)
     {
-        getBarGraph().getData().clear();
+        getGraph().getData().clear();
 
         if(interval.equals(Interval.DAILY))
         {
@@ -71,6 +69,18 @@ public class IncomeVsProfitGraph
 
             setWeekValues(weeklyStats);
         }
+        else if(interval.equals(Interval.MONTHLY))
+        {
+
+        }
+        else if(interval.equals(Interval.YEARLY))
+        {
+
+        }
+        else if(interval.equals(Interval.ALL))
+        {
+            setAllValues(AllTimeStatsTable.getAllTimeStats());
+        }
     }
 
     private void setDayValues(StatisticsTracker stats)
@@ -88,9 +98,13 @@ public class IncomeVsProfitGraph
         {
             yAxis.setUpperBound(50);
         }
-        else if(income.intValue() < 25)
+        else if(incomeAsInt < 25)
         {
             yAxis.setUpperBound(25);
+        }
+        else
+        {
+            yAxis.setUpperBound(100);
         }
 
         xAxis.setLabel("Daily Stats");
@@ -119,7 +133,7 @@ public class IncomeVsProfitGraph
         profitSeries.setName("Profit");
 
         LocalDate date = weeklyStats.get(0).getDay().toLocalDate();
-        String formattedDate = simpleDateFormat.format(date);
+        String formattedDate = simpleDateFormat.format(weeklyStats.get(0).getDay());
         xAxis.setLabel("Week Of " + formattedDate + " Stats");
 
         for(StatisticsTracker statisticsTracker : weeklyStats)
@@ -137,7 +151,29 @@ public class IncomeVsProfitGraph
         barGraph.getData().add(profitSeries);
     }
 
-    public BarChart getBarGraph()
+    private void setMonthValues()
+    {
+
+    }
+
+    private void setAllValues(StatisticsTracker stats)
+    {
+        xAxis.setLabel("All Time Stats");
+
+        XYChart.Series<String, Number> incomeSeries = new XYChart.Series<>();
+        incomeSeries.setName("Income");
+        XYChart.Data<String, Number> incomeData = new XYChart.Data<>("All Time", stats.getTotalIncome());
+        incomeSeries.getData().add(incomeData);
+        barGraph.getData().add(incomeSeries);
+
+        XYChart.Series<String, Number> profitSeries = new XYChart.Series<>();
+        profitSeries.setName("Profit");
+        XYChart.Data<String, Number> profitData = new XYChart.Data<>("All Time", stats.getTotalProfit());
+        profitSeries.getData().add(profitData);
+        barGraph.getData().add(profitSeries);
+    }
+
+    public BarChart getGraph()
     {
         return barGraph;
     }

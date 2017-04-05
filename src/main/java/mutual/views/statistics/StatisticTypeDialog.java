@@ -64,23 +64,25 @@ public class StatisticTypeDialog extends Dialog<StatisticSelection>
         {
             if(selectedButton.getButtonData() == ButtonBar.ButtonData.OK_DONE)
             {
+                String statTypeToGet = toggleGroup.getSelectedToggle().equals(productsBtn) ? "Products" : "Sales";
+
                 if(startDatePicker != null)
                 {
                     return new StatisticSelection(interval,
                                                   Date.valueOf(startDatePicker.getValue()),
-                                                  toggleGroup.getSelectedToggle().toString());
+                                                  statTypeToGet);
                 }
                 else if(startWeekPicker != null)
                 {
                     return new StatisticSelection(interval,
                                                   Date.valueOf(startWeekPicker.getValue()),
-                                                  toggleGroup.getSelectedToggle().toString());
+                                                  statTypeToGet);
                 }
                 else if(startMonthPicker != null)
                 {
                     return new StatisticSelection(interval,
                                                   Date.valueOf(startMonthPicker.getValue()),
-                                                  toggleGroup.getSelectedToggle().toString());
+                                                  statTypeToGet);
                 }
                 else
                 {

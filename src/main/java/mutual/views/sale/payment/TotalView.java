@@ -4,6 +4,7 @@ package mutual.views.sale.payment;
  * Created by Jonah on 2/1/2017.
  */
 
+import database.tables.AllTimeStatsTable;
 import database.tables.DailyStatsTable;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -85,6 +86,7 @@ public class TotalView extends VBox
             statisticsTracker.logSale(getProducts());
 
             DailyStatsTable.logSale(statisticsTracker);
+            AllTimeStatsTable.updateStats(statisticsTracker);
 
             switchView(getParent(), FullAccess.SALE);
         });

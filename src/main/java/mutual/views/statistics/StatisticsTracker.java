@@ -12,6 +12,7 @@ import mutual.types.OrderFragment;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class StatisticsTracker
 {
@@ -104,13 +105,6 @@ public class StatisticsTracker
                     break;
             }
         }
-
-        //System.out.println("Day: " + day);
-        //System.out.println("Soda's Sold: " + sodaSold);
-        //System.out.println("Candy Sold: " + candySold);
-        //System.out.println("Items Sold: " + numOfItemsSold);
-        //System.out.println("Num Of Sales: " + numOfSales);
-        //System.out.println("Profit: " + totalProfit);
     }
 
     private BigDecimal calculateIncome(OrderFragment orderFragment)
@@ -149,6 +143,33 @@ public class StatisticsTracker
         }
 
         return profit;
+    }
+
+    public int getLargestNumInCategory()
+    {
+        ArrayList<Integer> possibilities = new ArrayList<>();
+        possibilities.add(bakerySold);
+        possibilities.add(candySold);
+        possibilities.add(chipsSold);
+        possibilities.add(drinksSold);
+        possibilities.add(sodaSold);
+        possibilities.add(waterSold);
+        possibilities.add(juiceSold);
+        possibilities.add(coffeeSold);
+        possibilities.add(frozenSold);
+        possibilities.add(miscSold);
+
+        int largest = foodSold;
+
+        for(Integer possibility : possibilities)
+        {
+            if(largest < possibility)
+            {
+                largest = possibility;
+            }
+        }
+
+        return largest;
     }
 
     public void setDay(Date newValue)

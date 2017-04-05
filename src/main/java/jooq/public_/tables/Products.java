@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Products extends TableImpl<ProductsRecord> {
 
-    private static final long serialVersionUID = -1342854466;
+    private static final long serialVersionUID = -560498413;
 
     /**
      * The reference instance of <code>PUBLIC.PRODUCTS</code>
@@ -55,7 +55,7 @@ public class Products extends TableImpl<ProductsRecord> {
     /**
      * The column <code>PUBLIC.PRODUCTS.ID</code>.
      */
-    public final TableField<ProductsRecord, Long> ID = createField("ID", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("(NEXT VALUE FOR PUBLIC.SYSTEM_SEQUENCE_3035F31C_4490_4273_8FBC_2D85ECCE6AE2)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<ProductsRecord, Long> ID = createField("ID", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("(NEXT VALUE FOR PUBLIC.SYSTEM_SEQUENCE_BAE2226E_7A2D_4ECA_A302_A1D43ABC7C3B)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * The column <code>PUBLIC.PRODUCTS.NAME</code>.

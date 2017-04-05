@@ -49,8 +49,8 @@ public class LoggedInUserTable
                     database.createTable(currentUser);
 
                     return (database.insertInto(currentUser, currentUser.USER_NAME, currentUser.SALT, currentUser.PASSWORD)
-                            .values(user.getUsername(), user.getSalt(), user.getPassword())
-                            .execute()) == 1;
+                                    .values(user.getUsername(), user.getSalt(), user.getPassword())
+                                    .execute()) == 1;
                 }
                 else
                 {
@@ -70,9 +70,9 @@ public class LoggedInUserTable
                 User loggedInUser = new User();
 
                 Result<Record> loggedInUserData = database.select()
-                        .from(currentUser)
-                        .limit(1)
-                        .fetch();
+                                                          .from(currentUser)
+                                                          .limit(1)
+                                                          .fetch();
 
                 for(Record r : loggedInUserData)
                 {

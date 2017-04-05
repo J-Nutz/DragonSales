@@ -8,10 +8,7 @@ import database.tables.DailyStatsTable;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -41,6 +38,7 @@ public class SaleStatsView extends BorderPane
 
     private BorderPane graphContainer;
     private IncomeVsProfitGraph incomeVsProfitGraph;
+    private CategoryGraph categoryGraph;
 
     private VBox genStatsCenterContainer;
     private GridPane genStatsContainer;
@@ -48,6 +46,11 @@ public class SaleStatsView extends BorderPane
     private Label incomeAmountLabel;
     private Label profitLabel;
     private Label profitAmountLabel;
+
+    private Label itemsSoldLabel;
+    private Label itemSoldAmountLabel;
+    private Label salesLabel;
+    private Label salesAmountLabel;
 
     public SaleStatsView()
     {
@@ -72,6 +75,10 @@ public class SaleStatsView extends BorderPane
         incomeAmountLabel = new Label("$" + dayStats.getTotalIncome());
         profitLabel = new Label("Profit: ");
         profitAmountLabel = new Label("$" + dayStats.getTotalProfit());
+        itemsSoldLabel = new Label("Items Sold: ");
+        itemSoldAmountLabel = new Label("" + dayStats.getNumOfItemsSold());
+        salesLabel = new Label("Total Sales: ");
+        salesAmountLabel = new Label("" + dayStats.getNumOfSales());
 
         initComponents();
         addComponents();
@@ -120,6 +127,12 @@ public class SaleStatsView extends BorderPane
 
         profitLabel.setFont(genStatsFont);
         profitAmountLabel.setFont(genStatsFont);
+
+        itemsSoldLabel.setFont(genStatsFont);
+        itemSoldAmountLabel.setFont(genStatsFont);
+
+        salesLabel.setFont(genStatsFont);
+        salesAmountLabel.setFont(genStatsFont);
     }
 
     private void addComponents()
@@ -127,13 +140,19 @@ public class SaleStatsView extends BorderPane
         intervalContainer.getChildren().addAll(dayBtn, weekBtn, monthBtn, yearBtn, allBtn);
         setTop(intervalContainer);
 
-        graphContainer.setCenter(incomeVsProfitGraph.getBarGraph());
+        graphContainer.setCenter(incomeVsProfitGraph.getGraph());
         setCenter(graphContainer);
 
         genStatsContainer.add(incomeLabel, 0, 0);
         genStatsContainer.add(incomeAmountLabel, 1, 0);
         genStatsContainer.add(profitLabel, 0, 1);
         genStatsContainer.add(profitAmountLabel, 1, 1);
+
+        genStatsContainer.add(itemsSoldLabel, 0, 2);
+        genStatsContainer.add(itemSoldAmountLabel, 1, 2);
+        genStatsContainer.add(salesLabel, 0, 3);
+        genStatsContainer.add(salesAmountLabel, 1, 3);
+
         genStatsCenterContainer.getChildren().add(new Separator(Orientation.HORIZONTAL));
         genStatsCenterContainer.getChildren().add(genStatsContainer);
         genStatsCenterContainer.getChildren().add(new Separator(Orientation.HORIZONTAL));
@@ -150,12 +169,12 @@ public class SaleStatsView extends BorderPane
 
                 if(!button.equals(allBtn))
                 {
-                    Optional<StatisticSelection> selection = new StatisticTypeDialog(getInterval(button)).showAndWait();
-
-                    if(selection.isPresent())
-                    {
-                        incomeVsProfitGraph.setData(selection.get().getInterval(), selection.get().getStartDate().toLocalDate());
-                    }
+                    launchDialog(button);
+                }
+                else
+                {
+                    incomeVsProfitGraph.setData(Interval.ALL, LocalDate.now());
+                    setCenter(incomeVsProfitGraph.getGraph());
                 }
             }
         });
@@ -163,16 +182,22 @@ public class SaleStatsView extends BorderPane
 
     private void setToggleFunctionality(ToggleButton button)
     {
+        Toggle selected = intervalGroup.getSelectedToggle();
+
         button.setOnAction(event ->
         {
             if(!event.getSource().equals(allBtn))
             {
-                Optional<StatisticSelection> selection = new StatisticTypeDialog(getInterval(button)).showAndWait();
-
-                if(selection.isPresent())
+                if(!launchDialog(button))
                 {
-                    incomeVsProfitGraph.setData(selection.get().getInterval(), selection.get().getStartDate().toLocalDate());
+                    intervalGroup.selectToggle(selected);
+                    event.consume();
                 }
+            }
+            else
+            {
+                incomeVsProfitGraph.setData(Interval.ALL, LocalDate.now());
+                setCenter(incomeVsProfitGraph.getGraph());
             }
         });
     }
@@ -203,5 +228,37 @@ public class SaleStatsView extends BorderPane
         }
 
         return interval;
+    }
+
+    private boolean launchDialog(ToggleButton button)
+    {
+        Optional<StatisticSelection> result = new StatisticTypeDialog(getInterval(button)).showAndWait();
+
+        if(result.isPresent())
+        {
+            StatisticSelection selection = result.get();
+
+            if(selection.getStatisticsType().equals("Sales"))
+            {
+                incomeVsProfitGraph.setData(selection.getInterval(),
+                                            selection.getStartDate().toLocalDate());
+
+                setCenter(incomeVsProfitGraph.getGraph());
+            }
+            else
+            {
+                categoryGraph = new CategoryGraph();
+                categoryGraph.setData(selection.getInterval(),
+                                      selection.getStartDate().toLocalDate());
+
+                setCenter(categoryGraph.getGraph());
+            }
+
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }

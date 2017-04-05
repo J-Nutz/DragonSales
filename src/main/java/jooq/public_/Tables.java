@@ -4,6 +4,7 @@
 package jooq.public_;
 
 
+import jooq.public_.tables.AllTimeStats;
 import jooq.public_.tables.CurrentUser;
 import jooq.public_.tables.DailyStats;
 import jooq.public_.tables.Discounts;
@@ -11,6 +12,7 @@ import jooq.public_.tables.Employees;
 import jooq.public_.tables.Products;
 import jooq.public_.tables.Schedule;
 import jooq.public_.tables.Users;
+import jooq.public_.tables.YearStats;
 
 import javax.annotation.Generated;
 
@@ -62,4 +64,14 @@ public class Tables {
      * The table <code>PUBLIC.DAILY_STATS</code>.
      */
     public static final DailyStats DAILY_STATS = jooq.public_.tables.DailyStats.DAILY_STATS;
+
+    /**
+     * The table <code>PUBLIC.YEAR_STATS</code>.
+     */
+    public static final YearStats YEAR_STATS = jooq.public_.tables.YearStats.YEAR_STATS;
+
+    /**
+     * The table <code>PUBLIC.ALL_TIME_STATS</code>.
+     */
+    public static final AllTimeStats ALL_TIME_STATS = jooq.public_.tables.AllTimeStats.ALL_TIME_STATS;
 }
