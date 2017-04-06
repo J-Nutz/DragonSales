@@ -71,9 +71,9 @@ public class SaleStatsView extends BorderPane
 
         genStatsCenterContainer = new VBox();
         genStatsContainer = new GridPane();
-        incomeLabel = new Label("Income: ");
+        incomeLabel = new Label("Total Income: ");
         incomeAmountLabel = new Label("$" + dayStats.getTotalIncome());
-        profitLabel = new Label("Profit: ");
+        profitLabel = new Label("Total Profit: ");
         profitAmountLabel = new Label("$" + dayStats.getTotalProfit());
         itemsSoldLabel = new Label("Items Sold: ");
         itemSoldAmountLabel = new Label("" + dayStats.getNumOfItemsSold());
@@ -175,6 +175,7 @@ public class SaleStatsView extends BorderPane
                 {
                     incomeVsProfitGraph.setData(Interval.ALL, LocalDate.now());
                     setCenter(incomeVsProfitGraph.getGraph());
+                    setGeneralStats();
                 }
             }
         });
@@ -190,14 +191,36 @@ public class SaleStatsView extends BorderPane
             {
                 if(!launchDialog(button))
                 {
-                    intervalGroup.selectToggle(selected);
                     event.consume();
+                    intervalGroup.selectToggle(selected);
+
+                    if(selected.equals(dayBtn))
+                    {
+                        dayBtn.requestFocus();
+                    }
+                    else if(selected.equals(weekBtn))
+                    {
+                        weekBtn.requestFocus();
+                    }
+                    else if(selected.equals(monthBtn))
+                    {
+                        monthBtn.requestFocus();
+                    }
+                    else if(selected.equals(yearBtn))
+                    {
+                        yearBtn.requestFocus();
+                    }
+                    else if(selected.equals(allBtn))
+                    {
+                        allBtn.requestFocus();
+                    }
                 }
             }
             else
             {
                 incomeVsProfitGraph.setData(Interval.ALL, LocalDate.now());
                 setCenter(incomeVsProfitGraph.getGraph());
+                setGeneralStats();
             }
         });
     }
@@ -244,6 +267,7 @@ public class SaleStatsView extends BorderPane
                                             selection.getStartDate().toLocalDate());
 
                 setCenter(incomeVsProfitGraph.getGraph());
+                setGeneralStats();
             }
             else
             {
@@ -260,5 +284,14 @@ public class SaleStatsView extends BorderPane
         {
             return false;
         }
+    }
+
+    private void setGeneralStats()
+    {
+        incomeAmountLabel.setText("$" + incomeVsProfitGraph.getTotalIncome().toString());
+        profitAmountLabel.setText("$" + incomeVsProfitGraph.getTotalProfit().toString());
+
+        itemSoldAmountLabel.setText("" + incomeVsProfitGraph.getTotalItemsSold());
+        salesAmountLabel.setText("" + incomeVsProfitGraph.getTotalSales());
     }
 }

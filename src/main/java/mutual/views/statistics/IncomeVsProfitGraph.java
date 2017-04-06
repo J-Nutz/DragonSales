@@ -12,6 +12,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import mutual.types.Interval;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
@@ -25,6 +26,10 @@ public class IncomeVsProfitGraph
     private CategoryAxis xAxis;
     private NumberAxis yAxis;
     private BarChart<String, Number> barGraph;
+    private BigDecimal totalIncome;
+    private BigDecimal totalProfit;
+    private int totalItemsSold;
+    private int totalSales;
 
     public IncomeVsProfitGraph()
     {
@@ -44,6 +49,9 @@ public class IncomeVsProfitGraph
 
         barGraph.setTitle("Income VS Profit");
         barGraph.setAnimated(false);
+        barGraph.setCategoryGap(25);
+        totalIncome = new BigDecimal("0.00");
+        totalProfit = new BigDecimal("0.00");
     }
 
     public void setData(Interval interval, LocalDate startDate)
@@ -85,7 +93,13 @@ public class IncomeVsProfitGraph
 
     private void setDayValues(StatisticsTracker stats)
     {
+        totalIncome = stats.getTotalIncome();
+        totalProfit = stats.getTotalProfit();
+        totalItemsSold = stats.getNumOfItemsSold();
+        totalSales = stats.getNumOfSales();
+
         String day = simpleDateFormat.format(stats.getDay());
+
         Number income = stats.getTotalIncome();
         Number profit = stats.getTotalProfit();
         int incomeAsInt = income.intValue();
@@ -133,15 +147,25 @@ public class IncomeVsProfitGraph
         profitSeries.setName("Profit");
 
         LocalDate date = weeklyStats.get(0).getDay().toLocalDate();
-        String formattedDate = simpleDateFormat.format(weeklyStats.get(0).getDay());
+        String formattedDate = simpleDateFormat.format(Date.valueOf(date));
         xAxis.setLabel("Week Of " + formattedDate + " Stats");
 
-        for(StatisticsTracker statisticsTracker : weeklyStats)
+        totalIncome = new BigDecimal("0.00");
+        totalProfit = new BigDecimal("0.00");
+        totalItemsSold = 0;
+        totalSales = 0;
+
+        for(StatisticsTracker stats : weeklyStats)
         {
-            XYChart.Data<String, Number> incomeData = new XYChart.Data<>(date.getDayOfWeek().toString(), statisticsTracker.getTotalIncome());
+            totalItemsSold += stats.getNumOfItemsSold();
+            totalSales += stats.getNumOfSales();
+
+            totalIncome = totalIncome.add(stats.getTotalIncome());
+            XYChart.Data<String, Number> incomeData = new XYChart.Data<>(date.getDayOfWeek().toString(), stats.getTotalIncome());
             incomeSeries.getData().add(incomeData);
 
-            XYChart.Data<String, Number> profitData = new XYChart.Data<>(date.getDayOfWeek().toString(), statisticsTracker.getTotalProfit());
+            totalProfit = totalProfit.add(stats.getTotalProfit());
+            XYChart.Data<String, Number> profitData = new XYChart.Data<>(date.getDayOfWeek().toString(), stats.getTotalProfit());
             profitSeries.getData().add(profitData);
 
             date = date.plusDays(1);
@@ -160,6 +184,11 @@ public class IncomeVsProfitGraph
     {
         xAxis.setLabel("All Time Stats");
 
+        totalIncome = stats.getTotalIncome();
+        totalProfit = stats.getTotalProfit();
+        totalItemsSold = stats.getNumOfItemsSold();
+        totalSales = stats.getNumOfSales();
+
         XYChart.Series<String, Number> incomeSeries = new XYChart.Series<>();
         incomeSeries.setName("Income");
         XYChart.Data<String, Number> incomeData = new XYChart.Data<>("All Time", stats.getTotalIncome());
@@ -171,6 +200,26 @@ public class IncomeVsProfitGraph
         XYChart.Data<String, Number> profitData = new XYChart.Data<>("All Time", stats.getTotalProfit());
         profitSeries.getData().add(profitData);
         barGraph.getData().add(profitSeries);
+    }
+
+    public BigDecimal getTotalIncome()
+    {
+        return totalIncome;
+    }
+
+    public BigDecimal getTotalProfit()
+    {
+        return totalProfit;
+    }
+
+    public int getTotalItemsSold()
+    {
+        return totalItemsSold;
+    }
+
+    public int getTotalSales()
+    {
+        return totalSales;
     }
 
     public BarChart getGraph()

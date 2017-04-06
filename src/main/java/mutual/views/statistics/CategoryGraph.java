@@ -43,6 +43,7 @@ public class CategoryGraph
 
         barGraph.setTitle("Number Of Products Sold In Each Category");
         barGraph.setAnimated(false);
+        barGraph.setCategoryGap(15);
     }
 
     public void setData(Interval interval, LocalDate startDate)

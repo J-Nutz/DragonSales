@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static org.jooq.impl.DSL.row;
 
@@ -343,6 +344,29 @@ public class ProductsTable
                              .fetchOne();
 
                 return fetchedAmount.value1();
+            }
+        });
+    }
+
+    public static HashMap<String, Integer> getProductsAndAmountsSold()
+    {
+        return DatabaseExecutor.submitObject(() ->
+        {
+            try(Connection connection = DatabaseExecutor.getConnection();
+             DSLContext database = H2DSL.using(connection))
+            {
+                HashMap<String, Integer> namesAndAmounts = new HashMap<>();
+
+                Result<Record2<String, Integer>> namesAndAmountsResult = database.select(products.NAME, products.TOTAL_SOLD)
+                        .from(products)
+                        .fetch();
+
+                for(Record2<String, Integer> record2 : namesAndAmountsResult)
+                {
+                    namesAndAmounts.put(record2.value1(), record2.value2());
+                }
+
+                return namesAndAmounts;
             }
         });
     }

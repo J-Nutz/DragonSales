@@ -4,6 +4,7 @@ package mutual.views.statistics;
  * Created by Jonah on 3/29/2017.
  */
 
+import database.tables.DailyStatsTable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
@@ -16,6 +17,7 @@ import worker.MonthlyCellFactory;
 import worker.WeeklyCellFactory;
 
 import java.sql.Date;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 public class StatisticTypeDialog extends Dialog<StatisticSelection>
@@ -107,8 +109,17 @@ public class StatisticTypeDialog extends Dialog<StatisticSelection>
         }
         else if(interval.equals(Interval.WEEKLY))
         {
+            LocalDate dateToBeSelected = DailyStatsTable.getDateOfFirstStat().toLocalDate();
+            if(dateToBeSelected.getDayOfWeek() != DayOfWeek.MONDAY)
+            {
+                while(dateToBeSelected.getDayOfWeek() != DayOfWeek.MONDAY)
+                {
+                    dateToBeSelected = dateToBeSelected.minusDays(1);
+                }
+            }
+
             chooseStartLabel.setText("Select Week");
-            startWeekPicker = new DatePicker(LocalDate.now());
+            startWeekPicker = new DatePicker(dateToBeSelected);
             startWeekPicker.setDayCellFactory(new WeeklyCellFactory());
             startWeekPicker.setMaxWidth(110);
 
