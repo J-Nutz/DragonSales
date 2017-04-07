@@ -17,12 +17,13 @@ import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class CategoryGraph
 {
     private CategoryAxis xAxis;
     private NumberAxis yAxis;
-    private BarChart<String, Number> barGraph;
+    private BarGraph<String, Number> barGraph;
 
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMM-dd-yyyy");
 
@@ -30,8 +31,7 @@ public class CategoryGraph
     {
         xAxis = new CategoryAxis();
         yAxis = new NumberAxis(0, 25, 5);
-
-        barGraph = new BarChart<>(xAxis, yAxis);
+        barGraph = new BarGraph<>(xAxis, yAxis);
 
         initComponents();
     }
@@ -44,6 +44,7 @@ public class CategoryGraph
         barGraph.setTitle("Number Of Products Sold In Each Category");
         barGraph.setAnimated(false);
         barGraph.setCategoryGap(15);
+        barGraph.areValuesCurrency(false);
     }
 
     public void setData(Interval interval, LocalDate startDate)
@@ -71,7 +72,20 @@ public class CategoryGraph
         }
         else if(interval.equals(Interval.MONTHLY))
         {
+            ArrayList<StatisticsTracker> monthlyStats = new ArrayList<>();
 
+            if(startDate.getDayOfMonth() == 1)
+            {
+                int numOfDays = (Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH) + 1);
+
+                for(int i = 1; i < numOfDays; i++)
+                {
+                    monthlyStats.add(DailyStatsTable.getDayStats(Date.valueOf(startDate)));
+                    startDate = startDate.plusDays(1);
+                }
+            }
+
+            setMonthValues(monthlyStats);
         }
         else if(interval.equals(Interval.YEARLY))
         {
@@ -106,58 +120,83 @@ public class CategoryGraph
             yAxis.setUpperBound(100);
         }
 
+        ArrayList<StatisticsTracker> dailyStats = new ArrayList<>();
+        dailyStats.add(stats);
+
         xAxis.setLabel(day + " Category Stats");
-
-        XYChart.Series<String, Number> categorySeries = new XYChart.Series<>();
-        categorySeries.setName("Items Sold In Each Category");
-        XYChart.Data<String, Number> foodData = new XYChart.Data<>("Food", stats.getFoodSold());
-        XYChart.Data<String, Number> bakeryData = new XYChart.Data<>("Bakery", stats.getBakerySold());
-        XYChart.Data<String, Number> candyData = new XYChart.Data<>("Candy", stats.getCandySold());
-        XYChart.Data<String, Number> chipsData = new XYChart.Data<>("Chips", stats.getChipsSold());
-        XYChart.Data<String, Number> drinksData = new XYChart.Data<>("Drinks", stats.getDrinksSold());
-        XYChart.Data<String, Number> sodaData = new XYChart.Data<>("Sodas", stats.getSodaSold());
-        XYChart.Data<String, Number> waterData = new XYChart.Data<>("Water", stats.getWaterSold());
-        XYChart.Data<String, Number> juiceData = new XYChart.Data<>("Juice", stats.getJuiceSold());
-        XYChart.Data<String, Number> coffeeData = new XYChart.Data<>("Coffee", stats.getCoffeeSold());
-        XYChart.Data<String, Number> frozenData = new XYChart.Data<>("Frozen", stats.getFrozenSold());
-        XYChart.Data<String, Number> miscData = new XYChart.Data<>("Misc", stats.getMiscSold());
-
-        categorySeries.getData().add(foodData);
-        categorySeries.getData().add(bakeryData);
-        categorySeries.getData().add(candyData);
-        categorySeries.getData().add(chipsData);
-        categorySeries.getData().add(drinksData);
-        categorySeries.getData().add(sodaData);
-        categorySeries.getData().add(waterData);
-        categorySeries.getData().add(juiceData);
-        categorySeries.getData().add(coffeeData);
-        categorySeries.getData().add(frozenData);
-        categorySeries.getData().add(miscData);
-        barGraph.getData().add(categorySeries);
+        barGraph.getData().add(calculateCategoryStats(dailyStats));
     }
 
     private void setWeeklyValues(ArrayList<StatisticsTracker> weeklyStats)
     {
+        LocalDate date = weeklyStats.get(0).getDay().toLocalDate();
+        String formattedDate = simpleDateFormat.format(Date.valueOf(date));
 
+        xAxis.setLabel("Week Of " + formattedDate + " Stats");
+        barGraph.getData().add(calculateCategoryStats(weeklyStats));
+    }
+
+    private void setMonthValues(ArrayList<StatisticsTracker> monthlyStats)
+    {
+        LocalDate date = monthlyStats.get(0).getDay().toLocalDate();
+        String MONTH = date.getMonth().toString();
+        String month = MONTH.substring(0, 1).toUpperCase() + MONTH.substring(1, MONTH.length()).toLowerCase();
+
+        xAxis.setLabel("Month Of " + month + " "  + date.getYear() + " Stats");
+        barGraph.getData().add(calculateCategoryStats(monthlyStats));
     }
 
     private void setAllValues(StatisticsTracker allStats)
     {
+        ArrayList<StatisticsTracker> allTimeStats = new ArrayList<>();
+        allTimeStats.add(allStats);
+
         xAxis.setLabel("All Time Category Stats");
+        barGraph.getData().add(calculateCategoryStats(allTimeStats));
+    }
+
+    private XYChart.Series<String, Number> calculateCategoryStats(ArrayList<StatisticsTracker> stats)
+    {
+        int foodSold = 0;
+        int bakerySold = 0;
+        int candySold = 0;
+        int chipsSold = 0;
+        int drinksSold = 0;
+        int sodaSold = 0;
+        int waterSold = 0;
+        int juiceSold = 0;
+        int coffeeSold = 0;
+        int frozenSold = 0;
+        int miscSold = 0;
+
+        for(StatisticsTracker stat : stats)
+        {
+            foodSold += stat.getFoodSold();
+            bakerySold += stat.getBakerySold();
+            candySold += stat.getCandySold();
+            chipsSold += stat.getChipsSold();
+            drinksSold += stat.getDrinksSold();
+            sodaSold += stat.getSodaSold();
+            waterSold += stat.getWaterSold();
+            juiceSold += stat.getJuiceSold();
+            coffeeSold += stat.getCoffeeSold();
+            frozenSold += stat.getFrozenSold();
+            miscSold += stat.getMiscSold();
+        }
 
         XYChart.Series<String, Number> categorySeries = new XYChart.Series<>();
         categorySeries.setName("Items Sold In Each Category");
-        XYChart.Data<String, Number> foodData = new XYChart.Data<>("Food", allStats.getFoodSold());
-        XYChart.Data<String, Number> bakeryData = new XYChart.Data<>("Bakery", allStats.getBakerySold());
-        XYChart.Data<String, Number> candyData = new XYChart.Data<>("Candy", allStats.getCandySold());
-        XYChart.Data<String, Number> chipsData = new XYChart.Data<>("Chips", allStats.getChipsSold());
-        XYChart.Data<String, Number> drinksData = new XYChart.Data<>("Drinks", allStats.getDrinksSold());
-        XYChart.Data<String, Number> sodaData = new XYChart.Data<>("Sodas", allStats.getSodaSold());
-        XYChart.Data<String, Number> waterData = new XYChart.Data<>("Water", allStats.getWaterSold());
-        XYChart.Data<String, Number> juiceData = new XYChart.Data<>("Juice", allStats.getJuiceSold());
-        XYChart.Data<String, Number> coffeeData = new XYChart.Data<>("Coffee", allStats.getCoffeeSold());
-        XYChart.Data<String, Number> frozenData = new XYChart.Data<>("Frozen", allStats.getFrozenSold());
-        XYChart.Data<String, Number> miscData = new XYChart.Data<>("Misc", allStats.getMiscSold());
+        XYChart.Data<String, Number> foodData = new XYChart.Data<>("Food", foodSold);
+        XYChart.Data<String, Number> bakeryData = new XYChart.Data<>("Bakery", bakerySold);
+        XYChart.Data<String, Number> candyData = new XYChart.Data<>("Candy", candySold);
+        XYChart.Data<String, Number> chipsData = new XYChart.Data<>("Chips", chipsSold);
+        XYChart.Data<String, Number> drinksData = new XYChart.Data<>("Drinks", drinksSold);
+        XYChart.Data<String, Number> sodaData = new XYChart.Data<>("Sodas", sodaSold);
+        XYChart.Data<String, Number> waterData = new XYChart.Data<>("Water", waterSold);
+        XYChart.Data<String, Number> juiceData = new XYChart.Data<>("Juice", juiceSold);
+        XYChart.Data<String, Number> coffeeData = new XYChart.Data<>("Coffee", coffeeSold);
+        XYChart.Data<String, Number> frozenData = new XYChart.Data<>("Frozen", frozenSold);
+        XYChart.Data<String, Number> miscData = new XYChart.Data<>("Misc", miscSold);
 
         categorySeries.getData().add(foodData);
         categorySeries.getData().add(bakeryData);
@@ -170,7 +209,47 @@ public class CategoryGraph
         categorySeries.getData().add(coffeeData);
         categorySeries.getData().add(frozenData);
         categorySeries.getData().add(miscData);
-        barGraph.getData().add(categorySeries);
+
+        //TODO: Calculate Max Value
+        //setUpperBounds();
+
+        return categorySeries;
+    }
+
+    private void setUpperBounds(int maxValue)
+    {
+        if(maxValue < 150 && maxValue > 125)
+        {
+            yAxis.setUpperBound(150);
+        }
+        else if(maxValue < 125 && maxValue > 100)
+        {
+            yAxis.setUpperBound(125);
+        }
+        else if(maxValue < 100 && maxValue > 75)
+        {
+            yAxis.setUpperBound(100);
+        }
+        else if(maxValue < 75 && maxValue > 50)
+        {
+            yAxis.setUpperBound(75);
+        }
+        else if(maxValue < 50 && maxValue > 25)
+        {
+            yAxis.setUpperBound(50);
+        }
+        else if(maxValue < 25 && maxValue > 15)
+        {
+            yAxis.setUpperBound(25);
+        }
+        else if(maxValue < 15)
+        {
+            yAxis.setUpperBound(15);
+        }
+        else
+        {
+            yAxis.setUpperBound(maxValue + 15);
+        }
     }
 
     public BarChart<String, Number> getGraph()

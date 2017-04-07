@@ -127,8 +127,17 @@ public class StatisticTypeDialog extends Dialog<StatisticSelection>
         }
         else if(interval.equals(Interval.MONTHLY))
         {
+            LocalDate dateToBeSelected = DailyStatsTable.getDateOfFirstStat().toLocalDate();
+            if(dateToBeSelected.getDayOfMonth() != 1)
+            {
+                while(dateToBeSelected.getDayOfMonth() != 1)
+                {
+                    dateToBeSelected = dateToBeSelected.minusDays(1);
+                }
+            }
+
             chooseStartLabel.setText("Select Month");
-            startMonthPicker = new DatePicker(LocalDate.now());
+            startMonthPicker = new DatePicker(dateToBeSelected);
             startMonthPicker.setDayCellFactory(new MonthlyCellFactory());
             startMonthPicker.setMaxWidth(110);
 
