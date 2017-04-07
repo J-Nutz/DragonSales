@@ -16,6 +16,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 import static org.jooq.impl.DSL.row;
 
@@ -209,6 +210,25 @@ public class ProductsTable
                 }
 
                 return productsList;
+            }
+        });
+    }
+
+    public static ArrayList<String> getProductNames()
+    {
+        return DatabaseExecutor.submitObject(() ->
+        {
+            try(Connection connection = DatabaseExecutor.getConnection();
+             DSLContext database = H2DSL.using(connection))
+            {
+                Result<Record1<String>> fetchedNames =
+                     database.select(products.NAME)
+                             .from(products)
+                             .fetch();
+
+                return fetchedNames.stream()
+                                   .map(Record1<String>::value1)
+                                   .collect(Collectors.toCollection(ArrayList::new));
             }
         });
     }

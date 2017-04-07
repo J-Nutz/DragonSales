@@ -99,17 +99,8 @@ public class IncomeVsProfitGraph
 
                 for(int i = 1; i < numOfDays; i++)
                 {
-                    /*if(startDate.getDayOfWeek().equals(DayOfWeek.SATURDAY) ||
-                       startDate.getDayOfWeek().equals(DayOfWeek.SUNDAY))
-                    {
-                        startDate = startDate.plusDays(1);
-                        //Skip
-                    }
-                    else
-                    {*/
-                        monthlyStats.add(DailyStatsTable.getDayStats(Date.valueOf(startDate)));
-                        startDate = startDate.plusDays(1);
-                    //}
+                    monthlyStats.add(DailyStatsTable.getDayStats(Date.valueOf(startDate)));
+                    startDate = startDate.plusDays(1);
                 }
 
                 /*while(startDate.getDayOfMonth() != numOfDays)
@@ -217,7 +208,6 @@ public class IncomeVsProfitGraph
 
         String MONTH = date.getMonth().toString();
         String month = MONTH.substring(0, 1).toUpperCase() + MONTH.substring(1, MONTH.length()).toLowerCase();
-        //xAxis.setLabel("Month Of " + month + " "  + date.getYear() + " Stats");
         barGraph.setTitle("Month Of " + month + " "  + date.getYear() + " Income Stats");
         xAxis.setLabel("Day Of Month");
 
@@ -288,37 +278,39 @@ public class IncomeVsProfitGraph
 
     private void setUpperBounds(int maxValue)
     {
+        //yAxis.setUpperBound(maxValue + 10);
+
         if(maxValue < 150 && maxValue > 125)
         {
-            yAxis.setUpperBound(150);
+            yAxis.setUpperBound(155);
         }
         else if(maxValue < 125 && maxValue > 100)
         {
-            yAxis.setUpperBound(125);
+            yAxis.setUpperBound(130);
         }
         else if(maxValue < 100 && maxValue > 75)
         {
-            yAxis.setUpperBound(100);
+            yAxis.setUpperBound(105);
         }
         else if(maxValue < 75 && maxValue > 50)
         {
-            yAxis.setUpperBound(75);
+            yAxis.setUpperBound(80);
         }
         else if(maxValue < 50 && maxValue > 25)
         {
-            yAxis.setUpperBound(50);
+            yAxis.setUpperBound(55);
         }
         else if(maxValue < 25 && maxValue > 15)
         {
-            yAxis.setUpperBound(25);
+            yAxis.setUpperBound(30);
         }
         else if(maxValue < 15)
         {
-            yAxis.setUpperBound(15);
+            yAxis.setUpperBound(20);
         }
         else
         {
-            yAxis.setUpperBound(maxValue + 15);
+            yAxis.setUpperBound(maxValue + 5);
         }
     }
 

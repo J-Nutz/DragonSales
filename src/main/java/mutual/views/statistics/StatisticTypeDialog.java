@@ -5,11 +5,14 @@ package mutual.views.statistics;
  */
 
 import database.tables.DailyStatsTable;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import mutual.types.Interval;
 import mutual.types.StatisticSelection;
 import worker.DailyCellFactory;
@@ -25,14 +28,14 @@ public class StatisticTypeDialog extends Dialog<StatisticSelection>
     private Interval interval;
     private HBox container;
 
-    private VBox leftContainer;
+    private GridPane leftContainer;
     private Label chooseStartLabel;
     private DatePicker startDatePicker;
     private DatePicker startWeekPicker;
     private DatePicker startMonthPicker;
     private ComboBox<Integer> yearComboBox;
 
-    private VBox rightContainer;
+    private GridPane rightContainer;
     private Label statTypeLabel;
     private ToggleButton productsBtn;
     private ToggleButton salesBtn;
@@ -45,10 +48,10 @@ public class StatisticTypeDialog extends Dialog<StatisticSelection>
         this.interval = interval;
 
         container = new HBox();
-        leftContainer = new VBox();
+        leftContainer = new GridPane();
         chooseStartLabel = new Label();
 
-        rightContainer = new VBox();
+        rightContainer = new GridPane();
         statTypeLabel = new Label("Choose Type Of Stats");
         productsBtn = new ToggleButton("Products");
         salesBtn = new ToggleButton("Sales");
@@ -57,7 +60,7 @@ public class StatisticTypeDialog extends Dialog<StatisticSelection>
         selectBtn = new ButtonType("Select", ButtonBar.ButtonData.OK_DONE);
 
         initComponents();
-        addComponents();
+        //addRightComponents();
     }
 
     private void initComponents()
@@ -88,7 +91,9 @@ public class StatisticTypeDialog extends Dialog<StatisticSelection>
                 }
                 else
                 {
-                    return null;
+                    return new StatisticSelection(Interval.ALL,
+                                                  Date.valueOf(LocalDate.now()),
+                                                  statTypeToGet);
                 }
             }
             else
@@ -100,15 +105,19 @@ public class StatisticTypeDialog extends Dialog<StatisticSelection>
 
         if(interval.equals(Interval.DAILY))
         {
+            setTitle("Daily Selector");
             chooseStartLabel.setText("Select Day");
             startDatePicker = new DatePicker(LocalDate.now());
             startDatePicker.setDayCellFactory(new DailyCellFactory());
             startDatePicker.setMaxWidth(110);
 
-            leftContainer.getChildren().addAll(chooseStartLabel, startDatePicker);
+            addLeftComponents(startDatePicker);
+            addRightComponents();
+            addToDialog();
         }
         else if(interval.equals(Interval.WEEKLY))
         {
+            setTitle("Weekly Selector");
             LocalDate dateToBeSelected = DailyStatsTable.getDateOfFirstStat().toLocalDate();
             if(dateToBeSelected.getDayOfWeek() != DayOfWeek.MONDAY)
             {
@@ -123,10 +132,13 @@ public class StatisticTypeDialog extends Dialog<StatisticSelection>
             startWeekPicker.setDayCellFactory(new WeeklyCellFactory());
             startWeekPicker.setMaxWidth(110);
 
-            leftContainer.getChildren().addAll(chooseStartLabel, startWeekPicker);
+            addLeftComponents(startWeekPicker);
+            addRightComponents();
+            addToDialog();
         }
         else if(interval.equals(Interval.MONTHLY))
         {
+            setTitle("Monthly Selector");
             LocalDate dateToBeSelected = DailyStatsTable.getDateOfFirstStat().toLocalDate();
             if(dateToBeSelected.getDayOfMonth() != 1)
             {
@@ -141,36 +153,73 @@ public class StatisticTypeDialog extends Dialog<StatisticSelection>
             startMonthPicker.setDayCellFactory(new MonthlyCellFactory());
             startMonthPicker.setMaxWidth(110);
 
-            leftContainer.getChildren().addAll(chooseStartLabel, startMonthPicker);
+            addLeftComponents(startMonthPicker);
+            addRightComponents();
+            addToDialog();
         }
         else if(interval.equals(Interval.YEARLY))
         {
+            setTitle("Year Selector");
             chooseStartLabel.setText("Select Year");
             yearComboBox = new ComboBox<>();
 
-            leftContainer.getChildren().addAll(chooseStartLabel, yearComboBox);
+            addLeftComponents(yearComboBox);
+            addRightComponents();
+            addToDialog();
+        }
+        else if(interval.equals(Interval.ALL))
+        {
+            container.getChildren().clear();
+            addRightComponents();
+            addToDialog();
         }
 
         container.setAlignment(Pos.CENTER);
-        container.setSpacing(5);
+        container.setSpacing(10);
         leftContainer.setAlignment(Pos.CENTER);
-        leftContainer.setSpacing(5);
+        leftContainer.setPadding(new Insets(5));
+        leftContainer.setVgap(5);
+        leftContainer.setHgap(5);
+
         rightContainer.setAlignment(Pos.CENTER);
-        rightContainer.setSpacing(5);
+        rightContainer.setPadding(new Insets(5));
+        rightContainer.setVgap(5);
+        rightContainer.setHgap(5);
 
         productsBtn.setToggleGroup(toggleGroup);
+        productsBtn.setMinWidth(75);
         setSelfUntoggleable(productsBtn);
         salesBtn.setToggleGroup(toggleGroup);
         salesBtn.setSelected(true);
+        salesBtn.setMinWidth(75);
         setSelfUntoggleable(salesBtn);
     }
 
-    private void addComponents()
+    private void addLeftComponents(Node nodeToAdd)
     {
-        rightContainer.getChildren().addAll(statTypeLabel, productsBtn, salesBtn);
+        GridPane.setHalignment(chooseStartLabel, HPos.CENTER);
+        leftContainer.add(chooseStartLabel, 0, 0);
+        leftContainer.add(nodeToAdd, 0, 1);
+        Button invisibleButton = new Button();
+        invisibleButton.setOpacity(0);
+        leftContainer.add(invisibleButton, 0, 2);
 
-        container.getChildren().addAll(leftContainer, rightContainer);
+        container.getChildren().add(leftContainer);
+    }
 
+    private void addRightComponents()
+    {
+        rightContainer.add(statTypeLabel, 0, 0);
+        GridPane.setHalignment(productsBtn, HPos.CENTER);
+        rightContainer.add(productsBtn, 0, 1);
+        GridPane.setHalignment(salesBtn, HPos.CENTER);
+        rightContainer.add(salesBtn, 0, 2);
+
+        container.getChildren().add(rightContainer);
+    }
+
+    private void addToDialog()
+    {
         getDialogPane().setContent(container);
         getDialogPane().getButtonTypes().add(0, selectBtn);
         getDialogPane().getButtonTypes().add(1, ButtonType.CANCEL);

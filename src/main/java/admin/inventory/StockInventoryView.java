@@ -105,7 +105,6 @@ public class StockInventoryView extends GridPane
         salePriceSpinner.getValueFactory().setValue(zero);
         salePriceSpinner.setMaxWidth(105);
 
-        initialQuantitySpinner.setEditable(true);
         initialQuantitySpinner.setMaxWidth(105);
 
         expirationDatePicker.setMaxWidth(105);
@@ -120,6 +119,8 @@ public class StockInventoryView extends GridPane
         {
             if(validFields())
             {
+                System.out.println("Valid Fields");
+
                 Product product = constructProduct();
 
                 ProductsTable.addProduct(product); //TODO: Check if product exists
@@ -129,6 +130,10 @@ public class StockInventoryView extends GridPane
                 inventoryView.setProducts(ProductsTable.getProducts());
 
                 clearFields();
+            }
+            else
+            {
+                System.out.println("Fields Not Valid");
             }
         });
 
@@ -202,10 +207,18 @@ public class StockInventoryView extends GridPane
     private boolean validFields()
     {
         boolean validName = !(nameTextField.getText().isEmpty());
-        boolean validPrice = (salePriceSpinner.getValue().compareTo(zero) == 1);
-        boolean validQuantity = (initialQuantitySpinner.getValue() > 0);
+        System.out.println("Valid Name: " + validName);
 
-        return validName && validPrice && validQuantity;
+        boolean validPurchasePrice = (purchasePriceSpinner.getValue().compareTo(zero) == 1);
+        System.out.println("Valid Purchase Price: " + validPurchasePrice);
+
+        boolean validSalePrice = (salePriceSpinner.getValue().compareTo(zero) == 1);
+        System.out.println("Valid Sale Price: " + validSalePrice);
+
+        boolean validQuantity = (initialQuantitySpinner.getValue() > 0);
+        System.out.println("Valid Quantity: " + validQuantity);
+
+        return validName && validPurchasePrice && validSalePrice && validQuantity;
     }
 
     private Product constructProduct()

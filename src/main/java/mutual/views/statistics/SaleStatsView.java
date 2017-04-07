@@ -5,6 +5,8 @@ package mutual.views.statistics;
  */
 
 import database.tables.DailyStatsTable;
+import database.tables.ProductsTable;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -13,13 +15,14 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import mutual.types.Interval;
 import mutual.types.StatisticSelection;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Optional;
 
 public class SaleStatsView extends BorderPane
@@ -40,17 +43,24 @@ public class SaleStatsView extends BorderPane
     private IncomeVsProfitGraph incomeVsProfitGraph;
     private CategoryGraph categoryGraph;
 
-    private VBox genStatsCenterContainer;
-    private GridPane genStatsContainer;
+    private HBox genStatsCenterContainer;
+    private GridPane leftGenStatsContainer;
     private Label incomeLabel;
     private Label incomeAmountLabel;
     private Label profitLabel;
     private Label profitAmountLabel;
-
     private Label itemsSoldLabel;
     private Label itemSoldAmountLabel;
     private Label salesLabel;
     private Label salesAmountLabel;
+
+    private GridPane rightGenStatsContainer;
+    private Label bestSellingLabel;
+    private Label bestSellingValueLabel;
+    private Label bestSellingSuggestionLabel;
+    private Label worstSellingLabel;
+    private Label worstSellingValueLabel;
+    private Label worstSellingSuggestionLabel;
 
     public SaleStatsView()
     {
@@ -69,8 +79,8 @@ public class SaleStatsView extends BorderPane
         dayStats = DailyStatsTable.getDayStats(Date.valueOf(LocalDate.now()));
         genStatsFont = new Font(16);
 
-        genStatsCenterContainer = new VBox();
-        genStatsContainer = new GridPane();
+        genStatsCenterContainer = new HBox();
+        leftGenStatsContainer = new GridPane();
         incomeLabel = new Label("Total Income: ");
         incomeAmountLabel = new Label("$" + dayStats.getTotalIncome());
         profitLabel = new Label("Total Profit: ");
@@ -79,6 +89,14 @@ public class SaleStatsView extends BorderPane
         itemSoldAmountLabel = new Label("" + dayStats.getNumOfItemsSold());
         salesLabel = new Label("Total Sales: ");
         salesAmountLabel = new Label("" + dayStats.getNumOfSales());
+
+        rightGenStatsContainer = new GridPane();
+        bestSellingLabel = new Label("Best Selling Product: ");
+        bestSellingValueLabel = new Label();
+        bestSellingSuggestionLabel = new Label("Suggestion: Increase Price");
+        worstSellingLabel = new Label("Worst Selling Product: ");
+        worstSellingValueLabel = new Label();
+        worstSellingSuggestionLabel = new Label("Suggestion: Lower Price Or Add Discount");
 
         initComponents();
         addComponents();
@@ -119,8 +137,9 @@ public class SaleStatsView extends BorderPane
 
         genStatsCenterContainer.setAlignment(Pos.CENTER);
         genStatsCenterContainer.setPadding(new Insets(15));
+        genStatsCenterContainer.setSpacing(15);
 
-        genStatsContainer.setAlignment(Pos.CENTER);
+        leftGenStatsContainer.setAlignment(Pos.CENTER);
 
         incomeLabel.setFont(genStatsFont);
         incomeAmountLabel.setFont(genStatsFont);
@@ -133,6 +152,14 @@ public class SaleStatsView extends BorderPane
 
         salesLabel.setFont(genStatsFont);
         salesAmountLabel.setFont(genStatsFont);
+
+        bestSellingLabel.setFont(genStatsFont);
+        bestSellingValueLabel.setFont(genStatsFont);
+        bestSellingValueLabel.setText(getBestSellingProduct());
+
+        worstSellingLabel.setFont(genStatsFont);
+        worstSellingValueLabel.setFont(genStatsFont);
+        worstSellingValueLabel.setText(getWorstSellingProduct());
     }
 
     private void addComponents()
@@ -143,18 +170,32 @@ public class SaleStatsView extends BorderPane
         graphContainer.setCenter(incomeVsProfitGraph.getGraph());
         setCenter(graphContainer);
 
-        genStatsContainer.add(incomeLabel, 0, 0);
-        genStatsContainer.add(incomeAmountLabel, 1, 0);
-        genStatsContainer.add(profitLabel, 0, 1);
-        genStatsContainer.add(profitAmountLabel, 1, 1);
+        leftGenStatsContainer.add(incomeLabel, 0, 0);
+        leftGenStatsContainer.add(incomeAmountLabel, 1, 0);
+        leftGenStatsContainer.add(profitLabel, 0, 1);
+        leftGenStatsContainer.add(profitAmountLabel, 1, 1);
 
-        genStatsContainer.add(itemsSoldLabel, 0, 2);
-        genStatsContainer.add(itemSoldAmountLabel, 1, 2);
-        genStatsContainer.add(salesLabel, 0, 3);
-        genStatsContainer.add(salesAmountLabel, 1, 3);
+        leftGenStatsContainer.add(itemsSoldLabel, 0, 2);
+        leftGenStatsContainer.add(itemSoldAmountLabel, 1, 2);
+        leftGenStatsContainer.add(salesLabel, 0, 3);
+        leftGenStatsContainer.add(salesAmountLabel, 1, 3);
+
+        rightGenStatsContainer.add(bestSellingLabel, 0, 0);
+        rightGenStatsContainer.add(bestSellingValueLabel, 1, 0);
+        GridPane.setColumnSpan(bestSellingSuggestionLabel, 2);
+        GridPane.setHalignment(bestSellingSuggestionLabel, HPos.CENTER);
+        rightGenStatsContainer.setVgap(5);
+        rightGenStatsContainer.add(bestSellingSuggestionLabel, 0, 1);
+        rightGenStatsContainer.add(worstSellingLabel, 0, 2);
+        rightGenStatsContainer.add(worstSellingValueLabel, 1, 2);
+        GridPane.setColumnSpan(worstSellingSuggestionLabel, 2);
+        GridPane.setHalignment(worstSellingSuggestionLabel, HPos.CENTER);
+        rightGenStatsContainer.add(worstSellingSuggestionLabel, 0, 3);
 
         genStatsCenterContainer.getChildren().add(new Separator(Orientation.HORIZONTAL));
-        genStatsCenterContainer.getChildren().add(genStatsContainer);
+        genStatsCenterContainer.getChildren().add(leftGenStatsContainer);
+        genStatsCenterContainer.getChildren().add(new Separator(Orientation.VERTICAL));
+        genStatsCenterContainer.getChildren().add(rightGenStatsContainer);
         genStatsCenterContainer.getChildren().add(new Separator(Orientation.HORIZONTAL));
         setBottom(genStatsCenterContainer);
     }
@@ -167,16 +208,16 @@ public class SaleStatsView extends BorderPane
             {
                 mouseEvent.consume();
 
-                if(!button.equals(allBtn))
-                {
+                /*if(!button.equals(allBtn))
+                {*/
                     launchDialog(button);
-                }
+                /*}
                 else
                 {
                     incomeVsProfitGraph.setData(Interval.ALL, LocalDate.now());
                     setCenter(incomeVsProfitGraph.getGraph());
                     setGeneralStats();
-                }
+                }*/
             }
         });
     }
@@ -187,8 +228,8 @@ public class SaleStatsView extends BorderPane
 
         button.setOnAction(event ->
         {
-            if(!event.getSource().equals(allBtn))
-            {
+            /*if(!event.getSource().equals(allBtn))
+            {*/
                 if(!launchDialog(button))
                 {
                     event.consume();
@@ -215,13 +256,13 @@ public class SaleStatsView extends BorderPane
                         allBtn.requestFocus();
                     }
                 }
-            }
-            else
+            //}
+            /*else
             {
                 incomeVsProfitGraph.setData(Interval.ALL, LocalDate.now());
                 setCenter(incomeVsProfitGraph.getGraph());
                 setGeneralStats();
-            }
+            }*/
         });
     }
 
@@ -245,6 +286,10 @@ public class SaleStatsView extends BorderPane
         {
             interval = Interval.YEARLY;
         }
+        else if(button.equals(allBtn))
+        {
+            interval = Interval.ALL;
+        }
         else
         {
             interval = Interval.DAILY;
@@ -263,8 +308,7 @@ public class SaleStatsView extends BorderPane
 
             if(selection.getStatisticsType().equals("Sales"))
             {
-                incomeVsProfitGraph.setData(selection.getInterval(),
-                                            selection.getStartDate().toLocalDate());
+                incomeVsProfitGraph.setData(selection.getInterval(), selection.getStartDate().toLocalDate());
 
                 setCenter(incomeVsProfitGraph.getGraph());
                 setGeneralStats();
@@ -284,6 +328,44 @@ public class SaleStatsView extends BorderPane
         {
             return false;
         }
+    }
+
+    private String getBestSellingProduct()
+    {
+        HashMap<String, Integer> productsAndAmounts = ProductsTable.getProductsAndAmountsSold();
+        ArrayList<String> productNames = ProductsTable.getProductNames();
+        int maxValue = productsAndAmounts.get(productNames.get(0));
+        String productName = productNames.get(0);
+
+        for(int i = 1; i < productNames.size(); i++)
+        {
+            if(maxValue < productsAndAmounts.get(productNames.get(i)))
+            {
+                maxValue = productsAndAmounts.get(productNames.get(i));
+                productName = productNames.get(i);
+            }
+        }
+
+        return productName.trim() + " With " +  maxValue + " Sales";
+    }
+
+    private String getWorstSellingProduct()
+    {
+        HashMap<String, Integer> productsAndAmounts = ProductsTable.getProductsAndAmountsSold();
+        ArrayList<String> productNames = ProductsTable.getProductNames();
+        int minValue = productsAndAmounts.get(productNames.get(0));
+        String productName = productNames.get(0);
+
+        for(int i = 1; i < productNames.size(); i++)
+        {
+            if(minValue > productsAndAmounts.get(productNames.get(i)))
+            {
+                minValue = productsAndAmounts.get(productNames.get(i));
+                productName = productNames.get(i);
+            }
+        }
+
+        return productName.trim() + " With " +  minValue + " Sales";
     }
 
     private void setGeneralStats()

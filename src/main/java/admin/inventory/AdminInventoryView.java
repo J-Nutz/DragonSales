@@ -63,7 +63,7 @@ public class AdminInventoryView extends BorderPane
                 final int finalColumn = column;
                 final int finalRow = row;
 
-                if(column < 3)
+                if(column < 5)
                 {
                     Platform.runLater(() -> productContainer.add(new AdminProductView(product), finalColumn, finalRow));
                     column++;

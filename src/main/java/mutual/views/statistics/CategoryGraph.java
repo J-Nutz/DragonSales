@@ -38,7 +38,7 @@ public class CategoryGraph
 
     private void initComponents()
     {
-        xAxis.setLabel("Interval");
+        xAxis.setLabel("Category");
         yAxis.setLabel("Amount");
 
         barGraph.setTitle("Number Of Products Sold In Each Category");
@@ -123,7 +123,7 @@ public class CategoryGraph
         ArrayList<StatisticsTracker> dailyStats = new ArrayList<>();
         dailyStats.add(stats);
 
-        xAxis.setLabel(day + " Category Stats");
+        barGraph.setTitle(day + " Category Stats");
         barGraph.getData().add(calculateCategoryStats(dailyStats));
     }
 
@@ -132,7 +132,7 @@ public class CategoryGraph
         LocalDate date = weeklyStats.get(0).getDay().toLocalDate();
         String formattedDate = simpleDateFormat.format(Date.valueOf(date));
 
-        xAxis.setLabel("Week Of " + formattedDate + " Stats");
+        barGraph.setTitle("Week Of " + formattedDate + " Stats");
         barGraph.getData().add(calculateCategoryStats(weeklyStats));
     }
 
@@ -142,7 +142,7 @@ public class CategoryGraph
         String MONTH = date.getMonth().toString();
         String month = MONTH.substring(0, 1).toUpperCase() + MONTH.substring(1, MONTH.length()).toLowerCase();
 
-        xAxis.setLabel("Month Of " + month + " "  + date.getYear() + " Stats");
+        barGraph.setTitle("Month Of " + month + " "  + date.getYear() + " Stats");
         barGraph.getData().add(calculateCategoryStats(monthlyStats));
     }
 
@@ -151,7 +151,7 @@ public class CategoryGraph
         ArrayList<StatisticsTracker> allTimeStats = new ArrayList<>();
         allTimeStats.add(allStats);
 
-        xAxis.setLabel("All Time Category Stats");
+        barGraph.setTitle("All Time Category Stats");
         barGraph.getData().add(calculateCategoryStats(allTimeStats));
     }
 

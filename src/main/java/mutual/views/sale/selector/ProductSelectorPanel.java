@@ -51,14 +51,14 @@ public class ProductSelectorPanel extends BorderPane
         {
             for(Product product : products)
             {
-                if(column < 3)
+                if(column < 5)
                 {
                     productsContainer.add(new ProductView(product),
                                           column,
                                           row);
                     column++;
                 }
-                else if(column == 3)
+                else if(column == 5)
                 {
                     column = 0;
                     row++;
