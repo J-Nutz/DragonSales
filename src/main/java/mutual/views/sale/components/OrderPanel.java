@@ -81,11 +81,27 @@ public class OrderPanel extends BorderPane
         }
         else
         {
-            //orderTable.getColumns().get(1).setCellValueFactory(new PropertyValueFactory<>("productName"));
-            orderTable.getColumns().get(2).setCellValueFactory(new PropertyValueFactory<>("price"));
+            orderTable.getColumns().get(2).setCellValueFactory(new PropertyValueFactory<>("salePrice"));
         }
 
-        orderTable.getItems().add(orderFragment);
+        boolean containsOrder = false;
+
+        for(OrderFragment orderFragment1 : orderTable.getItems())
+        {
+            if(orderFragment1.getProductName()
+                             .equals(orderFragment.getProductName()))
+            {
+                orderFragment1.setQuantity(orderFragment1.getQuantity() + orderFragment.getQuantity());
+                orderTable.refresh();
+                containsOrder = true;
+                break;
+            }
+        }
+
+        if(!containsOrder)
+        {
+            orderTable.getItems().add(orderFragment);
+        }
     }
 
     public static void cancelOrder()
