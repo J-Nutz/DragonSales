@@ -24,6 +24,7 @@ public class SaleToolBar extends HBox
     private TextField productSearchField;
     private ComboBox<String> categoryComboBox;
     private Button searchButton;
+    private Button clearButton;
 
     public SaleToolBar()
     {
@@ -37,6 +38,7 @@ public class SaleToolBar extends HBox
         productSearchField = new TextField();
         categoryComboBox = new ComboBox<>(categories);
         searchButton = new Button("Search");
+        clearButton = new Button("Clear");
 
         initComponents();
         addComponents();
@@ -83,10 +85,18 @@ public class SaleToolBar extends HBox
             ProductSelectorPanel parent = (ProductSelectorPanel) getParent();
             parent.setProducts(searchResults);
         });
+
+        clearButton.setOnAction(event ->
+        {
+            productSearchField.clear();
+
+            ProductSelectorPanel parent = (ProductSelectorPanel) getParent();
+            parent.setProducts(ProductsTable.getProducts());
+        });
     }
 
     private void addComponents()
     {
-        getChildren().addAll(productSearchField, categoryComboBox, searchButton);
+        getChildren().addAll(productSearchField, categoryComboBox, searchButton, clearButton);
     }
 }

@@ -10,10 +10,6 @@ public class Main extends Application
 {
     /**
      * TODO:
-     *       * Employees View
-     *           Top: Picture, name,
-     *           Middle/Bottom: Statistics
-     *
      *       * Statistics
      *           General tracking of sales
      *           Top: Selector/Search Bar
@@ -22,10 +18,6 @@ public class Main extends Application
      *       * Settings
      *           Theme
      *           Tax ???
-     *
-     *       * Put Item On Sale View
-     *           Re-use ProductSelector
-     *           Selector for length of sale/days of week
      *
      *       * Error Messages
      *           No internet for email
@@ -36,16 +28,15 @@ public class Main extends Application
      *        * Look into Proguard or something similar
      *           Removes all unused code in jars
      *
-     *        * Look more into jOOQ
-     *           Determine if better than vanilla JDBC with SQL Strings
-     *           Deemed Useful
-     *
-     *        * Look more into Google Guava
-     *            Deemed Unnecessary
-     *
      *        * Schedule Creator for Admins To Create Schedule Then Employees View
      *
-     *        * Remove everything on delete!! - If(employee.fire()) Delete User row, Employee row, Employee image
+     *        * Remove everything on delete!! - If(employee.fire()) Delete User row, Employee row, Employee image, Schedule
+     *
+     *        * Update toPurchase list on same item add
+     *
+     *        * Clear button on search bar
+     *
+     *        * Make Product in InventoryView Look better
      */
 
     @Override
@@ -75,5 +66,19 @@ public class Main extends Application
         }
 
         launch(args);
+
+        Employee employee = new Employee();
+        employee.setId(1234);
+        employee.setFullName("Jonah Stieglitz");
+
+        String employeeInfo = "Full Name: " + employee.getFullName() + " ID: " + employee.getId();
+        System.out.println(employeeInfo);
+
+        Employee2 employee2 = new Employee2();
+        employee2.id = 4321;
+        employee2.fullName = "Jonah Stieglitz";
+
+        String employee2Info = "Full Name: " + employee2.fullName + " ID: " + employee2.id;
+        System.out.println(employee2Info);
     }
 }

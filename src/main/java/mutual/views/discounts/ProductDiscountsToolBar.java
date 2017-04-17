@@ -4,12 +4,12 @@ package mutual.views.discounts;
  * Created by Jonah on 2/7/2017.
  */
 
+import database.tables.DiscountsTable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -26,8 +26,9 @@ public class ProductDiscountsToolBar extends BorderPane
     private HBox container;
 
     private TextField productSearchField;
-    private ComboBox<String> categoryComboBox;
+    //private ComboBox<String> categoryComboBox;
     private Button searchButton;
+    private Button clearButton;
 
     private Button newDiscountBtn;
 
@@ -43,8 +44,9 @@ public class ProductDiscountsToolBar extends BorderPane
         container = new HBox(15);
 
         productSearchField = new TextField();
-        categoryComboBox = new ComboBox<>(categories);
+        //categoryComboBox = new ComboBox<>(categories);
         searchButton = new Button("Search");
+        clearButton = new Button("Clear");
 
         newDiscountBtn = new Button("New Discount");
 
@@ -62,34 +64,30 @@ public class ProductDiscountsToolBar extends BorderPane
 
         productSearchField.setPromptText("Search...");
 
-        categoryComboBox.getSelectionModel().selectFirst();
+        //categoryComboBox.getSelectionModel().selectFirst();
 
         searchButton.setOnAction(event ->
         {
             String search = productSearchField.getText();
-            String category = categoryComboBox.getSelectionModel().getSelectedItem();
+            //String category = categoryComboBox.getSelectionModel().getSelectedItem();
 
             ArrayList<Discount> searchResults = new ArrayList<>();
 
-            if(!search.isEmpty() && category.equalsIgnoreCase("all"))
+            if(!search.isEmpty())
             {
-                //searchResults = ProductsTable.getProductsLike(search);
-                //TODO Change To SalesTable When Implemented
+                searchResults = DiscountsTable.getDiscountsLike(search);
             }
-            else if(!search.isEmpty() && !category.equalsIgnoreCase("all"))
+           /* else if(!search.isEmpty() && !category.equalsIgnoreCase("all"))
             {
-                //searchResults = ProductsTable.getProductsLikeAndInCategory(search, category);
-                //TODO Change To SalesTable When Implemented
-            }
-            else if(search.isEmpty() && category.equalsIgnoreCase("all"))
+                searchResults = DiscountsTable.getDiscountsLikeAndInCategory(search, category);
+            }*/
+            /*else if(search.isEmpty() && category.equalsIgnoreCase("all"))
             {
-                //searchResults = ProductsTable.getProducts();
-                //TODO Change To SalesTable When Implemented
-            }
-            else if(search.isEmpty() && !category.equalsIgnoreCase("all"))
+                searchResults = DiscountsTable.getDiscounts();
+            }*/
+            else if(search.isEmpty())
             {
-                //searchResults = ProductsTable.getProductsInCategory(category);
-                //TODO Change To SalesTable When Implemented
+                searchResults = DiscountsTable.getDiscounts();
             }
             else
             {
@@ -100,12 +98,20 @@ public class ProductDiscountsToolBar extends BorderPane
             parent.setProducts(searchResults);
         });
 
+        clearButton.setOnAction(event1 ->
+        {
+            productSearchField.clear();
+
+            ProductDiscountsView parent = (ProductDiscountsView) getParent();
+            parent.setProducts(DiscountsTable.getDiscounts());
+        });
+
         newDiscountBtn.setOnAction(event -> switchView(this, FullAccess.PRODUCT_DISCOUNT_SELECTOR));
     }
 
     private void addComponents()
     {
-        container.getChildren().addAll(productSearchField, categoryComboBox, searchButton);
+        container.getChildren().addAll(productSearchField, searchButton, clearButton);
 
         setCenter(container);
         setRight(newDiscountBtn);

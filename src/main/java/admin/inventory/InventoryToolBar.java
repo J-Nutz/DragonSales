@@ -25,6 +25,7 @@ public class InventoryToolBar extends BorderPane
     private TextField productSearchField;
     private ComboBox<String> categoryComboBox;
     private Button searchButton;
+    private Button clearButton;
 
     private HBox rightContainer;
     private Button newProductButton;
@@ -42,6 +43,7 @@ public class InventoryToolBar extends BorderPane
         productSearchField = new TextField();
         categoryComboBox = new ComboBox<>(categories);
         searchButton = new Button("Search");
+        clearButton = new Button("Clear");
 
         rightContainer = new HBox();
         newProductButton = new Button("New Product");
@@ -97,6 +99,14 @@ public class InventoryToolBar extends BorderPane
             parent.setProducts(searchResults);
         });
 
+        clearButton.setOnAction(event1 ->
+        {
+            productSearchField.clear();
+
+            AdminInventoryView parent = (AdminInventoryView) getParent();
+            parent.setProducts(ProductsTable.getProducts());
+        });
+
         searchContainer.setAlignment(Pos.CENTER_LEFT);
 
         rightContainer.setAlignment(Pos.CENTER);
@@ -110,7 +120,7 @@ public class InventoryToolBar extends BorderPane
 
     private void addComponents()
     {
-        searchContainer.getChildren().addAll(productSearchField, categoryComboBox, searchButton);
+        searchContainer.getChildren().addAll(productSearchField, categoryComboBox, searchButton, clearButton);
 
         rightContainer.getChildren().add(newProductButton);
 
