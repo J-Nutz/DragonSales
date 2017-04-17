@@ -232,4 +232,42 @@ public class DiscountsTable
             }
         });
     }
+
+    public static ArrayList<Discount> getDiscountsLike(String like)
+    {
+        return DatabaseExecutor.submitObject(() ->
+        {
+            try(Connection connection = DatabaseExecutor.getConnection();
+             DSLContext database = H2DSL.using(connection))
+            {
+                Result<Record> fetchedDiscounts =
+                     database.select()
+                             .from(discounts)
+                             .where(discounts.PRODUCT.like(like + "%"))
+                             .fetch();
+
+                ArrayList<Discount> discountsList = new ArrayList<>();
+
+                for(Record r : fetchedDiscounts)
+                {
+                    Discount discount = new Discount();
+
+                    //discount.setProduct(ProductsHeld.getProduct(r.get(discounts.PRODUCT)));
+                    discount.setProduct(ProductsTable.getProduct(r.get(discounts.PRODUCT)));
+                    discount.setOldPrice(r.get(discounts.OLD_PRICE));
+                    discount.setDiscountPrice(r.get(discounts.DISCOUNT_PRICE));
+                    discount.setDayOfDiscount(DayOfWeek.MONDAY, r.get(discounts.MONDAY));
+                    discount.setDayOfDiscount(DayOfWeek.TUESDAY, r.get(discounts.TUESDAY));
+                    discount.setDayOfDiscount(DayOfWeek.WEDNESDAY, r.get(discounts.WEDNESDAY));
+                    discount.setDayOfDiscount(DayOfWeek.THURSDAY, r.get(discounts.THURSDAY));
+                    discount.setDayOfDiscount(DayOfWeek.FRIDAY, r.get(discounts.FRIDAY));
+                    discount.setRepeat(Repeat.valueOf(r.get(discounts.REPEAT)));
+
+                    discountsList.add(discount);
+                }
+
+                return discountsList;
+            }
+        });
+    }
 }
