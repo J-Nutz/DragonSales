@@ -116,7 +116,7 @@ public class ProductsTable
         });
     }
 
-    public static boolean updateProduct(String productToUpdate, Product product)
+    public static boolean updateProduct(String productToUpdate, Product newValues)
     {
         return DatabaseExecutor.submitBoolean(() ->
         {
@@ -138,18 +138,18 @@ public class ProductsTable
                                          products.ORDERED_DATE,
                                          products.RECEIVED_DATE),
 
-                                     row(product.getName(),
-                                         product.getCategory(),
-                                         product.getPurchasePrice(),
-                                         product.getSalePrice(),
-                                         product.getDiscountPrice(),
-                                         product.getInitialQuantity(),
-                                         product.getCurrentQuantity(),
-                                         product.getTotalSold(),
-                                         product.getExpirationDate(),
-                                         product.getDateLastSold(),
-                                         product.getDateOrdered(),
-                                         product.getDateReceived())
+                                     row(newValues.getName(),
+                                         newValues.getCategory(),
+                                         newValues.getPurchasePrice(),
+                                         newValues.getSalePrice(),
+                                         newValues.getDiscountPrice(),
+                                         newValues.getInitialQuantity(),
+                                         newValues.getCurrentQuantity(),
+                                         newValues.getTotalSold(),
+                                         newValues.getExpirationDate(),
+                                         newValues.getDateLastSold(),
+                                         newValues.getDateOrdered(),
+                                         newValues.getDateReceived())
                                 )
                                 .where(products.NAME.equal(productToUpdate))
                                 .execute();

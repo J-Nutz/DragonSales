@@ -135,7 +135,7 @@ public class OrderPanel extends BorderPane
         return total;
     }
 
-    public static ObservableList<OrderFragment> getProducts()
+    public static ObservableList<OrderFragment> getOrderFragments()
     {
         return orderTable.getItems();
     }

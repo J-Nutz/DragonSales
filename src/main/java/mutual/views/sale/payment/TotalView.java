@@ -6,6 +6,8 @@ package mutual.views.sale.payment;
 
 import database.tables.AllTimeStatsTable;
 import database.tables.DailyStatsTable;
+import database.tables.ProductsTable;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -18,6 +20,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import mutual.types.OrderFragment;
+import mutual.types.Product;
 import mutual.views.statistics.StatisticsTracker;
 import mutual.views.FullAccess;
 
@@ -25,7 +29,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import static admin.home.ViewContainer.switchView;
-import static mutual.views.sale.components.OrderPanel.getProducts;
+import static mutual.views.sale.components.OrderPanel.getOrderFragments;
 
 public class TotalView extends VBox
 {
@@ -83,7 +87,21 @@ public class TotalView extends VBox
             //TODO: Log Stats
             //Alert to make sure payed??
 
-            statisticsTracker.logSale(getProducts());
+            ObservableList<OrderFragment> orderFragments = getOrderFragments();
+
+            for(OrderFragment orderFragment : orderFragments)
+            {
+                Product product = orderFragment.getProduct();
+                String productName = product.getName();
+                int quantityPurchased = orderFragment.getQuantity();
+                int currentQuantity = product.getCurrentQuantity();
+                int updatedQuantity = currentQuantity - quantityPurchased;
+                product.setCurrentQuantity(updatedQuantity);
+
+                ProductsTable.updateProduct(productName, product);
+            }
+
+            statisticsTracker.logSale(orderFragments);
 
             DailyStatsTable.logSale(statisticsTracker);
             AllTimeStatsTable.updateStats(statisticsTracker);

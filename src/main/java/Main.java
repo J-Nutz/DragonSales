@@ -32,10 +32,6 @@ public class Main extends Application
      *
      *        * Remove everything on delete!! - If(employee.fire()) Delete User row, Employee row, Employee image, Schedule
      *
-     *        * Update toPurchase list on same item add
-     *
-     *        * Clear button on search bar
-     *
      *        * Make Product in InventoryView Look better
      */
 
@@ -67,7 +63,7 @@ public class Main extends Application
 
         launch(args);
 
-        Employee employee = new Employee();
+        /*Employee employee = new Employee();
         employee.setId(1234);
         employee.setFullName("Jonah Stieglitz");
 
@@ -79,6 +75,6 @@ public class Main extends Application
         employee2.fullName = "Jonah Stieglitz";
 
         String employee2Info = "Full Name: " + employee2.fullName + " ID: " + employee2.id;
-        System.out.println(employee2Info);
+        System.out.println(employee2Info);*/
     }
 }
