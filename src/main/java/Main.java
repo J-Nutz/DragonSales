@@ -10,11 +10,6 @@ public class Main extends Application
 {
     /**
      * TODO:
-     *       * Statistics
-     *           General tracking of sales
-     *           Top: Selector/Search Bar
-     *           Middle: Statistics
-     *
      *       * Settings
      *           Theme
      *           Tax ???
@@ -27,8 +22,6 @@ public class Main extends Application
      *
      *        * Look into Proguard or something similar
      *           Removes all unused code in jars
-     *
-     *        * Schedule Creator for Admins To Create Schedule Then Employees View
      *
      *        * Remove everything on delete!! - If(employee.fire()) Delete User row, Employee row, Employee image, Schedule
      *
@@ -62,19 +55,5 @@ public class Main extends Application
         }
 
         launch(args);
-
-        /*Employee employee = new Employee();
-        employee.setId(1234);
-        employee.setFullName("Jonah Stieglitz");
-
-        String employeeInfo = "Full Name: " + employee.getFullName() + " ID: " + employee.getId();
-        System.out.println(employeeInfo);
-
-        Employee2 employee2 = new Employee2();
-        employee2.id = 4321;
-        employee2.fullName = "Jonah Stieglitz";
-
-        String employee2Info = "Full Name: " + employee2.fullName + " ID: " + employee2.id;
-        System.out.println(employee2Info);*/
     }
 }

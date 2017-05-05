@@ -23,7 +23,7 @@ import java.util.Arrays;
 
 import static admin.home.ViewContainer.switchView;
 import static mutual.security.Encryption.encrypt;
-import static worker.TimedDisplay.showErrorMessage;
+import static worker.ErrorMessageShower.showErrorMessage;
 
 public class LoginView extends BorderPane
 {

@@ -5,28 +5,27 @@ package worker;
  */
 
 import javafx.application.Platform;
-import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class TimedDisplay
+public class ErrorMessageShower
 {
     public static void showErrorMessage(Pane pane, String message)
     {
         Timer timer = new Timer(true);
         Label label = new Label(message);
+
         label.setMaxWidth(125);
         label.setWrapText(true);
         label.setTextFill(Color.RED);
         label.setTextAlignment(TextAlignment.CENTER);
-        HBox hBox = new HBox(label);
-        hBox.setAlignment(Pos.CENTER_LEFT);
+        label.setFont(new Font(13));
 
         timer.schedule(new TimerTask()
         {
@@ -34,9 +33,9 @@ public class TimedDisplay
             {
                 try
                 {
-                    Platform.runLater(() -> pane.getChildren().add(hBox));
+                    Platform.runLater(() -> pane.getChildren().add(label));
 
-                    Thread.sleep(5000);
+                    Thread.sleep(4000);
                 }
                 catch(InterruptedException e)
                 {
@@ -44,7 +43,7 @@ public class TimedDisplay
                 }
                 finally
                 {
-                    Platform.runLater(() -> pane.getChildren().remove(hBox));
+                    Platform.runLater(() -> pane.getChildren().remove(label));
                     timer.cancel();
                 }
             }

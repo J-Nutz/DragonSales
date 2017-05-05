@@ -25,7 +25,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static admin.home.ViewContainer.switchView;
 import static mutual.security.Encryption.encrypt;
-import static worker.TimedDisplay.showErrorMessage;
+import static worker.ErrorMessageShower.showErrorMessage;
 
 public class NewUserView extends BorderPane
 {

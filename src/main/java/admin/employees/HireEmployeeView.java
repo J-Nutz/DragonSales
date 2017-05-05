@@ -35,7 +35,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import static admin.home.ViewContainer.switchView;
-import static worker.TimedDisplay.showErrorMessage;
+import static worker.ErrorMessageShower.showErrorMessage;
 
 public class HireEmployeeView extends VBox
 {
