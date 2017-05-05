@@ -64,7 +64,6 @@ public class LoginView extends BorderPane
         setOnMousePressed(event -> requestFocus());
         requestFocus();
 
-        // Used instead of loginBtn.setDefaultButton(true); due to ugly default highlight
         setOnKeyReleased(event ->
         {
             if(event.getCode() == KeyCode.ENTER)
@@ -75,7 +74,6 @@ public class LoginView extends BorderPane
 
         topBox.setAlignment(Pos.CENTER);
         welcomeLabel.setFont(new Font(30));
-        //welcomeLabel.setPadding(new Insets(20, 0, 20, 0));
         loginLabel.setFont(new Font(20));
 
         centerBox.setAlignment(Pos.CENTER);
@@ -109,8 +107,7 @@ public class LoginView extends BorderPane
 
                     String[] loginAttemptResult = UserValidator.validLogin(attemptedUser);
                     boolean validLogin = Boolean.parseBoolean(loginAttemptResult[0]);
-                    //boolean fullAccess = Boolean.parseBoolean(loginAttemptResult[1]);
-                    String loginResultMessage = loginAttemptResult[2];
+                    String loginResultMessage = loginAttemptResult[1];
 
                     // Set password[] to all zeroes (Security)
                     Arrays.fill(password, '0');
