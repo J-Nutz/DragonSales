@@ -14,6 +14,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import mutual.security.Salt;
 import mutual.security.UserValidator;
 import mutual.types.User;
@@ -28,6 +29,10 @@ import static worker.TimedDisplay.showErrorMessage;
 
 public class NewUserView extends BorderPane
 {
+    private Label welcomeLabel;
+    private Label signUpLabel;
+
+    private VBox topBox;
     private VBox centerBox;
     private VBox bottomBox;
 
@@ -47,6 +52,10 @@ public class NewUserView extends BorderPane
 
     public NewUserView()
     {
+        welcomeLabel = new Label("Welcome To Dragon Sales!");
+        signUpLabel = new Label("Sign Up For An Account Below");
+        topBox = new VBox(5);
+
         centerBox = new VBox(15);
         emailTextField = new TextField();
         nameTextField = new TextField();
@@ -69,37 +78,46 @@ public class NewUserView extends BorderPane
 
     private void initComponents()
     {
-        //This
         setOnMousePressed(event -> requestFocus());
         requestFocus();
 
-        //Center Box
+        welcomeLabel.setFont(new Font(30));
+        signUpLabel.setFont(new Font(20));
+        topBox.setAlignment(Pos.CENTER);
+
         centerBox.setAlignment(Pos.CENTER);
 
         emailTextField.setPromptText("Email");
-        emailTextField.setMaxWidth(150);
+        emailTextField.setMaxWidth(160);
+        emailTextField.setFont(new Font(14));
         addToolTipListener(emailTextField, new Tooltip("Provide Correct Email As It \nWill Be Used In The Future"));
 
         nameTextField.setPromptText("First & Last Name");
-        nameTextField.setMaxWidth(150);
+        nameTextField.setMaxWidth(160);
+        nameTextField.setFont(new Font(14));
         addToolTipListener(nameTextField, new Tooltip("Enter First And Last Name \n   Separated By A Space"));
 
         usernameTextField.setPromptText("Username");
-        usernameTextField.setMaxWidth(150);
+        usernameTextField.setMaxWidth(160);
+        usernameTextField.setFont(new Font(14));
         addToolTipListener(usernameTextField, new Tooltip("Enter Username That \n   Is > 3 Characters"));
 
         passwordField.setPromptText("Password");
-        passwordField.setMaxWidth(150);
+        passwordField.setMaxWidth(160);
+        passwordField.setFont(new Font(14));
         addToolTipListener(passwordField, new Tooltip("Enter Password That \n   Is > 5 Characters"));
 
         confirmPasswordField.setPromptText("Confirm Password");
-        confirmPasswordField.setMaxWidth(150);
+        confirmPasswordField.setMaxWidth(160);
+        confirmPasswordField.setFont(new Font(14));
         addToolTipListener(confirmPasswordField, new Tooltip("Confirm Password"));
 
         verificationCodeTextField.setPromptText("Verification Code");
-        verificationCodeTextField.setMaxWidth(150);
+        verificationCodeTextField.setMaxWidth(160);
+        verificationCodeTextField.setFont(new Font(14));
         addToolTipListener(verificationCodeTextField, new Tooltip("Enter The 4 Digit Number \n    Sent To Your Email"));
 
+        submitCredentialsButton.setFont(new Font(15));
         submitCredentialsButton.setOnAction(e ->
         {
             String email = emailTextField.getText();
@@ -163,12 +181,13 @@ public class NewUserView extends BorderPane
             }
         });
 
+        checkVerificationCodeButton.setFont(new Font(15));
         checkVerificationCodeButton.setOnAction(e ->
         {
-            if(verificationCodeTextField.getText().equals(verificationCode))
+            if(validVerificationCode())
             {
                 UsersTable.addUser(constructUser());
-                //setView(FullAccess.LOGIN, true);
+                switchView(getParent(), FullAccess.LOGIN);
             }
             else
             {
@@ -179,27 +198,18 @@ public class NewUserView extends BorderPane
         bottomBox.setAlignment(Pos.CENTER);
         bottomBox.setPadding(new Insets(0, 0, 15, 0));
 
-        goToLoginButton.setOnAction(e ->
-        {
-            long startTime = System.nanoTime();
-
-            /*ViewContainer2 viewContainer = (ViewContainer2) getParent().lookup("#viewContainer");
-            viewContainer.setView(FullAccess.LOGIN);*/
-
-            //setView(FullAccess.LOGIN, true);
-
-            switchView(getParent(), FullAccess.LOGIN);
-
-            long endTime = System.nanoTime();
-            System.out.println("Switched To Login View In: " + ((endTime - startTime) / 1000000) + "ms");
-        });
+        goToLoginLabel.setFont(new Font(16));
+        goToLoginButton.setFont(new Font(14));
+        goToLoginButton.setOnAction(e -> switchView(getParent(), FullAccess.LOGIN));
     }
 
     private void addComponents()
     {
+        topBox.getChildren().addAll(welcomeLabel, signUpLabel, new Separator(Orientation.HORIZONTAL));
         centerBox.getChildren().addAll(nameTextField, emailTextField, usernameTextField, passwordField, confirmPasswordField, submitCredentialsButton);
         bottomBox.getChildren().addAll(new Separator(Orientation.HORIZONTAL), goToLoginLabel, goToLoginButton);
 
+        setTop(topBox);
         setCenter(centerBox);
         setBottom(bottomBox);
     }
@@ -210,9 +220,20 @@ public class NewUserView extends BorderPane
         {
             if(newValue)
             {
-                tooltip.show(control,
-                        control.getScene().getWindow().getX() + control.getLayoutX() + control.getWidth() + 15,
-                        control.getScene().getWindow().getY() + control.getLayoutY() + control.getHeight());
+                double x, y;
+
+                if(tooltip.getText().contains("\n"))
+                {
+                    x = control.getScene().getWindow().getX() + control.getLayoutX() + control.getWidth() + 15;
+                    y = control.getScene().getWindow().getY() + control.getLayoutY() + control.getHeight() + topBox.getHeight() - 5;
+                }
+                else
+                {
+                    x = control.getScene().getWindow().getX() + control.getLayoutX() + control.getWidth() + 15;
+                    y = control.getScene().getWindow().getY() + control.getLayoutY() + control.getHeight() + topBox.getHeight();
+                }
+
+                tooltip.show(control, x, y);
             }
             else
             {

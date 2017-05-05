@@ -29,6 +29,7 @@ public class LoginView extends BorderPane
 {
     private VBox topBox;
     private Label welcomeLabel;
+    private Label loginLabel;
 
     private VBox centerBox;
     private TextField usernameTF;
@@ -43,6 +44,7 @@ public class LoginView extends BorderPane
     {
         topBox = new VBox(5);
         welcomeLabel = new Label("Welcome To Dragon Sales!");
+        loginLabel = new Label("Login Below");
 
         centerBox = new VBox(5);
         usernameTF = new TextField();
@@ -73,72 +75,86 @@ public class LoginView extends BorderPane
 
         topBox.setAlignment(Pos.CENTER);
         welcomeLabel.setFont(new Font(30));
-        welcomeLabel.setPadding(new Insets(20, 0, 20, 0));
+        //welcomeLabel.setPadding(new Insets(20, 0, 20, 0));
+        loginLabel.setFont(new Font(20));
 
         centerBox.setAlignment(Pos.CENTER);
 
         usernameTF.setPromptText("Username");
         usernameTF.setMaxWidth(150);
+        usernameTF.setFont(new Font(14));
 
         passwordTF.setPromptText("Password");
         passwordTF.setMaxWidth(150);
+        passwordTF.setFont(new Font(14));
 
         loginBtn.setAlignment(Pos.CENTER);
+        loginBtn.setFont(new Font(15));
         loginBtn.setOnAction(event ->
         {
             String userName = usernameTF.getText();
             char[] password = passwordTF.getText().toCharArray();
 
-            User correctUser = UsersTable.getUser(userName);
-            User attemptedUser = new User();
-
-            if(correctUser != null)
+            if(!userName.isEmpty() && password.length != 0)
             {
-                attemptedUser.setUsername(userName);
-                attemptedUser.setPassword(encrypt(password, correctUser.getSalt()));
-                attemptedUser.setSalt(correctUser.getSalt());
+                User correctUser = UsersTable.getUser(userName);
+                User attemptedUser = new User();
 
-                String[] loginAttemptResult = UserValidator.validLogin(attemptedUser);
-                boolean validLogin = Boolean.parseBoolean(loginAttemptResult[0]);
-                boolean fullAccess = Boolean.parseBoolean(loginAttemptResult[1]);
-                String loginResultMessage = loginAttemptResult[2];
-
-                // Set password[] to all zeroes (Security)
-                Arrays.fill(password, '0');
-
-                if(validLogin)
+                if(correctUser != null)
                 {
-                    LoggedInUserTable.setLoggedInUser(attemptedUser);
-                    switchView(getParent(), FullAccess.HOME);
+                    attemptedUser.setUsername(userName);
+                    attemptedUser.setPassword(encrypt(password,
+                                                      correctUser.getSalt()));
+                    attemptedUser.setSalt(correctUser.getSalt());
+
+                    String[] loginAttemptResult = UserValidator.validLogin(attemptedUser);
+                    boolean validLogin = Boolean.parseBoolean(loginAttemptResult[0]);
+                    //boolean fullAccess = Boolean.parseBoolean(loginAttemptResult[1]);
+                    String loginResultMessage = loginAttemptResult[2];
+
+                    // Set password[] to all zeroes (Security)
+                    Arrays.fill(password, '0');
+
+                    if(validLogin)
+                    {
+                        LoggedInUserTable.setLoggedInUser(attemptedUser);
+                        switchView(getParent(), FullAccess.HOME);
+                    }
+                    else
+                    {
+                        showErrorMessage(centerBox, loginResultMessage);
+                    }
                 }
                 else
                 {
-                    showErrorMessage(centerBox, loginResultMessage);
+                    showErrorMessage(centerBox, "User Not Found");
                 }
             }
             else
             {
-                showErrorMessage(centerBox, "User Not Found");
+                if(userName.isEmpty())
+                {
+                    showErrorMessage(centerBox, "Username Not Entered");
+                }
+                else if(password.length == 0)
+                {
+                    showErrorMessage(centerBox, "Password Not Entered");
+                }
             }
         });
 
         bottomBox.setAlignment(Pos.CENTER);
         bottomBox.setPadding(new Insets(0, 0, 15, 0));
 
-        newUserBtn.setOnAction(e ->
-        {
-            long startTime = System.nanoTime();
+        goToNewUserLabel.setFont(new Font(16));
 
-            switchView(getParent(), FullAccess.NEW_USER);
-
-            long endTime = System.nanoTime();
-            System.out.println("Switched To New User View In: " + ((endTime - startTime) / 1000000) + "ms");
-        });
+        newUserBtn.setFont(new Font(14));
+        newUserBtn.setOnAction(e -> switchView(getParent(), FullAccess.NEW_USER));
     }
 
     private void addComponents()
     {
-        topBox.getChildren().addAll(welcomeLabel, new Separator(Orientation.HORIZONTAL));
+        topBox.getChildren().addAll(welcomeLabel, loginLabel, new Separator(Orientation.HORIZONTAL));
         centerBox.getChildren().addAll(usernameTF, passwordTF, loginBtn);
         bottomBox.getChildren().addAll(new Separator(Orientation.HORIZONTAL), goToNewUserLabel, newUserBtn);
 
