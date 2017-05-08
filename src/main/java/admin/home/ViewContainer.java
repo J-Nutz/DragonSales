@@ -9,11 +9,10 @@ import admin.employees.HireEmployeeView;
 import admin.employees.ManageEmployeesView;
 import admin.inventory.AdminInventoryView;
 import admin.inventory.StockInventoryView;
-import database.tables.DiscountsTable;
-import database.tables.EmployeesTable;
+import database.tables.*;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
 import javafx.scene.layout.BorderPane;
 import mutual.types.Discount;
 import mutual.types.OrderFragment;
@@ -24,10 +23,12 @@ import mutual.views.discounts.ProductDiscountsView;
 import mutual.views.login.LockedView;
 import mutual.views.login.LoginView;
 import mutual.views.login.NewUserView;
+import mutual.views.sale.QuickSaleDialog;
 import mutual.views.sale.SaleView;
 import mutual.views.sale.selector.ProductSelectorPanel;
 import mutual.views.sale.selector.ProductView;
 import mutual.views.statistics.SaleStatsView;
+import mutual.views.statistics.StatisticsTracker;
 
 import java.util.Optional;
 
@@ -206,14 +207,31 @@ public class ViewContainer extends BorderPane
 
     private void showQuickSale()
     {
-        Dialog<OrderFragment> quickSaleDialog = new Dialog<>();
-        quickSaleDialog.getDialogPane().getButtonTypes().addAll(ButtonType.APPLY, ButtonType.CANCEL);
+        QuickSaleDialog quickSaleDialog = new QuickSaleDialog();
+        quickSaleDialog.getDialogPane().getButtonTypes().addAll(ButtonType.FINISH, ButtonType.CANCEL);
 
-        Optional<OrderFragment> orderFragment = quickSaleDialog.showAndWait();
+        Optional<ObservableList<OrderFragment>> orderFragmentResult = quickSaleDialog.showAndWait();
 
-        if(orderFragment.isPresent())
+        if(orderFragmentResult.isPresent())
         {
-            //addSale();
+            for(OrderFragment orderFragment : orderFragmentResult.get())
+            {
+                Product product = orderFragment.getProduct();
+                String productName = product.getName();
+                int quantityPurchased = orderFragment.getQuantity();
+                int currentQuantity = product.getCurrentQuantity();
+                int updatedQuantity = currentQuantity - quantityPurchased;
+                product.setCurrentQuantity(updatedQuantity);
+
+                ProductsTable.updateProduct(productName, product);
+            }
+
+            StatisticsTracker statisticsTracker = new StatisticsTracker();
+            statisticsTracker.logSale(orderFragmentResult.get());
+
+            DailyStatsTable.logSale(statisticsTracker);
+            AllTimeStatsTable.updateStats(statisticsTracker);
+
             quickSaleDialog.close();
         }
         else

@@ -9,7 +9,7 @@ import javafx.scene.control.SpinnerValueFactory;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public class BigDecimalSpinnerValueFactory  extends SpinnerValueFactory<BigDecimal>
+public class BigDecimalSpinnerValueFactory extends SpinnerValueFactory<BigDecimal>
 {
     private  BigDecimal step;
 

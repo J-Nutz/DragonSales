@@ -83,16 +83,7 @@ public class ProductView extends GridPane
             DayOfWeek today = LocalDate.now().getDayOfWeek();
             boolean notWeekend = (today != DayOfWeek.SATURDAY) && (today != DayOfWeek.SUNDAY);
 
-            if(notWeekend && discount.getDayOfSale(today))
-            {
-                hasDiscount = true;
-                //addComponents(true);
-            }
-            else
-            {
-                hasDiscount = false;
-                //addComponents(false);
-            }
+            hasDiscount = notWeekend && discount.getDayOfSale(today);
         });
 
         productDiscountLabel.setFont(new Font(18));

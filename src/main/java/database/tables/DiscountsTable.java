@@ -114,6 +114,10 @@ public class DiscountsTable
                     return null;
                 }
             }
+            catch(NullPointerException npe)
+            {
+                return null;
+            }
         });
     }
 

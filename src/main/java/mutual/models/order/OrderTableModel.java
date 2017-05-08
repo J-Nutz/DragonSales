@@ -4,11 +4,11 @@ package mutual.models.order;
  * Created by Jonah on 11/24/2016.
  */
 
-import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.util.Callback;
@@ -19,27 +19,31 @@ import mutual.views.sale.selector.ProductSelectorPanel;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
+import static mutual.views.sale.QuickSaleDialog.calculateTotal;
 import static mutual.views.sale.components.SaleControlsPanel.updateTotal;
 
 public class OrderTableModel
 {
+    private boolean useQuickSale = false;
+
     public OrderTableModel() {}
 
     public ArrayList<TableColumn<OrderFragment, ?>> getTableColumns()
     {
         TableColumn<OrderFragment, Integer> quantityColumn = new TableColumn<>("Quantity");
-        quantityColumn.setStyle("-fx-alignment: CENTER;");
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        quantityColumn.setStyle("-fx-alignment: CENTER;");
         quantityColumn.setResizable(false);
         quantityColumn.setEditable(false);
 
         TableColumn<OrderFragment, String> productNameColumn = new TableColumn<>("Product");
-        productNameColumn.setStyle("-fx-alignment: CENTER;");
         productNameColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
+        productNameColumn.setStyle("-fx-alignment: CENTER;");
         productNameColumn.setResizable(false);
         productNameColumn.setEditable(false);
 
         TableColumn<OrderFragment, BigDecimal> productPriceColumn = new TableColumn<>("Price");
+        productPriceColumn.setCellValueFactory(new PropertyValueFactory<>("finalPrice"));
         productPriceColumn.setStyle("-fx-alignment: CENTER;");
         productPriceColumn.setResizable(false);
         productPriceColumn.setEditable(false);
@@ -78,20 +82,35 @@ public class OrderTableModel
 
                         if(!empty)
                         {
-                            btn.setOnAction((ActionEvent event) ->
+                            if(useQuickSale)
                             {
-                                getTableView().getItems().remove(getIndex());
-                                updateTotal();
-
-                                if(getTableView().getItems().isEmpty())
+                                btn.setOnAction(event ->
                                 {
-                                    BorderPane centerView = (BorderPane) getTableView().getParent().getParent();
-                                    centerView.setCenter(new ProductSelectorPanel());
+                                    TableView<OrderFragment> tableView = getTableView();
+                                    tableView.getItems().remove(getIndex());
+                                    tableView.refresh();
 
-                                    BorderPane rightView = (BorderPane) getTableView().getParent();
-                                    rightView.setBottom(new SaleControlsPanel());
-                                }
-                            });
+                                    calculateTotal(tableView.getItems());
+                                });
+                            }
+                            else
+                            {
+                                btn.setOnAction(event ->
+                                {
+                                    TableView tableView = getTableView();
+                                    tableView.getItems().remove(getIndex());
+                                    updateTotal();
+
+                                    if(tableView.getItems().isEmpty())
+                                    {
+                                        BorderPane centerView = (BorderPane) tableView.getParent().getParent();
+                                        centerView.setCenter(new ProductSelectorPanel());
+
+                                        BorderPane rightView = (BorderPane) tableView.getParent();
+                                        rightView.setBottom(new SaleControlsPanel());
+                                    }
+                                });
+                            }
 
                             setGraphic(btn);
                             setText(null);
@@ -106,5 +125,10 @@ public class OrderTableModel
                 };
             }
         };
+    }
+
+    public void useQuickSaleAction(boolean useQuickSale)
+    {
+        this.useQuickSale = useQuickSale;
     }
 }

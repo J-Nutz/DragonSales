@@ -17,6 +17,7 @@ public class OrderFragment
     private SimpleStringProperty productName;
     private SimpleObjectProperty<BigDecimal> salePrice;
     private SimpleObjectProperty<BigDecimal> discountPrice;
+    private SimpleObjectProperty<BigDecimal> finalPrice;
 
     private boolean hasDiscount;
 
@@ -118,5 +119,33 @@ public class OrderFragment
     public boolean hasDiscount()
     {
         return hasDiscount;
+    }
+
+    public SimpleObjectProperty<BigDecimal> finalPriceProperty()
+    {
+        if(finalPrice == null)
+        {
+            finalPrice = new SimpleObjectProperty<>(this, "finalPrice");
+            setFinalPrice();
+        }
+        return finalPrice;
+    }
+
+    public BigDecimal getFinalPrice()
+    {
+        setFinalPrice();
+        return finalPriceProperty().get();
+    }
+
+    public void setFinalPrice()
+    {
+        if(hasDiscount())
+        {
+            finalPriceProperty().set(getDiscountPrice());
+        }
+        else
+        {
+            finalPriceProperty().set(getSalePrice());
+        }
     }
 }

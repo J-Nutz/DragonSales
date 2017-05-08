@@ -8,7 +8,6 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import mutual.models.order.OrderTableModel;
@@ -39,10 +38,7 @@ public class OrderPanel extends BorderPane
     {
         setBorder(new Border(new BorderStroke(Color.DIMGRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 0, 2))));
 
-        for(TableColumn<OrderFragment, ?> tableColumn : orderTableModel.getTableColumns())
-        {
-            orderTable.getColumns().add(tableColumn);
-        }
+        orderTable.getColumns().addAll(orderTableModel.getTableColumns());
 
         orderTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         orderTable.setEditable(false);
@@ -75,15 +71,6 @@ public class OrderPanel extends BorderPane
 
     public static void addToOrder(OrderFragment orderFragment)
     {
-        if(orderFragment.hasDiscount())
-        {
-            orderTable.getColumns().get(2).setCellValueFactory(new PropertyValueFactory<>("discountPrice"));
-        }
-        else
-        {
-            orderTable.getColumns().get(2).setCellValueFactory(new PropertyValueFactory<>("salePrice"));
-        }
-
         boolean containsOrder = false;
 
         for(OrderFragment orderFragment1 : orderTable.getItems())
