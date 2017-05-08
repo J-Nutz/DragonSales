@@ -108,10 +108,9 @@ public class QuickSaleDialog extends Dialog<ObservableList<OrderFragment>>
         productResultsPane.setPrefColumns(3);
         productResultsPane.setPadding(new Insets(5));
 
-        setProducts(ProductsTable.getProducts());
-
         quantitySpinner.setMaxWidth(60);
 
+        searchBtn.setDefaultButton(true);
         searchBtn.setOnAction(event -> setProducts(ProductsTable.getProductsLike(productSearchField.getText())));
 
         checkoutBox.setHgap(5);
@@ -120,6 +119,7 @@ public class QuickSaleDialog extends Dialog<ObservableList<OrderFragment>>
         OrderTableModel orderTableModel = new OrderTableModel();
         orderTableModel.useQuickSaleAction(true);
         purchasesTable.getColumns().addAll(orderTableModel.getTableColumns());
+        setProducts(ProductsTable.getProducts());
         purchasesTable.getColumns().addListener(new ListChangeListener<TableColumn>()
         {
             public boolean suspended;
@@ -159,15 +159,22 @@ public class QuickSaleDialog extends Dialog<ObservableList<OrderFragment>>
                 }
 
                 purchasesTable.getItems().add(orderFragment);
-                selectedProduct = null;
-                productLabel.setText("");
-                quantitySpinner.getValueFactory().setValue(1);
+                clearBtn.fire();
 
                 calculateTotal(purchasesTable.getItems());
                 amountPaidSpinner.getValueFactory().setValue(new BigDecimal("0.00"));
                 returnAmountLabel.setText("Remaining: $" + total.toString());
                 returnAmountLabel.setTextFill(Color.RED);
             }
+        });
+
+        clearBtn.setOnAction(event ->
+        {
+            setProducts(ProductsTable.getProducts());
+            productSearchField.setText("");
+            selectedProduct = null;
+            productLabel.setText("");
+            quantitySpinner.getValueFactory().setValue(1);
         });
 
         purchasesTable.setPrefHeight(300);
@@ -188,23 +195,9 @@ public class QuickSaleDialog extends Dialog<ObservableList<OrderFragment>>
                         currentValue = currentValue.subtract(step);
                         returnAmount = returnAmount.add(step);
 
-                        if(returnAmount.compareTo(BigDecimal.ZERO) == -1)
-                        {
-                            returnAmountLabel.setText("Return: $" + returnAmount.toString());
-                            returnAmountLabel.setTextFill(Color.GREEN);
-                        }
-                        else if(returnAmount.compareTo(BigDecimal.ZERO) == 0)
-                        {
-                            returnAmountLabel.setText("Remaining: $" + returnAmount.toString());
-                            returnAmountLabel.setTextFill(Color.GREEN);
-                        }
-                        else
-                        {
-                            returnAmountLabel.setText("Remaining: $" + returnAmount.toString());
-                            returnAmountLabel.setTextFill(Color.RED);
-                        }
+                        setReturnLabelText();
+                        this.setValue(currentValue.setScale(2, RoundingMode.CEILING));
                     }
-                    this.setValue(currentValue.setScale(2, RoundingMode.CEILING));
                     steps--;
                 }
             }
@@ -221,24 +214,9 @@ public class QuickSaleDialog extends Dialog<ObservableList<OrderFragment>>
                         currentValue = currentValue.add(step);
                         returnAmount = returnAmount.subtract(step);
 
-                        if(returnAmount.compareTo(BigDecimal.ZERO) == -1)
-                        {
-                            returnAmountLabel.setText("Return: $" + returnAmount.toString());
-                            returnAmountLabel.setTextFill(Color.GREEN);
-                        }
-                        else if(returnAmount.compareTo(BigDecimal.ZERO) == 0)
-                        {
-                            returnAmountLabel.setText("Remaining: $" + returnAmount.toString());
-                            returnAmountLabel.setTextFill(Color.GREEN);
-                        }
-                        else
-                        {
-                            returnAmountLabel.setText("Remaining: $" + returnAmount.toString());
-                            returnAmountLabel.setTextFill(Color.RED);
-                        }
+                        setReturnLabelText();
+                        this.setValue(currentValue.setScale(2, RoundingMode.CEILING));
                     }
-
-                    this.setValue(currentValue.setScale(2, RoundingMode.CEILING));
                     steps--;
                 }
             }
@@ -309,6 +287,7 @@ public class QuickSaleDialog extends Dialog<ObservableList<OrderFragment>>
                 productPrice.setText("$" + product.getSalePrice().toString());
             }
 
+            productContainer.setPadding(new Insets(2));
             productContainer.setSpacing(3);
             productContainer.setAlignment(Pos.CENTER);
             productContainer.setBorder(new Border(new BorderStroke(Color.DIMGRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
@@ -353,6 +332,25 @@ public class QuickSaleDialog extends Dialog<ObservableList<OrderFragment>>
         if(returnAmount.compareTo(BigDecimal.ZERO) == 0)
         {
             returnAmountLabel.setTextFill(Color.GREEN);
+        }
+    }
+
+    private void setReturnLabelText()
+    {
+        if(returnAmount.compareTo(BigDecimal.ZERO) == -1)
+        {
+            returnAmountLabel.setText("Return: $" + returnAmount.toString());
+            returnAmountLabel.setTextFill(Color.GREEN);
+        }
+        else if(returnAmount.compareTo(BigDecimal.ZERO) == 0)
+        {
+            returnAmountLabel.setText("Remaining: $" + returnAmount.toString());
+            returnAmountLabel.setTextFill(Color.GREEN);
+        }
+        else
+        {
+            returnAmountLabel.setText("Remaining: $" + returnAmount.toString());
+            returnAmountLabel.setTextFill(Color.RED);
         }
     }
 }
