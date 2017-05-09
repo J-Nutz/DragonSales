@@ -48,8 +48,6 @@ public class QuickSaleDialog extends Dialog<ObservableList<OrderFragment>>
     private Button addBtn;
     private Button clearBtn;
 
-
-
     private GridPane checkoutBox;
     private TableView<OrderFragment> purchasesTable;
     private static Label totalLabel;

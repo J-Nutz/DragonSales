@@ -7,6 +7,8 @@ package jooq.public_.tables;
 import jooq.public_.Public;
 import jooq.public_.tables.records.ScheduleRecord;
 
+import java.sql.Date;
+
 import javax.annotation.Generated;
 
 import org.jooq.Field;
@@ -29,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Schedule extends TableImpl<ScheduleRecord> {
 
-    private static final long serialVersionUID = -1782148893;
+    private static final long serialVersionUID = 871566076;
 
     /**
      * The reference instance of <code>PUBLIC.SCHEDULE</code>
@@ -45,9 +47,9 @@ public class Schedule extends TableImpl<ScheduleRecord> {
     }
 
     /**
-     * The column <code>PUBLIC.SCHEDULE.DAY</code>.
+     * The column <code>PUBLIC.SCHEDULE.S_DATE</code>.
      */
-    public final TableField<ScheduleRecord, String> DAY = createField("DAY", org.jooq.impl.SQLDataType.VARCHAR.length(2147483647), this, "");
+    public final TableField<ScheduleRecord, Date> S_DATE = createField("S_DATE", org.jooq.impl.SQLDataType.DATE, this, "");
 
     /**
      * The column <code>PUBLIC.SCHEDULE.B1_E1</code>.

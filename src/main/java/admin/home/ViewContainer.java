@@ -147,7 +147,7 @@ public class ViewContainer extends BorderPane
                 break;
 
             case SCHEDULE:
-                checkLock(new EmployeeScheduler(EmployeesTable.getEmployeeNames()), false);
+                checkLock(new EmployeeScheduler(), false);
                 break;
 
             case HIRE_EMPLOYEE:

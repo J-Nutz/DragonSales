@@ -1,29 +1,29 @@
-package admin.employees;
+package admin.employees.schedule;
 
 /*
- * Created by Jonah on 1/9/2017.
+ * Created by Jonah on 5/9/2017.
  */
 
-import database.tables.ScheduleTable;
+import database.tables.EmployeesTable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Orientation;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
+import java.time.LocalDate;
 
-public class ScheduleShiftView extends VBox
+public class ScheduleDay extends VBox
 {
+    private ObservableList<String> employees;
+
     private Date date;
+    private LocalDate localDate;
+    private Label dayOfWeekLabel;
 
     private Label break1;
     private ComboBox<String> break1Employee1CB;
@@ -62,11 +62,14 @@ public class ScheduleShiftView extends VBox
 
     private Button editAndSaveBtn;
 
-    public ScheduleShiftView(ArrayList<String> employeesTemp, Date date)
+
+    public ScheduleDay(Date date)
     {
         this.date = date;
+        this.localDate = date.toLocalDate();
+        employees = FXCollections.observableArrayList(EmployeesTable.getEmployeeNames());
 
-        ObservableList<String> employees = FXCollections.observableArrayList(employeesTemp);
+        dayOfWeekLabel = new Label(localDate.getDayOfWeek().toString());
 
         break1 = new Label("1st Break");
         break1Employee1CB = new ComboBox<>(employees);
@@ -106,44 +109,12 @@ public class ScheduleShiftView extends VBox
         editAndSaveBtn = new Button();
 
         initComponents();
-        loadSchedule();
+        addComponents(false);
     }
 
     private void initComponents()
     {
-        setAlignment(Pos.CENTER);
-        setSpacing(5);
 
-        Font font = Font.font("Ubuntu", FontWeight.BOLD, 16);
-
-        break1.setFont(font);
-
-        lunch.setFont(font);
-
-        break2.setFont(font);
-
-        stocker.setFont(font);
-
-        advertiser.setFont(font);
-
-        editAndSaveBtn.setOnAction(event ->
-        {
-            if(editAndSaveBtn.getText().equals("Save"))
-            {
-                saveSchedule(date, getComboBoxes());
-                addComponents(false);
-                loadUneditableSchedule(date, getLabels());
-
-                editAndSaveBtn.setText("Edit");
-            }
-            else
-            {
-                addComponents(true);
-                loadEditableSchedule(date, getComboBoxes());
-
-                editAndSaveBtn.setText("Save");
-            }
-        });
     }
 
     private void addComponents(boolean showComboBoxes)
@@ -182,115 +153,4 @@ public class ScheduleShiftView extends VBox
         }
     }
 
-    private void loadSchedule()
-    {
-        if(loadUneditableSchedule(date, getLabels()))
-        {
-            addComponents(false);
-            editAndSaveBtn.setText("Edit");
-        }
-        else
-        {
-            addComponents(true);
-
-            for(ComboBox comboBox : getComboBoxes())
-            {
-                comboBox.getSelectionModel().selectFirst();
-            }
-
-            editAndSaveBtn.setText("Save");
-        }
-    }
-
-    private ArrayList<ComboBox> getComboBoxes()
-    {
-        return getChildren().stream()
-                            .filter(node -> node instanceof ComboBox)
-                            .map(node -> (ComboBox) node)
-                            .collect(Collectors.toCollection(ArrayList::new));
-    }
-
-    private ArrayList<Label> getLabels()
-    {
-        ArrayList<Label> labels = new ArrayList<>();
-
-        labels.add(b1e1Label);
-        labels.add(b1e2Label);
-
-        labels.add(le1Label);
-        labels.add(le2Label);
-
-        labels.add(b2e1Label);
-        labels.add(b2e2Label);
-
-        labels.add(se1Label);
-        labels.add(se2Label);
-
-        labels.add(ae1Label);
-        labels.add(ae2Label);
-
-        return labels;
-    }
-
-    private boolean saveSchedule(Date date, ArrayList<ComboBox> comboBoxes)
-    {
-        ArrayList<String> schedule2 = comboBoxes.stream()
-                                                .map(comboBox -> comboBox.getSelectionModel()
-                                                                         .getSelectedItem()
-                                                                         .toString())
-                                                .collect(Collectors.toCollection(ArrayList::new));
-
-        return ScheduleTable.setScheduleFor(date, schedule2);
-    }
-
-    private boolean loadEditableSchedule(Date date, ArrayList<ComboBox> comboBoxes)
-    {
-        ArrayList<String> schedule = new ArrayList<>(10);
-        schedule.addAll(ScheduleTable.getScheduleFor(date));
-
-        if(schedule.size() != 10)
-        {
-            while(schedule.size() < 10)
-            {
-                schedule.add("Empty");
-            }
-        }
-
-        for(int i = 0; i < schedule.size(); i++)
-        {
-            ComboBox comboBox = comboBoxes.get(i);
-            comboBox.getSelectionModel().select(schedule.get(i));
-        }
-
-        return true;
-    }
-
-    private boolean loadUneditableSchedule(Date date, ArrayList<Label> labels)
-    {
-        ArrayList<String> schedule = ScheduleTable.getScheduleFor(date);
-
-        if(schedule.size() == 1 && schedule.contains("Empty"))
-        {
-            for(Label label : labels)
-            {
-                label.setText("Empty");
-            }
-
-            return true;
-        }
-        else if(schedule.size() > 1)
-        {
-            for(int i = 0; i < labels.size(); i++)
-            {
-                Label label = labels.get(i);
-                label.setText(schedule.get(i));
-            }
-
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
 }

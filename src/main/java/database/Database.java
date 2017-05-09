@@ -72,7 +72,7 @@ public class Database
                     .execute();
 
             database.createTableIfNotExists("SCHEDULE")
-                    .column("DAY", H2DataType.VARCHAR_CASESENSITIVE)
+                    .column("S_DATE", H2DataType.DATE)
                     .column("B1_E1", H2DataType.VARCHAR_CASESENSITIVE)
                     .column("B1_E2", H2DataType.VARCHAR_CASESENSITIVE)
                     .column("LU_E1", H2DataType.VARCHAR_CASESENSITIVE)
