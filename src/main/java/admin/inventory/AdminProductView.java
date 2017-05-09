@@ -4,7 +4,7 @@ package admin.inventory;
  * Created by Jonah on 11/10/2016.
  */
 
-import database.data.ProductsHeld;
+import database.tables.DiscountsTable;
 import database.tables.ProductsTable;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -18,10 +18,12 @@ import mutual.types.Product;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import static admin.inventory.AdminInventoryView.setRowSpanOnClick;
+
 public class AdminProductView extends GridPane
 {
     private final Product product;
-    private boolean extraComponentsShowing = false;
+    //private boolean extraComponentsShowing = false;
 
     private Label productLbl;
     private Label productStockLevelLabel;
@@ -39,6 +41,8 @@ public class AdminProductView extends GridPane
     private Button restockButton;
     private Button removeButton;
 
+    private boolean selected = false;
+
     public AdminProductView(Product product)
     {
         this.product = product;
@@ -46,10 +50,10 @@ public class AdminProductView extends GridPane
         productLbl = new Label(product.getName());
         productStockLevelLabel = new Label(product.getCurrentQuantity() + " / " + product.getInitialQuantity());
         productStockLevel = new ProgressBar();
-        purchasePriceLabel = new Label("$" + product.getPurchasePrice().toString());
-        salePriceLabel = new Label("$" + product.getSalePrice().toString());
+        purchasePriceLabel = new Label("Purchase Price: $" + product.getPurchasePrice().toString());
+        salePriceLabel = new Label("Sale Price: $" + product.getSalePrice().toString());
         productSaleLabel = new Label();
-        productCategoryLabel = new Label("(" + product.getCategory() + ")");
+        productCategoryLabel = new Label("Category: " + product.getCategory());
         expirationDateLabel = new Label("Expires: " + product.getExpirationDate());
         totalSoldLabel = new Label("Total Sold: " + product.getTotalSold());
         dateLastSoldLabel = new Label("Last Sold: " + product.getDateLastSold());
@@ -66,14 +70,30 @@ public class AdminProductView extends GridPane
     private void initComponents()
     {
         setVgap(10);
-        setHgap(10);
+        setHgap(20);
         setPadding(new Insets(5));
         setBorder(new Border(new BorderStroke(Color.DIMGRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(2))));
 
+
         addEventFilter(MouseEvent.MOUSE_PRESSED, event ->
         {
+            if(!selected)
+            {
+                selected = true;
+                setRowSpanOnClick(this, true);
+                addExtraComponents();
+            }
+            else
+            {
+                selected = false;
+                setRowSpanOnClick(this, false);
+                removeExtraComponents();
+            }
+
+            /*setRowSpanOnClick(this, extraComponentsShowing);
             extraComponentsShowing = !extraComponentsShowing;
             addExtraComponents();
+            setRowSpanOnClick(this, extraComponentsShowing);*/
         });
 
         productLbl.setFont(new Font("Courier New", 24));
@@ -89,10 +109,11 @@ public class AdminProductView extends GridPane
 
             if(result.get().equals(ButtonType.YES))
             {
+                DiscountsTable.deleteDiscount(product.getName());
                 ProductsTable.deleteProduct(product.getName());
-                ProductsHeld.removeProduct(product);
-                AdminInventoryView inventoryView = (AdminInventoryView) this.getParent().getParent().getParent().getParent().getParent();
-                ArrayList<Product> products = ProductsHeld.getProducts(); //ProductsTable.getProducts();
+                //ProductsHeld.removeProduct(product);
+                AdminInventoryView inventoryView = (AdminInventoryView) this.getParent().getParent().getParent().getParent().getParent().getParent();
+                ArrayList<Product> products = ProductsTable.getProducts();
                 inventoryView.setProducts(products);
             }
             else
@@ -121,29 +142,33 @@ public class AdminProductView extends GridPane
         add(purchasePriceLabel, 0, 3);
         add(salePriceLabel, 1, 3);
 
-        add(productCategoryLabel, 0, 4);
-        add(expirationDateLabel, 1, 4);
+        add(totalSoldLabel, 0, 4);
+        add(dateLastSoldLabel, 1, 4);
     }
 
-    private void addExtraComponents()
+    public void addExtraComponents()
     {
-        if(extraComponentsShowing)
-        {
-            add(dateLastSoldLabel, 0, 5);
-            add(totalSoldLabel, 1, 5);
 
-            add(dateOrderedLabel, 0, 6);
-            add(dateReceivedLabel, 1, 6);
+        add(productCategoryLabel, 0, 5);
+        add(expirationDateLabel, 1, 5);
 
-            GridPane.setHalignment(restockButton, HPos.CENTER);
-            add(restockButton, 0, 7);
+        add(dateOrderedLabel, 0, 6);
+        add(dateReceivedLabel, 1, 6);
 
-            GridPane.setHalignment(removeButton, HPos.CENTER);
-            add(removeButton, 1, 7);
-        }
-        else
-        {
-            getChildren().removeAll(dateLastSoldLabel, totalSoldLabel, dateOrderedLabel, dateReceivedLabel, restockButton, removeButton);
-        }
+        GridPane.setHalignment(restockButton, HPos.CENTER);
+        add(restockButton, 0, 7);
+
+        GridPane.setHalignment(removeButton, HPos.CENTER);
+        add(removeButton, 1, 7);
+    }
+
+    private void removeExtraComponents()
+    {
+        getChildren().removeAll(productCategoryLabel, expirationDateLabel, dateOrderedLabel, dateReceivedLabel, restockButton, removeButton);
+    }
+
+    public void setOnClick()
+    {
+
     }
 }

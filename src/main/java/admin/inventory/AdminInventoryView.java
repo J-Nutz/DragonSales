@@ -4,15 +4,16 @@ package admin.inventory;
  * Created by Jonah on 11/10/2016.
  */
 
-import database.data.ProductsHeld;
-import javafx.application.Platform;
+import database.tables.ProductsTable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import mutual.types.Product;
 
@@ -22,15 +23,19 @@ public class AdminInventoryView extends BorderPane
 {
     private ArrayList<Product> products;
     private InventoryToolBar inventoryToolBar;
-    private GridPane productContainer;
+    //private GridPane productContainer;
     private ScrollPane productsScrollPane;
+
+    private VBox container;
 
     public AdminInventoryView()
     {
-        products = ProductsHeld.getProducts();
+        products = ProductsTable.getProducts();
         inventoryToolBar = new InventoryToolBar();
-        productContainer = new GridPane();
-        productsScrollPane = new ScrollPane(productContainer);
+
+        container = new VBox();
+
+        productsScrollPane = new ScrollPane(container);
 
         initComponents();
         addComponents();
@@ -38,9 +43,8 @@ public class AdminInventoryView extends BorderPane
 
     private void initComponents()
     {
-        productContainer.setHgap(15);
-        productContainer.setVgap(15);
-        productContainer.setPadding(new Insets(5));
+        container.setSpacing(15);
+        container.setPadding(new Insets(10));
     }
 
     private void addComponents()
@@ -53,26 +57,36 @@ public class AdminInventoryView extends BorderPane
 
     public void setProducts(ArrayList<Product> products)
     {
-        productContainer.getChildren().clear();
+        container.getChildren().clear();
 
         if(!products.isEmpty())
         {
-            int column = 0, row = 0;
+            int column = 0;
+            GridPane gridPane = new GridPane();
+
+            gridPane.setHgap(10);
+            container.getChildren().add(gridPane);
+
             for(Product product : products)
             {
                 final int finalColumn = column;
-                final int finalRow = row;
+                final int finalRow = 0;
 
                 if(column < 5)
                 {
-                    Platform.runLater(() -> productContainer.add(new AdminProductView(product), finalColumn, finalRow));
+                    gridPane.add(new AdminProductView(product), finalColumn, finalRow);
                     column++;
                 }
                 else
                 {
                     column = 0;
-                    row++;
-                    Platform.runLater(() -> productContainer.add(new AdminProductView(product), finalColumn, finalRow));
+
+                    gridPane = new GridPane();
+                    gridPane.add(new AdminProductView(product), 0, 0);
+                    gridPane.setHgap(10);
+
+                    container.getChildren().add(gridPane);
+                    column++;
                 }
             }
         }
@@ -85,6 +99,18 @@ public class AdminInventoryView extends BorderPane
             hBox.setAlignment(Pos.CENTER);
 
             setCenter(hBox);
+        }
+    }
+
+    public static void setRowSpanOnClick(Node node, boolean selected)
+    {
+        if(selected)
+        {
+            GridPane.setRowSpan(node, 2);
+        }
+        else
+        {
+            GridPane.setRowSpan(node, 1);
         }
     }
 }
