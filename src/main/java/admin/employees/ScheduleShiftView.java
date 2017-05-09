@@ -193,7 +193,7 @@ public class ScheduleShiftView extends VBox
         {
             addComponents(true);
 
-            for(ComboBox comboBox : getComboBoxes())
+            for(ComboBox<? extends String> comboBox : getComboBoxes())
             {
                 comboBox.getSelectionModel().selectFirst();
             }
@@ -202,11 +202,12 @@ public class ScheduleShiftView extends VBox
         }
     }
 
-    private ArrayList<ComboBox> getComboBoxes()
+    @SuppressWarnings("unchecked") //Stupid Type Erasure
+    private ArrayList<ComboBox<String>> getComboBoxes()
     {
         return getChildren().stream()
                             .filter(node -> node instanceof ComboBox)
-                            .map(node -> (ComboBox) node)
+                            .map(node -> (ComboBox<String>) node)
                             .collect(Collectors.toCollection(ArrayList::new));
     }
 
@@ -232,18 +233,17 @@ public class ScheduleShiftView extends VBox
         return labels;
     }
 
-    private boolean saveSchedule(Date date, ArrayList<ComboBox> comboBoxes)
+    private boolean saveSchedule(Date date, ArrayList<ComboBox<String>> comboBoxes)
     {
         ArrayList<String> schedule2 = comboBoxes.stream()
                                                 .map(comboBox -> comboBox.getSelectionModel()
-                                                                         .getSelectedItem()
-                                                                         .toString())
+                                                                 .getSelectedItem())
                                                 .collect(Collectors.toCollection(ArrayList::new));
 
         return ScheduleTable.setScheduleFor(date, schedule2);
     }
 
-    private boolean loadEditableSchedule(Date date, ArrayList<ComboBox> comboBoxes)
+    private boolean loadEditableSchedule(Date date, ArrayList<ComboBox<String>> comboBoxes)
     {
         ArrayList<String> schedule = new ArrayList<>(10);
         schedule.addAll(ScheduleTable.getScheduleFor(date));
@@ -258,7 +258,7 @@ public class ScheduleShiftView extends VBox
 
         for(int i = 0; i < schedule.size(); i++)
         {
-            ComboBox comboBox = comboBoxes.get(i);
+            ComboBox<String> comboBox = comboBoxes.get(i);
             comboBox.getSelectionModel().select(schedule.get(i));
         }
 
