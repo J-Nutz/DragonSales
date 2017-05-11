@@ -77,16 +77,21 @@ public class AdminInventoryView extends BorderPane
             GridPane gridPane = new GridPane();
 
             gridPane.setHgap(10);
+
             container.getChildren().add(gridPane);
+
+            double width = (Screen.getPrimary().getBounds().getWidth() / 4) - 15;
 
             for(Product product : products)
             {
                 final int finalColumn = column;
                 final int finalRow = 0;
 
-                if(column < 5)
+                if(column < 4)
                 {
                     AdminProductView productView = new AdminProductView(product);
+                    //productView.setMinWidth(width);
+
                     gridPane.add(productView, finalColumn, finalRow);
                     column++;
                 }
@@ -98,9 +103,11 @@ public class AdminInventoryView extends BorderPane
                     gridPane.setHgap(10);
 
                     AdminProductView productView = new AdminProductView(product);
+                    //productView.setMinWidth(width);
                     gridPane.add(productView, 0, 0);
 
                     container.getChildren().add(gridPane);
+
                     column++;
                 }
             }

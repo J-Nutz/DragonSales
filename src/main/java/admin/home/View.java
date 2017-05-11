@@ -82,7 +82,8 @@ public class View extends GridPane
         int row = 3;
 
         add(imageView, 0, 0);
-        add(viewLabel, 0, 1);
+        //add(new Separator(Orientation.HORIZONTAL), 0, 1);
+        add(viewLabel, 0, 2);
 
         for(int i = 0; i < titles.length; i++)
         {
