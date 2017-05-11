@@ -71,12 +71,6 @@ public class InventoryToolBar extends BorderPane
 
             ArrayList<Product> searchResults = new ArrayList<>();
 
-            // Search not empty && Category All
-            // Search not empty && Category !All
-
-            // Search empty && Category All
-            // Search empty && Category !All
-
             if(!search.isEmpty() && category.equalsIgnoreCase("all"))
             {
                 searchResults = ProductsTable.getProductsLike(search);
@@ -95,32 +89,24 @@ public class InventoryToolBar extends BorderPane
             }
             else
             {
-                // Invalid Search
+                searchResults = new ArrayList<>(0);
             }
 
-            AdminInventoryView parent = (AdminInventoryView) getParent();
-            parent.setProducts(searchResults);
+            AdminInventoryView.setProducts(searchResults);
         });
 
         clearButton.setOnAction(event1 ->
         {
             productSearchField.clear();
 
-            AdminInventoryView parent = (AdminInventoryView) getParent();
-            parent.setProducts(ProductsTable.getProducts());
+            AdminInventoryView.setProducts(ProductsTable.getProducts());
         });
 
         searchContainer.setAlignment(Pos.CENTER_LEFT);
 
         rightContainer.setAlignment(Pos.CENTER);
         rightContainer.setMinWidth(175);
-        newProductButton.setOnAction(event ->
-        {
-            switchView(this, FullAccess.STOCK);
-
-            /*BorderPane inventoryView = (BorderPane) this.getParent();
-            inventoryView.setRight(new StockInventoryView());*/
-        });
+        newProductButton.setOnAction(event -> switchView(this, FullAccess.STOCK));
     }
 
     private void addComponents()
