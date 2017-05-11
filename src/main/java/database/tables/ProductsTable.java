@@ -14,6 +14,7 @@ import org.jooq.util.h2.H2DSL;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.stream.Collectors;
@@ -391,7 +392,7 @@ public class ProductsTable
         });
     }
 
-    public static boolean updateAmountSold(String productName, int amountToAdd)
+    public static boolean updateAmountAndDateSold(String productName, int amountToAdd)
     {
         return DatabaseExecutor.submitBoolean(() ->
         {
@@ -402,8 +403,10 @@ public class ProductsTable
 
                 int result =
                       database.update(products)
-                              .set(row(products.TOTAL_SOLD),
-                                   row(currentAmount + amountToAdd))
+                              .set(row(products.TOTAL_SOLD,
+                                       products.LAST_SOLD_DATE),
+                                   row((currentAmount + amountToAdd),
+                                       Date.valueOf(LocalDate.now())))
                               .where(products.NAME.equal(productName))
                               .execute();
 
@@ -411,4 +414,5 @@ public class ProductsTable
             }
         });
     }
+
 }

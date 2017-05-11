@@ -16,7 +16,9 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import mutual.types.Product;
 
+import java.sql.Date;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import static admin.inventory.AdminInventoryView.setRowSpanOnClick;
@@ -54,11 +56,11 @@ public class AdminProductView extends GridPane
         purchasePriceLabel = new Label("Purchase Price: $" + product.getPurchasePrice().toString());
         salePriceLabel = new Label("Sale Price: $" + product.getSalePrice().toString());
         productCategoryLabel = new Label("Category: " + product.getCategory());
-        expirationDateLabel = new Label("Expires: " + product.getExpirationDate());
+        expirationDateLabel = new Label("Expires: " + formatDate(product.getExpirationDate()));
         totalSoldLabel = new Label("Total Sold: " + product.getTotalSold());
-        dateLastSoldLabel = new Label("Last Sold: " + product.getDateLastSold());
-        dateOrderedLabel = new Label("Ordered: " + product.getDateOrdered());
-        dateReceivedLabel = new Label("Received: " + product.getDateReceived());
+        dateLastSoldLabel = new Label("Last Sold: " + formatDate(product.getDateLastSold()));
+        dateOrderedLabel = new Label("Ordered: " + formatDate(product.getDateOrdered()));
+        dateReceivedLabel = new Label("Received: " + formatDate(product.getDateReceived()));
 
         restockButton = new Button("Restock");
         removeButton = new Button("Remove");
@@ -111,6 +113,7 @@ public class AdminProductView extends GridPane
                 Product newProduct = newProductResult.get();
                 newProduct.setTotalSold(product.getTotalSold());
                 newProduct.setDiscountPrice(product.getDiscountPrice());
+                newProduct.setDateLastSold(product.getDateLastSold());
 
                 ProductsTable.updateProduct(product.getName(), newProduct);
                 AdminInventoryView.setProducts(ProductsTable.getProducts());
@@ -193,5 +196,12 @@ public class AdminProductView extends GridPane
             setRowSpanOnClick(this, false);
             removeExtraComponents();
         }
+    }
+
+    private String formatDate(Date date)
+    {
+        LocalDate localDate = date.toLocalDate();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M-d-yyyy");
+        return localDate.format(formatter);
     }
 }
