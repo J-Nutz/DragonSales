@@ -19,6 +19,7 @@ public enum FullAccess
     HOME,
 
     INVENTORY,
+    STOCK,
     RESTOCK,
 
     MANAGE, // Hire/Fire/Promotion/Demotion/Etc of Employees

@@ -8,8 +8,12 @@ import admin.employees.EmployeeScheduler;
 import admin.employees.HireEmployeeView;
 import admin.employees.ManageEmployeesView;
 import admin.inventory.AdminInventoryView;
-import admin.inventory.StockInventoryView;
-import database.tables.*;
+import admin.inventory.StockProductDialog;
+import database.tables.AllTimeStatsTable;
+import database.tables.DailyStatsTable;
+import database.tables.DiscountsTable;
+import database.tables.ProductsTable;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonType;
@@ -31,6 +35,8 @@ import mutual.views.statistics.SaleStatsView;
 import mutual.views.statistics.StatisticsTracker;
 
 import java.util.Optional;
+
+import static admin.inventory.AdminInventoryView.setProducts;
 
 public class ViewContainer extends BorderPane
 {
@@ -134,11 +140,14 @@ public class ViewContainer extends BorderPane
                 checkLock(new AdminInventoryView(), false);
                 break;
 
-            case RESTOCK:
-                AdminInventoryView adminInventoryView = new AdminInventoryView();
-                adminInventoryView.setRight(new StockInventoryView());
-                checkLock(adminInventoryView, false);
+            case STOCK:
+                checkLock(new AdminInventoryView(), false);
+                Platform.runLater(this::showStockDialog);
                 break;
+
+            /*case RESTOCK:
+                showRestockDialog();
+                break;*/
 
             /////////////////////////////////////////////////////
 
@@ -237,6 +246,22 @@ public class ViewContainer extends BorderPane
         else
         {
             quickSaleDialog.close();
+        }
+    }
+
+    private void showStockDialog()
+    {
+        StockProductDialog stockProductDialog = new StockProductDialog();
+
+        Optional<Product> newProductResult = stockProductDialog.showAndWait();
+
+        if(newProductResult.isPresent())
+        {
+            Product newProduct = newProductResult.get();
+
+            ProductsTable.addProduct(newProduct);
+
+            setProducts(ProductsTable.getProducts());
         }
     }
 }

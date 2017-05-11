@@ -23,7 +23,7 @@ public class ViewSelector extends HBox
     public ViewSelector() // TODO: Recommend products to put on sale base on sales per week, last sold, frequency sold, etc.
     {
         saleView = new View("/sale.png", "Sales", FullAccess.SALE, new String[] {"Quick Sale", "Regular Sale", "View Discounts", "Add Discount"}, new FullAccess[] {FullAccess.QUICK_SALE, FullAccess.SALE, FullAccess.ADD_ITEM_DISCOUNT, FullAccess.PRODUCT_DISCOUNT_SELECTOR});
-        inventoryView = new View("/inventory.png", "Inventory", FullAccess.INVENTORY, new String[] {"View Products", "Add Product"}, new FullAccess[]{FullAccess.INVENTORY, FullAccess.RESTOCK});
+        inventoryView = new View("/inventory.png", "Inventory", FullAccess.INVENTORY, new String[] {"View Products", "Add Product"}, new FullAccess[]{FullAccess.INVENTORY, FullAccess.STOCK});
         employeeView = new View("/employees.png", "Employees", FullAccess.MANAGE, new String[] {"Manage", "Schedule", "Hire"}, new FullAccess[]{FullAccess.MANAGE, FullAccess.SCHEDULE, FullAccess.HIRE_EMPLOYEE});
         statisticsView = new View("/statistics.png", "Statistics", FullAccess.STATS, new String[] {"Sales", "Products"}, new FullAccess[]{FullAccess.SALE_STATS, FullAccess.PRODUCT_STATS});
         settingsView = new View("/settings.png", "Settings", FullAccess.SETTINGS, new String[] {"Coming Soon!"}, new FullAccess[] {FullAccess.NULL});

@@ -1,33 +1,34 @@
 package admin.inventory;
 
 /*
- * Created by Jonah on 1/9/2017.
+ * Created by Jonah on 5/11/2017.
  */
 
-import database.data.ProductsHeld;
-import database.tables.ProductsTable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import mutual.types.Category;
 import mutual.types.Product;
 import worker.BigDecimalSpinnerValueFactory;
-import worker.ErrorMessageShower;
 
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
 
-public class StockInventoryView extends GridPane
+import static worker.ErrorMessageShower.showErrorMessage;
+
+public class StockProductDialog extends Dialog<Product>
 {
     private ObservableList<Category> categories;
     private LocalDate date;
+
+    private GridPane container;
 
     private TextField nameTextField;
     private Label categoryLabel;
@@ -46,18 +47,41 @@ public class StockInventoryView extends GridPane
     private DatePicker receivedDatePicker;
 
     private Button clearFieldsButton;
-    private Button addProductButton;
-    private Button closeButton;
     private HBox buttonContainer;
 
     private HBox errorMessageContainer;
 
     private BigDecimal zero = new BigDecimal("0.00");
 
-    public StockInventoryView()
+    public StockProductDialog()
     {
+        getDialogPane().getButtonTypes().addAll(ButtonType.FINISH, ButtonType.CANCEL);
+        setResultConverter(param ->
+        {
+            if(!param.getButtonData().isCancelButton())
+            {
+                return constructProduct();
+            }
+            else
+            {
+                return null;
+            }
+        });
+
+        final Button btOk = (Button) getDialogPane().lookupButton(ButtonType.FINISH);
+        btOk.addEventFilter(ActionEvent.ACTION, event ->
+        {
+            if(!validFields())
+            {
+                event.consume();
+                showErrorMessage(errorMessageContainer, "Invalid Fields");
+            }
+        });
+
         categories = FXCollections.observableArrayList(Category.values());
         date = LocalDate.now();
+
+        container = new GridPane();
 
         nameTextField = new TextField();
         categoryLabel = new Label("Category:");
@@ -76,8 +100,6 @@ public class StockInventoryView extends GridPane
         receivedDatePicker = new DatePicker(date);
 
         clearFieldsButton = new Button("Clear");
-        addProductButton = new Button("Add");
-        closeButton = new Button("Close");
         buttonContainer = new HBox(10);
 
         errorMessageContainer = new HBox();
@@ -88,11 +110,10 @@ public class StockInventoryView extends GridPane
 
     private void initComponents()
     {
-        setAlignment(Pos.CENTER);
-        setHgap(10);
-        setVgap(10);
-        setPadding(new Insets(10));
-        setMinWidth(175);
+        container.setAlignment(Pos.CENTER);
+        container.setHgap(15);
+        container.setVgap(20);
+        container.setPadding(new Insets(20));
 
         nameTextField.setPromptText("Product Name");
         nameTextField.setMaxWidth(150);
@@ -120,34 +141,6 @@ public class StockInventoryView extends GridPane
 
         clearFieldsButton.setOnAction(event -> clearFields());
 
-        addProductButton.setOnAction(event ->
-        {
-            if(validFields())
-            {
-                Product product = constructProduct();
-
-                ProductsTable.addProduct(product); //TODO: Check if product exists
-                ProductsHeld.addProduct(product);
-
-                AdminInventoryView inventoryView = (AdminInventoryView) this.getParent();
-                inventoryView.setProducts(ProductsTable.getProducts());
-
-                clearFields();
-            }
-            else
-            {
-                ErrorMessageShower.showErrorMessage(errorMessageContainer, "Invalid Fields");
-
-                System.out.println("Fields Not Valid");
-            }
-        });
-
-        closeButton.setOnAction(event ->
-        {
-            BorderPane inventoryView = (BorderPane) this.getParent();
-            inventoryView.setRight(null);
-        });
-
         buttonContainer.setAlignment(Pos.CENTER);
 
         errorMessageContainer.setAlignment(Pos.CENTER);
@@ -155,51 +148,53 @@ public class StockInventoryView extends GridPane
 
     private void addComponents()
     {
-        add(nameTextField, 0, 0);
+        container.add(nameTextField, 0, 0);
         GridPane.setColumnSpan(nameTextField, 2);
         GridPane.setHalignment(nameTextField, HPos.CENTER);
 
-        add(categoryLabel, 0, 1);
-        add(categoryComboBox, 1, 1);
+        container.add(categoryLabel, 0, 1);
+        container.add(categoryComboBox, 1, 1);
         GridPane.setHalignment(categoryLabel, HPos.RIGHT);
         GridPane.setHalignment(categoryComboBox, HPos.LEFT);
 
-        add(purchasePriceLabel, 0, 2);
-        add(purchasePriceSpinner, 1, 2);
+        container.add(purchasePriceLabel, 0, 2);
+        container.add(purchasePriceSpinner, 1, 2);
         GridPane.setHalignment(purchasePriceLabel, HPos.RIGHT);
         GridPane.setHalignment(purchasePriceSpinner, HPos.LEFT);
 
-        add(salePriceLabel, 0, 3);
-        add(salePriceSpinner, 1, 3);
+        container.add(salePriceLabel, 0, 3);
+        container.add(salePriceSpinner, 1, 3);
         GridPane.setHalignment(salePriceLabel, HPos.RIGHT);
         GridPane.setHalignment(salePriceSpinner, HPos.LEFT);
 
-        add(initialQuantityLabel, 0, 4);
-        add(initialQuantitySpinner, 1, 4);
+        container.add(initialQuantityLabel, 0, 4);
+        container.add(initialQuantitySpinner, 1, 4);
         GridPane.setHalignment(initialQuantityLabel, HPos.RIGHT);
         GridPane.setHalignment(initialQuantitySpinner, HPos.LEFT);
 
-        add(expirationDateLabel, 0, 5);
-        add(expirationDatePicker, 1, 5);
+        container.add(expirationDateLabel, 0, 5);
+        container.add(expirationDatePicker, 1, 5);
         GridPane.setHalignment(expirationDateLabel, HPos.RIGHT);
         GridPane.setHalignment(expirationDatePicker, HPos.LEFT);
 
-        add(orderedDateLabel, 0, 6);
-        add(orderedDatePicker, 1, 6);
+        container.add(orderedDateLabel, 0, 6);
+        container.add(orderedDatePicker, 1, 6);
         GridPane.setHalignment(orderedDateLabel, HPos.RIGHT);
         GridPane.setHalignment(orderedDatePicker, HPos.LEFT);
 
-        add(receivedDateLabel, 0, 7);
-        add(receivedDatePicker, 1, 7);
+        container.add(receivedDateLabel, 0, 7);
+        container.add(receivedDatePicker, 1, 7);
         GridPane.setHalignment(receivedDateLabel, HPos.RIGHT);
         GridPane.setHalignment(receivedDatePicker, HPos.LEFT);
 
-        buttonContainer.getChildren().addAll(clearFieldsButton, addProductButton, closeButton);
-        add(buttonContainer, 0, 8);
+        buttonContainer.getChildren().addAll(clearFieldsButton/*, addProductButton, closeButton*/);
+        container.add(buttonContainer, 0, 8);
         GridPane.setColumnSpan(buttonContainer, 2);
 
         GridPane.setColumnSpan(errorMessageContainer, 2);
-        add(errorMessageContainer, 0, 9);
+        container.add(errorMessageContainer, 0, 9);
+
+        getDialogPane().setContent(container);
     }
 
     private void clearFields()
@@ -217,16 +212,12 @@ public class StockInventoryView extends GridPane
     private boolean validFields()
     {
         boolean validName = !(nameTextField.getText().isEmpty());
-        System.out.println("Valid Name: " + validName);
 
         boolean validPurchasePrice = (purchasePriceSpinner.getValue().compareTo(zero) == 1);
-        System.out.println("Valid Purchase Price: " + validPurchasePrice);
 
         boolean validSalePrice = (salePriceSpinner.getValue().compareTo(zero) == 1);
-        System.out.println("Valid Sale Price: " + validSalePrice);
 
         boolean validQuantity = (initialQuantitySpinner.getValue() > 0);
-        System.out.println("Valid Quantity: " + validQuantity);
 
         return validName && validPurchasePrice && validSalePrice && validQuantity;
     }
@@ -263,5 +254,17 @@ public class StockInventoryView extends GridPane
         product.setDateReceived(productReceivedDate);
 
         return product;
+    }
+
+    public void setFields(Product product)
+    {
+        nameTextField.setText(product.getName());
+        categoryComboBox.setValue(Category.valueOf(product.getCategory()));
+        purchasePriceSpinner.getValueFactory().setValue(product.getPurchasePrice());
+        salePriceSpinner.getValueFactory().setValue(product.getSalePrice());
+        initialQuantitySpinner.getValueFactory().setValue(product.getInitialQuantity());
+        expirationDatePicker.setValue(product.getExpirationDate().toLocalDate());
+        orderedDatePicker.setValue(product.getDateOrdered().toLocalDate());
+        receivedDatePicker.setValue(product.getDateReceived().toLocalDate());
     }
 }

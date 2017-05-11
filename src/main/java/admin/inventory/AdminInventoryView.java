@@ -24,9 +24,9 @@ public class AdminInventoryView extends BorderPane
     private ArrayList<Product> products;
     private InventoryToolBar inventoryToolBar;
     //private GridPane productContainer;
-    private ScrollPane productsScrollPane;
+    private static ScrollPane productsScrollPane;
 
-    private VBox container;
+    private static VBox container;
 
     public AdminInventoryView()
     {
@@ -55,7 +55,7 @@ public class AdminInventoryView extends BorderPane
         setProducts(products);
     }
 
-    public void setProducts(ArrayList<Product> products)
+    public static void setProducts(ArrayList<Product> products)
     {
         container.getChildren().clear();
 
@@ -98,7 +98,9 @@ public class AdminInventoryView extends BorderPane
             HBox hBox = new HBox(noProductsLabel);
             hBox.setAlignment(Pos.CENTER);
 
-            setCenter(hBox);
+            productsScrollPane.setContent(hBox);
+
+            //setCenter(hBox);
         }
     }
 

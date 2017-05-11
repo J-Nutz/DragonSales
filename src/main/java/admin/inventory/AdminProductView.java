@@ -9,13 +9,11 @@ import database.tables.ProductsTable;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import mutual.types.Product;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 import static admin.inventory.AdminInventoryView.setRowSpanOnClick;
@@ -75,7 +73,7 @@ public class AdminProductView extends GridPane
         setBorder(new Border(new BorderStroke(Color.DIMGRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(2))));
 
 
-        addEventFilter(MouseEvent.MOUSE_PRESSED, event ->
+        setOnMouseClicked(event ->
         {
             if(!selected)
             {
@@ -89,17 +87,30 @@ public class AdminProductView extends GridPane
                 setRowSpanOnClick(this, false);
                 removeExtraComponents();
             }
-
-            /*setRowSpanOnClick(this, extraComponentsShowing);
-            extraComponentsShowing = !extraComponentsShowing;
-            addExtraComponents();
-            setRowSpanOnClick(this, extraComponentsShowing);*/
         });
 
         productLbl.setFont(new Font("Courier New", 24));
 
         productStockLevel.setProgress((double) product.getCurrentQuantity() / (double) product.getInitialQuantity());
         productStockLevel.setMaxWidth(Double.POSITIVE_INFINITY);
+
+        restockButton.setOnAction(event ->
+        {
+            StockProductDialog stockProductDialog = new StockProductDialog();
+            stockProductDialog.setFields(product);
+
+            Optional<Product> newProductResult = stockProductDialog.showAndWait();
+
+            if(newProductResult.isPresent())
+            {
+                Product newProduct = newProductResult.get();
+                newProduct.setTotalSold(product.getTotalSold());
+                newProduct.setDiscountPrice(product.getDiscountPrice());
+
+                ProductsTable.updateProduct(product.getName(), newProduct);
+                AdminInventoryView.setProducts(ProductsTable.getProducts());
+            }
+        });
 
         removeButton.setOnAction(event ->
         {
@@ -111,10 +122,7 @@ public class AdminProductView extends GridPane
             {
                 DiscountsTable.deleteDiscount(product.getName());
                 ProductsTable.deleteProduct(product.getName());
-                //ProductsHeld.removeProduct(product);
-                AdminInventoryView inventoryView = (AdminInventoryView) this.getParent().getParent().getParent().getParent().getParent().getParent();
-                ArrayList<Product> products = ProductsTable.getProducts();
-                inventoryView.setProducts(products);
+                AdminInventoryView.setProducts(ProductsTable.getProducts());
             }
             else
             {
@@ -148,7 +156,6 @@ public class AdminProductView extends GridPane
 
     public void addExtraComponents()
     {
-
         add(productCategoryLabel, 0, 5);
         add(expirationDateLabel, 1, 5);
 
@@ -165,10 +172,5 @@ public class AdminProductView extends GridPane
     private void removeExtraComponents()
     {
         getChildren().removeAll(productCategoryLabel, expirationDateLabel, dateOrderedLabel, dateReceivedLabel, restockButton, removeButton);
-    }
-
-    public void setOnClick()
-    {
-
     }
 }

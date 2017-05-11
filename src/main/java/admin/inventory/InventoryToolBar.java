@@ -16,8 +16,11 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import mutual.types.Category;
 import mutual.types.Product;
+import mutual.views.FullAccess;
 
 import java.util.ArrayList;
+
+import static admin.home.ViewContainer.switchView;
 
 public class InventoryToolBar extends BorderPane
 {
@@ -113,8 +116,10 @@ public class InventoryToolBar extends BorderPane
         rightContainer.setMinWidth(175);
         newProductButton.setOnAction(event ->
         {
-            BorderPane inventoryView = (BorderPane) this.getParent();
-            inventoryView.setRight(new StockInventoryView());
+            switchView(this, FullAccess.STOCK);
+
+            /*BorderPane inventoryView = (BorderPane) this.getParent();
+            inventoryView.setRight(new StockInventoryView());*/
         });
     }
 
