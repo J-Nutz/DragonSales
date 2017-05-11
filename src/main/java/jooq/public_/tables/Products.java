@@ -4,23 +4,18 @@
 package jooq.public_.tables;
 
 
-import jooq.public_.Keys;
 import jooq.public_.Public;
 import jooq.public_.tables.records.ProductsRecord;
 
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.Arrays;
-import java.util.List;
 
 import javax.annotation.Generated;
 
 import org.jooq.Field;
-import org.jooq.Identity;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
-import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
 
 
@@ -37,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Products extends TableImpl<ProductsRecord> {
 
-    private static final long serialVersionUID = -560498413;
+    private static final long serialVersionUID = 140361712;
 
     /**
      * The reference instance of <code>PUBLIC.PRODUCTS</code>
@@ -51,11 +46,6 @@ public class Products extends TableImpl<ProductsRecord> {
     public Class<ProductsRecord> getRecordType() {
         return ProductsRecord.class;
     }
-
-    /**
-     * The column <code>PUBLIC.PRODUCTS.ID</code>.
-     */
-    public final TableField<ProductsRecord, Long> ID = createField("ID", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("(NEXT VALUE FOR PUBLIC.SYSTEM_SEQUENCE_BAE2226E_7A2D_4ECA_A302_A1D43ABC7C3B)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * The column <code>PUBLIC.PRODUCTS.NAME</code>.
@@ -78,9 +68,9 @@ public class Products extends TableImpl<ProductsRecord> {
     public final TableField<ProductsRecord, BigDecimal> PRICE = createField("PRICE", org.jooq.impl.SQLDataType.DECIMAL.precision(65535, 32767), this, "");
 
     /**
-     * The column <code>PUBLIC.PRODUCTS.SALE_PRICE</code>.
+     * The column <code>PUBLIC.PRODUCTS.DISCOUNT_PRICE</code>.
      */
-    public final TableField<ProductsRecord, BigDecimal> SALE_PRICE = createField("SALE_PRICE", org.jooq.impl.SQLDataType.DECIMAL.precision(65535, 32767), this, "");
+    public final TableField<ProductsRecord, BigDecimal> DISCOUNT_PRICE = createField("DISCOUNT_PRICE", org.jooq.impl.SQLDataType.DECIMAL.precision(65535, 32767), this, "");
 
     /**
      * The column <code>PUBLIC.PRODUCTS.CUR_QUANTITY</code>.
@@ -145,30 +135,6 @@ public class Products extends TableImpl<ProductsRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Identity<ProductsRecord, Long> getIdentity() {
-        return Keys.IDENTITY_PRODUCTS;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public UniqueKey<ProductsRecord> getPrimaryKey() {
-        return Keys.CONSTRAINT_F;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<UniqueKey<ProductsRecord>> getKeys() {
-        return Arrays.<UniqueKey<ProductsRecord>>asList(Keys.CONSTRAINT_F);
     }
 
     /**

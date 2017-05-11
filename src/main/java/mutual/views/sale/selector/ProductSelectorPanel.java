@@ -4,7 +4,7 @@ package mutual.views.sale.selector;
  * Created by Jonah on 11/19/2016.
  */
 
-import database.data.ProductsHeld;
+import database.tables.ProductsTable;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -31,8 +31,8 @@ public class ProductSelectorPanel extends BorderPane
         productsContainer = new GridPane();
 
         initComponents();
-        addComponents(ProductsHeld.getProducts());
-        //addComponents(ProductsTable.getProducts());
+        //addComponents(ProductsHeld.getProducts());
+        addComponents(ProductsTable.getProducts());
     }
 
     private void initComponents()
@@ -47,7 +47,7 @@ public class ProductSelectorPanel extends BorderPane
         int column = 0;
         int row = 0;
 
-        if(!products.isEmpty())
+        if(products != null && !products.isEmpty())
         {
             for(Product product : products)
             {

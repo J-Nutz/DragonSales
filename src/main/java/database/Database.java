@@ -21,12 +21,11 @@ public class Database
             DSLContext database = H2DSL.using(connection))
         {
             database.createTableIfNotExists("PRODUCTS")
-                    .column("ID", H2DataType.IDENTITY)
                     .column("NAME", H2DataType.VARCHAR_IGNORECASE.length(64))
                     .column("CATEGORY", H2DataType.VARCHAR_IGNORECASE.length(16))
                     .column("PURCHASE_PRICE", H2DataType.DECIMAL)
                     .column("PRICE", H2DataType.DECIMAL)
-                    .column("SALE_PRICE", H2DataType.DECIMAL)
+                    .column("DISCOUNT_PRICE", H2DataType.DECIMAL)
                     .column("CUR_QUANTITY", H2DataType.INTEGER)
                     .column("INIT_QUANTITY", H2DataType.INTEGER)
                     .column("TOTAL_SOLD", H2DataType.INTEGER)

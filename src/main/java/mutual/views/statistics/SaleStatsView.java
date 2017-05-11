@@ -337,8 +337,15 @@ public class SaleStatsView extends BorderPane
         int maxValue = productsAndAmounts.get(productNames.get(0));
         String productName = productNames.get(0);
 
+        if(productsAndAmounts.containsKey("Empty"))
+        {
+            return "No Products Sold";
+        }
+
         for(int i = 1; i < productNames.size(); i++)
         {
+
+
             if(maxValue < productsAndAmounts.get(productNames.get(i)))
             {
                 maxValue = productsAndAmounts.get(productNames.get(i));
@@ -355,6 +362,11 @@ public class SaleStatsView extends BorderPane
         ArrayList<String> productNames = ProductsTable.getProductNames();
         int minValue = productsAndAmounts.get(productNames.get(0));
         String productName = productNames.get(0);
+
+        if(productsAndAmounts.containsKey("Empty"))
+        {
+            return "No Products Sold";
+        }
 
         for(int i = 1; i < productNames.size(); i++)
         {

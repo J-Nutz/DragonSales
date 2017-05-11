@@ -71,7 +71,7 @@ public class AdminInventoryView extends BorderPane
             productsScrollPane.setContent(container);
         }
 
-        if(!products.isEmpty())
+        if(products != null && !products.isEmpty())
         {
             int column = 0;
             GridPane gridPane = new GridPane();

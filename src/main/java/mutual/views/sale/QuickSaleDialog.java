@@ -262,46 +262,60 @@ public class QuickSaleDialog extends Dialog<ObservableList<OrderFragment>>
     {
         productResultsPane.getChildren().clear();
 
-        for(Product product : products)
+        if(products != null && !products.isEmpty())
         {
-            VBox productContainer = new VBox(5);
-            Label productName = new Label(product.getName());
-            Label productPrice = new Label();
-
-            try
+            for(Product product : products)
             {
-                Discount discount = DiscountsTable.getDiscount(product.getName());
-                if(discount.getDayOfSale(LocalDate.now().getDayOfWeek()))
+                VBox productContainer = new VBox(5);
+                Label productName = new Label(product.getName());
+                Label productPrice = new Label();
+
+                try
                 {
-                    productPrice.setText("$" + product.getDiscountPrice().toString());
+                    Discount discount = DiscountsTable.getDiscount(product.getName());
+                    if(discount.getDayOfSale(LocalDate.now()
+                                                      .getDayOfWeek()))
+                    {
+                        System.out.println(product.getDiscountPrice());
+                        productPrice.setText("$" + product.getDiscountPrice()
+                                                          .toString());
+                    }
+                    else
+                    {
+                        productPrice.setText("$" + product.getSalePrice()
+                                                          .toString());
+                    }
                 }
-                else
+                catch(NullPointerException npe)
                 {
-                    productPrice.setText("$" + product.getSalePrice().toString());
+                    productPrice.setText("$" + product.getSalePrice()
+                                                      .toString());
                 }
+
+                productContainer.setPadding(new Insets(2));
+                productContainer.setSpacing(3);
+                productContainer.setAlignment(Pos.CENTER);
+                productContainer.setBorder(new Border(
+                        new BorderStroke(Color.DIMGRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+                productContainer.setOnMouseEntered(event -> productContainer.setCursor(Cursor.HAND));
+                productContainer.setOnMouseExited(event -> productContainer.setCursor(Cursor.DEFAULT));
+                productContainer.setOnMouseClicked(event -> {
+                    selectedProduct = ProductsTable.getProduct(product.getName());
+                    productLabel.setText(product.getName());
+                });
+
+                productName.setFont(new Font(13));
+                productPrice.setFont(new Font(12));
+
+                productContainer.getChildren()
+                                .addAll(productName, productPrice);
+                productResultsPane.getChildren()
+                                  .add(productContainer);
             }
-            catch(NullPointerException npe)
-            {
-                productPrice.setText("$" + product.getSalePrice().toString());
-            }
-
-            productContainer.setPadding(new Insets(2));
-            productContainer.setSpacing(3);
-            productContainer.setAlignment(Pos.CENTER);
-            productContainer.setBorder(new Border(new BorderStroke(Color.DIMGRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
-            productContainer.setOnMouseEntered(event -> productContainer.setCursor(Cursor.HAND));
-            productContainer.setOnMouseExited(event -> productContainer.setCursor(Cursor.DEFAULT));
-            productContainer.setOnMouseClicked(event ->
-            {
-                selectedProduct = ProductsTable.getProduct(product.getName());
-                productLabel.setText(product.getName());
-            });
-
-            productName.setFont(new Font(13));
-            productPrice.setFont(new Font(12));
-
-            productContainer.getChildren().addAll(productName, productPrice);
-            productResultsPane.getChildren().add(productContainer);
+        }
+        else
+        {
+            productResultsPane.getChildren().add(new Label("No Products"));
         }
     }
 

@@ -9,6 +9,7 @@ import jooq.public_.tables.Products;
 import jooq.public_.tables.records.ProductsRecord;
 import mutual.types.Product;
 import org.jooq.*;
+import org.jooq.exception.DataAccessException;
 import org.jooq.util.h2.H2DSL;
 
 import java.math.BigDecimal;
@@ -45,7 +46,7 @@ public class ProductsTable
                                                              products.CATEGORY,
                                                              products.PURCHASE_PRICE,
                                                              products.PRICE,
-                                                             products.SALE_PRICE,
+                                                             products.DISCOUNT_PRICE,
                                                              products.INIT_QUANTITY,
                                                              products.CUR_QUANTITY,
                                                              products.TOTAL_SOLD,
@@ -97,7 +98,7 @@ public class ProductsTable
                         product.setCategory(r.get(products.CATEGORY));
                         product.setPurchasePrice(r.get(products.PURCHASE_PRICE));
                         product.setSalePrice(r.get(products.PRICE));
-                        product.setDiscountPrice(r.get(products.SALE_PRICE));
+                        product.setDiscountPrice(r.get(products.DISCOUNT_PRICE));
                         product.setInitialQuantity(r.get(products.INIT_QUANTITY));
                         product.setCurrentQuantity(r.get(products.CUR_QUANTITY));
                         product.setTotalSold(r.get(products.TOTAL_SOLD));
@@ -130,7 +131,7 @@ public class ProductsTable
                                          products.CATEGORY,
                                          products.PURCHASE_PRICE,
                                          products.PRICE,
-                                         products.SALE_PRICE,
+                                         products.DISCOUNT_PRICE,
                                          products.INIT_QUANTITY,
                                          products.CUR_QUANTITY,
                                          products.TOTAL_SOLD,
@@ -189,28 +190,40 @@ public class ProductsTable
                                 .from(products)
                                 .fetch();
 
-                ArrayList<Product> productsList = new ArrayList<>();
-
-                for (Record record : fetchedProducts)
+                if(fetchedProducts.isNotEmpty())
                 {
-                    Product product = new Product();
-                    product.setName(record.get(products.NAME));
-                    product.setCategory(record.get(products.CATEGORY));
-                    product.setPurchasePrice(record.get(products.PURCHASE_PRICE));
-                    product.setSalePrice(record.get(products.PRICE));
-                    product.setDiscountPrice(record.get(products.SALE_PRICE));
-                    product.setInitialQuantity(record.get(products.INIT_QUANTITY));
-                    product.setCurrentQuantity(record.get(products.CUR_QUANTITY));
-                    product.setTotalSold(record.get(products.TOTAL_SOLD));
-                    product.setExpirationDate(record.get(products.EXPIRATION_DATE));
-                    product.setDateLastSold(record.get(products.LAST_SOLD_DATE));
-                    product.setDateOrdered(record.get(products.ORDERED_DATE));
-                    product.setDateReceived(record.get(products.RECEIVED_DATE));
+                    ArrayList<Product> productsList = new ArrayList<>();
 
-                    productsList.add(product);
+                    for(Record record : fetchedProducts)
+                    {
+                        Product product = new Product();
+                        product.setName(record.get(products.NAME));
+                        product.setCategory(record.get(products.CATEGORY));
+                        product.setPurchasePrice(record.get(products.PURCHASE_PRICE));
+                        product.setSalePrice(record.get(products.PRICE));
+                        product.setDiscountPrice(record.get(products.DISCOUNT_PRICE));
+                        product.setInitialQuantity(record.get(products.INIT_QUANTITY));
+                        product.setCurrentQuantity(record.get(products.CUR_QUANTITY));
+                        product.setTotalSold(record.get(products.TOTAL_SOLD));
+                        product.setExpirationDate(record.get(products.EXPIRATION_DATE));
+                        product.setDateLastSold(record.get(products.LAST_SOLD_DATE));
+                        product.setDateOrdered(record.get(products.ORDERED_DATE));
+                        product.setDateReceived(record.get(products.RECEIVED_DATE));
+
+                        productsList.add(product);
+                    }
+
+                    return productsList;
                 }
-
-                return productsList;
+                else
+                {
+                    return null;
+                }
+            }
+            catch(DataAccessException dae)
+            {
+                System.out.println("What");
+                return null;
             }
         });
     }
@@ -227,9 +240,19 @@ public class ProductsTable
                              .from(products)
                              .fetch();
 
-                return fetchedNames.stream()
-                                   .map(Record1<String>::value1)
-                                   .collect(Collectors.toCollection(ArrayList::new));
+                if(fetchedNames.isNotEmpty())
+                {
+                    return fetchedNames.stream()
+                                       .map(Record1<String>::value1)
+                                       .collect(Collectors.toCollection(ArrayList::new));
+                }
+                else
+                {
+                    ArrayList<String> empty = new ArrayList<String>();
+                    empty.add("Empty");
+
+                    return empty;
+                }
             }
         });
     }
@@ -256,7 +279,7 @@ public class ProductsTable
                     product.setCategory(record.get(products.CATEGORY));
                     product.setPurchasePrice(record.get(products.PURCHASE_PRICE));
                     product.setSalePrice(record.get(products.PRICE));
-                    product.setDiscountPrice(record.get(products.SALE_PRICE));
+                    product.setDiscountPrice(record.get(products.DISCOUNT_PRICE));
                     product.setInitialQuantity(record.get(products.INIT_QUANTITY));
                     product.setCurrentQuantity(record.get(products.CUR_QUANTITY));
                     product.setTotalSold(record.get(products.TOTAL_SOLD));
@@ -295,7 +318,7 @@ public class ProductsTable
                     product.setCategory(record.get(products.CATEGORY));
                     product.setPurchasePrice(record.get(products.PURCHASE_PRICE));
                     product.setSalePrice(record.get(products.PRICE));
-                    product.setDiscountPrice(record.get(products.SALE_PRICE));
+                    product.setDiscountPrice(record.get(products.DISCOUNT_PRICE));
                     product.setInitialQuantity(record.get(products.INIT_QUANTITY));
                     product.setCurrentQuantity(record.get(products.CUR_QUANTITY));
                     product.setTotalSold(record.get(products.TOTAL_SOLD));
@@ -334,7 +357,7 @@ public class ProductsTable
                     product.setCategory(record.get(products.CATEGORY));
                     product.setPurchasePrice(record.get(products.PURCHASE_PRICE));
                     product.setSalePrice(record.get(products.PRICE));
-                    product.setDiscountPrice(record.get(products.SALE_PRICE));
+                    product.setDiscountPrice(record.get(products.DISCOUNT_PRICE));
                     product.setInitialQuantity(record.get(products.INIT_QUANTITY));
                     product.setCurrentQuantity(record.get(products.CUR_QUANTITY));
                     product.setTotalSold(record.get(products.TOTAL_SOLD));
@@ -382,12 +405,21 @@ public class ProductsTable
                         .from(products)
                         .fetch();
 
-                for(Record2<String, Integer> record2 : namesAndAmountsResult)
+                if(namesAndAmountsResult.isNotEmpty())
                 {
-                    namesAndAmounts.put(record2.value1(), record2.value2());
-                }
+                    for(Record2<String, Integer> record2 : namesAndAmountsResult)
+                    {
+                        namesAndAmounts.put(record2.value1(), record2.value2());
+                    }
 
-                return namesAndAmounts;
+                    return namesAndAmounts;
+                }
+                else
+                {
+                    namesAndAmounts.put("Empty", 0);
+
+                    return namesAndAmounts;
+                }
             }
         });
     }

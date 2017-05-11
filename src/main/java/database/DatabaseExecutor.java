@@ -45,7 +45,11 @@ public class DatabaseExecutor
             T result = future.get();
 
             long endTime = System.nanoTime();
-            System.out.println(result.getClass().getSimpleName() + " Call Done In: " + ((endTime - startTime) / 1000000) + "ms");
+            if(result != null)
+            {
+                System.out.println(result.getClass()
+                                         .getSimpleName() + " Call Done In: " + ((endTime - startTime) / 1000000) + "ms");
+            }
 
             return result;
         }

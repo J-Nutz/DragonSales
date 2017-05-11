@@ -4,14 +4,7 @@
 package jooq.public_;
 
 
-import jooq.public_.tables.Products;
-import jooq.public_.tables.records.ProductsRecord;
-
 import javax.annotation.Generated;
-
-import org.jooq.Identity;
-import org.jooq.UniqueKey;
-import org.jooq.impl.AbstractKeys;
 
 
 /**
@@ -32,13 +25,11 @@ public class Keys {
     // IDENTITY definitions
     // -------------------------------------------------------------------------
 
-    public static final Identity<ProductsRecord, Long> IDENTITY_PRODUCTS = Identities0.IDENTITY_PRODUCTS;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final UniqueKey<ProductsRecord> CONSTRAINT_F = UniqueKeys0.CONSTRAINT_F;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -48,12 +39,4 @@ public class Keys {
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
-
-    private static class Identities0 extends AbstractKeys {
-        public static Identity<ProductsRecord, Long> IDENTITY_PRODUCTS = createIdentity(Products.PRODUCTS, Products.PRODUCTS.ID);
-    }
-
-    private static class UniqueKeys0 extends AbstractKeys {
-        public static final UniqueKey<ProductsRecord> CONSTRAINT_F = createUniqueKey(Products.PRODUCTS, "CONSTRAINT_F", Products.PRODUCTS.ID);
-    }
 }
