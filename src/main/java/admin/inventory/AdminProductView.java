@@ -12,6 +12,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
 import mutual.types.Product;
 
 import java.time.LocalDate;
@@ -22,14 +24,13 @@ import static admin.inventory.AdminInventoryView.setRowSpanOnClick;
 public class AdminProductView extends GridPane
 {
     private final Product product;
-    //private boolean extraComponentsShowing = false;
 
-    private Label productLbl;
+    private Label productLabel;
+    private Label expiredLabel;
     private Label productStockLevelLabel;
     private ProgressBar productStockLevel;
     private Label purchasePriceLabel;
     private Label salePriceLabel;
-    private Label productSaleLabel;
     private Label productCategoryLabel;
     private Label expirationDateLabel;
     private Label totalSoldLabel;
@@ -46,12 +47,12 @@ public class AdminProductView extends GridPane
     {
         this.product = product;
 
-        productLbl = new Label(product.getName());
+        productLabel = new Label(product.getName());
+        expiredLabel = new Label("Expired!");
         productStockLevelLabel = new Label(product.getCurrentQuantity() + " / " + product.getInitialQuantity());
         productStockLevel = new ProgressBar();
         purchasePriceLabel = new Label("Purchase Price: $" + product.getPurchasePrice().toString());
         salePriceLabel = new Label("Sale Price: $" + product.getSalePrice().toString());
-        productSaleLabel = new Label();
         productCategoryLabel = new Label("Category: " + product.getCategory());
         expirationDateLabel = new Label("Expires: " + product.getExpirationDate());
         totalSoldLabel = new Label("Total Sold: " + product.getTotalSold());
@@ -78,29 +79,25 @@ public class AdminProductView extends GridPane
 
         if(expirationDate.isBefore(today))
         {
-            setBackground(new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
+            GridPane.setColumnSpan(expiredLabel, 2);
+            GridPane.setFillWidth(expiredLabel, true);
+            GridPane.setHalignment(expiredLabel, HPos.CENTER);
+            add(expiredLabel, 0, 1);
+
+            setBackground(new Background(new BackgroundFill(Color.rgb(255, 26, 26), CornerRadii.EMPTY, Insets.EMPTY)));
         }
 
-        setOnMouseClicked(event ->
-        {
-            if(!selected)
-            {
-                selected = true;
-                setRowSpanOnClick(this, true);
-                addExtraComponents();
-            }
-            else
-            {
-                selected = false;
-                setRowSpanOnClick(this, false);
-                removeExtraComponents();
-            }
-        });
+        setOnMouseClicked(event -> showFullDetails());
 
-        productLbl.setFont(new Font("Courier New", 24));
+        productLabel.setFont(new Font("Ubuntu", 24));
+        productLabel.setTextAlignment(TextAlignment.CENTER);
+
+        expiredLabel.setTextAlignment(TextAlignment.CENTER);
+        expiredLabel.setFont(Font.font("Ubuntu", FontWeight.BOLD, 18));
 
         productStockLevel.setProgress((double) product.getCurrentQuantity() / (double) product.getInitialQuantity());
         productStockLevel.setMaxWidth(Double.POSITIVE_INFINITY);
+        productStockLevel.setOnMouseClicked(event1 -> showFullDetails());
 
         restockButton.setOnAction(event ->
         {
@@ -141,44 +138,60 @@ public class AdminProductView extends GridPane
 
     private void addComponents()
     {
-        GridPane.setColumnSpan(productLbl, 2);
-        GridPane.setFillWidth(productLbl, true);
-        GridPane.setHalignment(productLbl, HPos.CENTER);
-        add(productLbl, 0, 0);
+        GridPane.setColumnSpan(productLabel, 2);
+        GridPane.setFillWidth(productLabel, true);
+        GridPane.setHalignment(productLabel, HPos.CENTER);
+        add(productLabel, 0, 0);
 
         GridPane.setColumnSpan(productStockLevelLabel, 2);
         GridPane.setFillWidth(productStockLevelLabel, true);
         GridPane.setHalignment(productStockLevelLabel, HPos.CENTER);
-        add(productStockLevelLabel, 0, 1);
+        add(productStockLevelLabel, 0, 2);
 
         GridPane.setColumnSpan(productStockLevel, 2);
         GridPane.setFillWidth(productStockLevel, true);
-        add(productStockLevel, 0, 2);
+        add(productStockLevel, 0, 3);
 
-        add(purchasePriceLabel, 0, 3);
-        add(salePriceLabel, 1, 3);
+        add(purchasePriceLabel, 0, 4);
+        add(salePriceLabel, 1, 4);
 
-        add(totalSoldLabel, 0, 4);
-        add(dateLastSoldLabel, 1, 4);
+        add(totalSoldLabel, 0, 5);
+        add(dateLastSoldLabel, 1, 5);
     }
 
     public void addExtraComponents()
     {
-        add(productCategoryLabel, 0, 5);
-        add(expirationDateLabel, 1, 5);
+        add(productCategoryLabel, 0, 6);
+        add(expirationDateLabel, 1, 6);
 
-        add(dateOrderedLabel, 0, 6);
-        add(dateReceivedLabel, 1, 6);
+        add(dateOrderedLabel, 0, 7);
+        add(dateReceivedLabel, 1, 7);
 
         GridPane.setHalignment(restockButton, HPos.CENTER);
-        add(restockButton, 0, 7);
+        add(restockButton, 0, 8);
 
         GridPane.setHalignment(removeButton, HPos.CENTER);
-        add(removeButton, 1, 7);
+        add(removeButton, 1, 8);
     }
 
     private void removeExtraComponents()
     {
         getChildren().removeAll(productCategoryLabel, expirationDateLabel, dateOrderedLabel, dateReceivedLabel, restockButton, removeButton);
+    }
+
+    private void showFullDetails()
+    {
+        if(!selected)
+        {
+            selected = true;
+            setRowSpanOnClick(this, true);
+            addExtraComponents();
+        }
+        else
+        {
+            selected = false;
+            setRowSpanOnClick(this, false);
+            removeExtraComponents();
+        }
     }
 }

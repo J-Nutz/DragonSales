@@ -10,11 +10,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
+import javafx.stage.Screen;
 import mutual.types.Product;
 
 import java.util.ArrayList;
@@ -41,8 +39,17 @@ public class AdminInventoryView extends BorderPane
 
     private void initComponents()
     {
-        container.setSpacing(15);
+        container.setFillWidth(true);
+        container.setSpacing(10);
         container.setPadding(new Insets(10));
+        container.setAlignment(Pos.CENTER);
+
+        double width = (Screen.getPrimary().getBounds().getWidth());
+
+        productsScrollPane.setMinWidth(width);
+        productsScrollPane.setMaxWidth(width);
+        productsScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        container.setMinWidth(width);
     }
 
     private void addComponents()
@@ -59,6 +66,8 @@ public class AdminInventoryView extends BorderPane
 
         if(productsScrollPane.getContent() != container)
         {
+            container.setFillWidth(true);
+            container.setAlignment(Pos.CENTER);
             productsScrollPane.setContent(container);
         }
 
@@ -77,7 +86,8 @@ public class AdminInventoryView extends BorderPane
 
                 if(column < 5)
                 {
-                    gridPane.add(new AdminProductView(product), finalColumn, finalRow);
+                    AdminProductView productView = new AdminProductView(product);
+                    gridPane.add(productView, finalColumn, finalRow);
                     column++;
                 }
                 else
@@ -85,8 +95,10 @@ public class AdminInventoryView extends BorderPane
                     column = 0;
 
                     gridPane = new GridPane();
-                    gridPane.add(new AdminProductView(product), 0, 0);
                     gridPane.setHgap(10);
+
+                    AdminProductView productView = new AdminProductView(product);
+                    gridPane.add(productView, 0, 0);
 
                     container.getChildren().add(gridPane);
                     column++;
@@ -103,7 +115,6 @@ public class AdminInventoryView extends BorderPane
             hBox.setAlignment(Pos.CENTER);
 
             productsScrollPane.setContent(hBox);
-            productsScrollPane.setFitToWidth(true);
         }
     }
 

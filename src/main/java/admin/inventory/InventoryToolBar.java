@@ -97,8 +97,6 @@ public class InventoryToolBar extends BorderPane
 
         clearButton.setOnAction(event1 ->
         {
-            System.out.println("Clearing...");
-
             productSearchField.clear();
             categoryComboBox.getSelectionModel().selectFirst();
 
