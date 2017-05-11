@@ -14,6 +14,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import mutual.types.Product;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static admin.inventory.AdminInventoryView.setRowSpanOnClick;
@@ -72,6 +73,13 @@ public class AdminProductView extends GridPane
         setPadding(new Insets(5));
         setBorder(new Border(new BorderStroke(Color.DIMGRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(2))));
 
+        LocalDate expirationDate = product.getExpirationDate().toLocalDate();
+        LocalDate today = LocalDate.now();
+
+        if(expirationDate.isBefore(today))
+        {
+            setBackground(new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
+        }
 
         setOnMouseClicked(event ->
         {

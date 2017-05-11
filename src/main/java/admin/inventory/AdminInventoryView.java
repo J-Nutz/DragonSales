@@ -23,10 +23,9 @@ public class AdminInventoryView extends BorderPane
 {
     private ArrayList<Product> products;
     private InventoryToolBar inventoryToolBar;
-    //private GridPane productContainer;
-    private static ScrollPane productsScrollPane;
 
     private static VBox container;
+    private static ScrollPane productsScrollPane;
 
     public AdminInventoryView()
     {
@@ -34,7 +33,6 @@ public class AdminInventoryView extends BorderPane
         inventoryToolBar = new InventoryToolBar();
 
         container = new VBox();
-
         productsScrollPane = new ScrollPane(container);
 
         initComponents();
@@ -52,12 +50,17 @@ public class AdminInventoryView extends BorderPane
         setTop(inventoryToolBar);
         setCenter(productsScrollPane);
 
-        setProducts(products);
+        AdminInventoryView.setProducts(products);
     }
 
     public static void setProducts(ArrayList<Product> products)
     {
         container.getChildren().clear();
+
+        if(productsScrollPane.getContent() != container)
+        {
+            productsScrollPane.setContent(container);
+        }
 
         if(!products.isEmpty())
         {
@@ -96,11 +99,11 @@ public class AdminInventoryView extends BorderPane
             noProductsLabel.setFont(new Font(36));
 
             HBox hBox = new HBox(noProductsLabel);
+            hBox.setPadding(new Insets(25));
             hBox.setAlignment(Pos.CENTER);
 
             productsScrollPane.setContent(hBox);
-
-            //setCenter(hBox);
+            productsScrollPane.setFitToWidth(true);
         }
     }
 
