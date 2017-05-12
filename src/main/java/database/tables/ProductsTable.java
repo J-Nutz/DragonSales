@@ -213,6 +213,8 @@ public class ProductsTable
                         productsList.add(product);
                     }
 
+                    System.out.println("Returning Products");
+
                     return productsList;
                 }
                 else

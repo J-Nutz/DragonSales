@@ -1,9 +1,10 @@
-package mutual.views.sale.selector;
+package mutual.views.discounts;
 
 /*
- * Created by Jonah on 11/19/2016.
+ * Created by Jonah on 5/11/2017.
  */
 
+import database.tables.DiscountsTable;
 import database.tables.ProductsTable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -12,19 +13,22 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.text.Font;
+import mutual.types.Discount;
 import mutual.types.Product;
-import mutual.views.sale.components.SaleToolBar;
+import mutual.views.FullAccess;
+import mutual.views.sale.selector.ProductView;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
-public class ProductSelectorPanel extends BorderPane
+import static admin.home.ViewContainer.switchView;
+
+public class ProductDiscountSelector extends BorderPane
 {
-    private SaleToolBar saleToolBar;
     private TilePane productViewContainer;
 
-    public ProductSelectorPanel()
+    public ProductDiscountSelector()
     {
-        saleToolBar = new SaleToolBar();
         productViewContainer = new TilePane(10, 10);
 
         initComponents();
@@ -45,6 +49,22 @@ public class ProductSelectorPanel extends BorderPane
             for(Product product : products)
             {
                 ProductView productView = new ProductView(product);
+                productView.setOnClicked(event ->
+                {
+                    AddDiscountDialog addDiscountDialog = new AddDiscountDialog(product);
+                    Optional<Discount> productDiscount = addDiscountDialog.showAndWait();
+
+                    if(productDiscount.isPresent())
+                    {
+                        DiscountsTable.addDiscount(productDiscount.get());
+                        switchView(this, FullAccess.DISCOUNTS);
+                    }
+                    else
+                    {
+                        addDiscountDialog.close();
+                        switchView(this, FullAccess.ADD_DISCOUNT);
+                    }
+                });
 
                 productViewContainer.getChildren().add(productView);
             }
@@ -61,8 +81,6 @@ public class ProductSelectorPanel extends BorderPane
 
             setCenter(hBox);
         }
-
-        setTop(saleToolBar);
     }
 
     public void setProducts(ArrayList<Product> products)

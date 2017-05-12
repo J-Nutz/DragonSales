@@ -26,7 +26,6 @@ public class ProductDiscountsToolBar extends BorderPane
     private HBox container;
 
     private TextField productSearchField;
-    //private ComboBox<String> categoryComboBox;
     private Button searchButton;
     private Button clearButton;
 
@@ -44,7 +43,6 @@ public class ProductDiscountsToolBar extends BorderPane
         container = new HBox(15);
 
         productSearchField = new TextField();
-        //categoryComboBox = new ComboBox<>(categories);
         searchButton = new Button("Search");
         clearButton = new Button("Clear");
 
@@ -64,12 +62,9 @@ public class ProductDiscountsToolBar extends BorderPane
 
         productSearchField.setPromptText("Search...");
 
-        //categoryComboBox.getSelectionModel().selectFirst();
-
         searchButton.setOnAction(event ->
         {
             String search = productSearchField.getText();
-            //String category = categoryComboBox.getSelectionModel().getSelectedItem();
 
             ArrayList<Discount> searchResults = new ArrayList<>();
 
@@ -77,14 +72,6 @@ public class ProductDiscountsToolBar extends BorderPane
             {
                 searchResults = DiscountsTable.getDiscountsLike(search);
             }
-           /* else if(!search.isEmpty() && !category.equalsIgnoreCase("all"))
-            {
-                searchResults = DiscountsTable.getDiscountsLikeAndInCategory(search, category);
-            }*/
-            /*else if(search.isEmpty() && category.equalsIgnoreCase("all"))
-            {
-                searchResults = DiscountsTable.getDiscounts();
-            }*/
             else if(search.isEmpty())
             {
                 searchResults = DiscountsTable.getDiscounts();
@@ -106,7 +93,7 @@ public class ProductDiscountsToolBar extends BorderPane
             parent.setProducts(DiscountsTable.getDiscounts());
         });
 
-        newDiscountBtn.setOnAction(event -> switchView(this, FullAccess.PRODUCT_DISCOUNT_SELECTOR));
+        newDiscountBtn.setOnAction(event -> switchView(this, FullAccess.ADD_DISCOUNT));
     }
 
     private void addComponents()

@@ -6,12 +6,10 @@ package mutual.views.sale.selector;
 
 import database.tables.DiscountsTable;
 import javafx.event.EventHandler;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.input.MouseEvent;
@@ -30,7 +28,7 @@ import java.util.Optional;
 import static mutual.views.sale.components.OrderPanel.addToOrder;
 import static mutual.views.sale.components.SaleControlsPanel.updateTotal;
 
-public class ProductView extends GridPane
+public class ProductView extends VBox
 {
     private Product product;
     private boolean hasDiscount = false;
@@ -53,8 +51,10 @@ public class ProductView extends GridPane
 
     private void initComponents()
     {
-        setVgap(5);
-        setHgap(10);
+        setAlignment(Pos.CENTER);
+        setSpacing(10);
+        //setVgap(5);
+        //setHgap(10);
         setPadding(new Insets(6));
         setBorder(new Border(new BorderStroke(Color.DIMGRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(2))));
 
@@ -100,25 +100,25 @@ public class ProductView extends GridPane
             productDiscountLabel.setText("On Sale!");
             productPriceLabel.setText("$" + product.getDiscountPrice().toString());
 
-            add(productNameLabel, 0, 0);
-            add(new Separator(Orientation.HORIZONTAL), 0, 1);
-            add(productDiscountLabel, 0, 2);
-            add(new Separator(Orientation.HORIZONTAL), 0, 3);
-            add(productPriceLabel, 0, 4);
+            getChildren().add(productNameLabel);
+            getChildren().add(new Separator(Orientation.HORIZONTAL));
+            getChildren().add(productDiscountLabel);
+            getChildren().add(new Separator(Orientation.HORIZONTAL));
+            getChildren().add(productPriceLabel);
         }
         else
         {
             productPriceLabel.setText("$" + product.getSalePrice().toString());
 
-            add(productNameLabel, 0, 0);
-            add(new Separator(Orientation.HORIZONTAL), 0, 1);
-            add(productPriceLabel, 0, 2);
+            getChildren().add(productNameLabel);
+            getChildren().add(new Separator(Orientation.HORIZONTAL));
+            getChildren().add(productPriceLabel);
         }
 
-        for(Node node : getChildren())
+        /*for(Node node : getChildren())
         {
             GridPane.setHalignment(node, HPos.CENTER);
-        }
+        }*/
     }
 
     public Product getProduct()

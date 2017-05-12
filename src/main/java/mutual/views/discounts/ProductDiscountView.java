@@ -109,7 +109,7 @@ public class ProductDiscountView extends GridPane
             if(editedDiscount.isPresent())
             {
                 DiscountsTable.editDiscount(discount.getProductName(), editedDiscount.get());
-                switchView(getParent(), FullAccess.ADD_ITEM_DISCOUNT);
+                switchView(getParent(), FullAccess.DISCOUNTS);
             }
         });
 
@@ -122,7 +122,7 @@ public class ProductDiscountView extends GridPane
             if(result.get().equals(ButtonType.YES))
             {
                 DiscountsTable.deleteDiscount(this.discount.getProductName());
-                switchView(getParent(), FullAccess.ADD_ITEM_DISCOUNT);
+                switchView(getParent(), FullAccess.DISCOUNTS);
             }
             else
             {

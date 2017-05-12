@@ -11,26 +11,22 @@ import admin.inventory.AdminInventoryView;
 import admin.inventory.StockProductDialog;
 import database.tables.AllTimeStatsTable;
 import database.tables.DailyStatsTable;
-import database.tables.DiscountsTable;
 import database.tables.ProductsTable;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.BorderPane;
-import mutual.types.Discount;
 import mutual.types.OrderFragment;
 import mutual.types.Product;
 import mutual.views.FullAccess;
-import mutual.views.discounts.AddDiscountDialog;
+import mutual.views.discounts.ProductDiscountSelector;
 import mutual.views.discounts.ProductDiscountsView;
 import mutual.views.login.LockedView;
 import mutual.views.login.LoginView;
 import mutual.views.login.NewUserView;
 import mutual.views.sale.QuickSaleDialog;
 import mutual.views.sale.SaleView;
-import mutual.views.sale.selector.ProductSelectorPanel;
-import mutual.views.sale.selector.ProductView;
 import mutual.views.statistics.SaleStatsView;
 import mutual.views.statistics.StatisticsTracker;
 
@@ -43,14 +39,14 @@ public class ViewContainer extends BorderPane
     private TopAdminHomeView topAdminHomeView;
     private static FullAccess currentView;
 
-    private ProductSelectorPanel productSelectorPanel;
+    //private ProductSelectorPanel productSelectorPanel;
 
     public ViewContainer(FullAccess initialView)
     {
         currentView = initialView;
         topAdminHomeView = new TopAdminHomeView();
 
-        productSelectorPanel = new ProductSelectorPanel();
+        //productSelectorPanel = new ProductSelectorPanel();
 
         initComponents();
     }
@@ -60,7 +56,7 @@ public class ViewContainer extends BorderPane
         setId("viewContainer");
         setView(currentView);
 
-        productSelectorPanel.setOnProductViewClicked(event ->
+        /*productSelectorPanel.setOnProductViewClicked(event ->
         {
             ProductView productView = (ProductView) event.getSource();
             Product product = productView.getProduct();
@@ -76,8 +72,8 @@ public class ViewContainer extends BorderPane
                 addDiscountDialog.close();
             }
 
-            setView(FullAccess.ADD_ITEM_DISCOUNT);
-        });
+            setView(FullAccess.DISCOUNTS);
+        });*/
     }
 
     private void checkLock(Node view, boolean locked)
@@ -96,8 +92,6 @@ public class ViewContainer extends BorderPane
 
     private boolean setView(FullAccess view)
     {
-        //Use fullAccess like 'new HomeView(fullAccess);'
-
         switch(view)
         {
             case NEW_USER:
@@ -122,12 +116,12 @@ public class ViewContainer extends BorderPane
                 showQuickSale();
                 break;
 
-            case ADD_ITEM_DISCOUNT:
+            case DISCOUNTS:
                 checkLock(new ProductDiscountsView(), false);
                 break;
 
-            case PRODUCT_DISCOUNT_SELECTOR:
-                checkLock(productSelectorPanel, false);
+            case ADD_DISCOUNT:
+                checkLock(new ProductDiscountSelector(), false);
                 break;
 
             /////////////////////////////////////////////////////
@@ -142,6 +136,7 @@ public class ViewContainer extends BorderPane
 
             case STOCK:
                 checkLock(new AdminInventoryView(), false);
+                //showStockDialog();
                 Platform.runLater(this::showStockDialog);
                 break;
 
@@ -191,7 +186,11 @@ public class ViewContainer extends BorderPane
                 return false;
         }
 
-        currentView = view;
+        if(view != FullAccess.QUICK_SALE)
+        {
+            currentView = view;
+        }
+
         return true;
     }
 

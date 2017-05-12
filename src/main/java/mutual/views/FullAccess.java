@@ -13,8 +13,8 @@ public enum FullAccess
 
     SALE,
     QUICK_SALE,
-    ADD_ITEM_DISCOUNT,
-    PRODUCT_DISCOUNT_SELECTOR,
+    DISCOUNTS,
+    ADD_DISCOUNT,
 
     HOME,
 
