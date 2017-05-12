@@ -39,14 +39,10 @@ public class ViewContainer extends BorderPane
     private TopAdminHomeView topAdminHomeView;
     private static FullAccess currentView;
 
-    //private ProductSelectorPanel productSelectorPanel;
-
     public ViewContainer(FullAccess initialView)
     {
         currentView = initialView;
         topAdminHomeView = new TopAdminHomeView();
-
-        //productSelectorPanel = new ProductSelectorPanel();
 
         initComponents();
     }
@@ -55,25 +51,6 @@ public class ViewContainer extends BorderPane
     {
         setId("viewContainer");
         setView(currentView);
-
-        /*productSelectorPanel.setOnProductViewClicked(event ->
-        {
-            ProductView productView = (ProductView) event.getSource();
-            Product product = productView.getProduct();
-            AddDiscountDialog addDiscountDialog = new AddDiscountDialog(product);
-            Optional<Discount> productDiscount = addDiscountDialog.showAndWait();
-
-            if(productDiscount.isPresent())
-            {
-                DiscountsTable.addDiscount(productDiscount.get());
-            }
-            else
-            {
-                addDiscountDialog.close();
-            }
-
-            setView(FullAccess.DISCOUNTS);
-        });*/
     }
 
     private void checkLock(Node view, boolean locked)
@@ -136,7 +113,6 @@ public class ViewContainer extends BorderPane
 
             case STOCK:
                 checkLock(new AdminInventoryView(), false);
-                //showStockDialog();
                 Platform.runLater(this::showStockDialog);
                 break;
 
