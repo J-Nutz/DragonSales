@@ -124,33 +124,36 @@ public class IncomeVsProfitGraph
 
     private void setDayValues(StatisticsTracker stats)
     {
-        totalIncome = stats.getTotalIncome();
-        totalProfit = stats.getTotalProfit();
-        totalItemsSold = stats.getNumOfItemsSold();
-        totalSales = stats.getNumOfSales();
+        if(stats != null)
+        {
+            totalIncome = stats.getTotalIncome();
+            totalProfit = stats.getTotalProfit();
+            totalItemsSold = stats.getNumOfItemsSold();
+            totalSales = stats.getNumOfSales();
 
-        String day = simpleDateFormat.format(stats.getDay());
-        Number income = stats.getTotalIncome();
-        Number profit = stats.getTotalProfit();
+            String day = simpleDateFormat.format(stats.getDay());
+            Number income = stats.getTotalIncome();
+            Number profit = stats.getTotalProfit();
 
-        barGraph.setTitle(day + " Income Stats");
-        xAxis.setLabel("Day");
+            barGraph.setTitle(day + " Income Stats");
+            xAxis.setLabel("Day");
 
-        XYChart.Series<String, Number> incomeSeries = new XYChart.Series<>();
-        incomeSeries.setName("Income");
-        XYChart.Data<String, Number> incomeData = new XYChart.Data<>(day, income);
-        incomeSeries.getData().add(incomeData);
-        barGraph.getData().add(incomeSeries);
+            XYChart.Series<String, Number> incomeSeries = new XYChart.Series<>();
+            incomeSeries.setName("Income");
+            XYChart.Data<String, Number> incomeData = new XYChart.Data<>(day, income);
+            incomeSeries.getData().add(incomeData);
+            barGraph.getData().add(incomeSeries);
 
-        XYChart.Series<String, Number> profitSeries = new XYChart.Series<>();
-        profitSeries.setName("Profit");
-        XYChart.Data<String, Number> profitData = new XYChart.Data<>(day, profit);
-        profitSeries.getData().add(profitData);
-        barGraph.getData().add(profitSeries);
+            XYChart.Series<String, Number> profitSeries = new XYChart.Series<>();
+            profitSeries.setName("Profit");
+            XYChart.Data<String, Number> profitData = new XYChart.Data<>(day, profit);
+            profitSeries.getData().add(profitData);
+            barGraph.getData().add(profitSeries);
 
-        xAxis.setLabel("Daily Stats");
-        int maxValue = totalIncome.compareTo(totalProfit) == 1 ? totalIncome.intValue() : totalProfit.intValue();
-        setUpperBounds(maxValue);
+            xAxis.setLabel("Daily Stats");
+            int maxValue = totalIncome.compareTo(totalProfit) == 1 ? totalIncome.intValue() : totalProfit.intValue();
+            setUpperBounds(maxValue);
+        }
     }
 
     private void setWeekValues(ArrayList<StatisticsTracker> weeklyStats)

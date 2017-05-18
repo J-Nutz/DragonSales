@@ -13,7 +13,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import mutual.security.UserValidator;
-import mutual.views.FullAccess;
+import mutual.views.View;
 
 import java.util.Arrays;
 
@@ -26,9 +26,9 @@ public class LockedView extends VBox
     private Label errorLabel;
 
     private UserValidator userValidator;
-    private FullAccess oldView;
+    private View oldView;
 
-    public LockedView(FullAccess oldView) // TODO: Make pin or pattern unlock option
+    public LockedView(View oldView) // TODO: Make pin or pattern unlock option
     {
         this.oldView = oldView;
 

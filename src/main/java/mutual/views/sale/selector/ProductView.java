@@ -43,7 +43,7 @@ public class ProductView extends VBox
 
         productNameLabel = new Label();
         productPriceLabel = new Label("$" + product.getSalePrice().toString());
-        productDiscountLabel = new Label();
+        productDiscountLabel = new Label("On Sale!");
 
         initComponents();
         addComponents(hasDiscount);
@@ -53,23 +53,20 @@ public class ProductView extends VBox
     {
         setAlignment(Pos.CENTER);
         setSpacing(10);
-        //setVgap(5);
-        //setHgap(10);
         setPadding(new Insets(6));
         setBorder(new Border(new BorderStroke(Color.DIMGRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(2))));
-
         setOnMouseEntered(event -> setCursor(Cursor.HAND));
         setOnMouseExited(event -> setCursor(Cursor.DEFAULT));
         setOnMouseClicked(event ->
-        {
-            Optional<OrderFragment> orderFragment = new SaleDialog(product, hasDiscount).showAndWait();
+                          {
+                              Optional<OrderFragment> orderFragment = new SaleDialog(product, hasDiscount).showAndWait();
 
-            if(orderFragment.isPresent())
-            {
-                addToOrder(orderFragment.get());
-                updateTotal();
-            }
-        });
+                              if(orderFragment.isPresent())
+                              {
+                                  addToOrder(orderFragment.get());
+                                  updateTotal();
+                              }
+                          });
 
         productNameLabel.setText(product.getName());
         productNameLabel.setFont(new Font(24));
@@ -78,13 +75,13 @@ public class ProductView extends VBox
                       .stream()
                       .filter(productName -> productName.equals(product.getName()))
                       .forEach(productName ->
-        {
-            Discount discount = DiscountsTable.getDiscount(productName);
-            DayOfWeek today = LocalDate.now().getDayOfWeek();
-            boolean notWeekend = (today != DayOfWeek.SATURDAY) && (today != DayOfWeek.SUNDAY);
+                               {
+                                   Discount discount = DiscountsTable.getDiscount(productName);
+                                   DayOfWeek today = LocalDate.now().getDayOfWeek();
+                                   boolean notWeekend = (today != DayOfWeek.SATURDAY) && (today != DayOfWeek.SUNDAY);
 
-            hasDiscount = notWeekend && discount.getDayOfSale(today);
-        });
+                                   hasDiscount = notWeekend && discount.getDayOfSale(today);
+                               });
 
         productDiscountLabel.setFont(new Font(18));
         productPriceLabel.setAlignment(Pos.CENTER);
@@ -97,7 +94,6 @@ public class ProductView extends VBox
 
         if(discountVersion)
         {
-            productDiscountLabel.setText("On Sale!");
             productPriceLabel.setText("$" + product.getDiscountPrice().toString());
 
             getChildren().add(productNameLabel);
@@ -114,11 +110,6 @@ public class ProductView extends VBox
             getChildren().add(new Separator(Orientation.HORIZONTAL));
             getChildren().add(productPriceLabel);
         }
-
-        /*for(Node node : getChildren())
-        {
-            GridPane.setHalignment(node, HPos.CENTER);
-        }*/
     }
 
     public Product getProduct()

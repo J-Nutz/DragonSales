@@ -12,7 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import mutual.views.FullAccess;
+import mutual.views.View;
 
 import static admin.home.ViewContainer.switchView;
 
@@ -36,16 +36,16 @@ public class TopAdminHomeView extends BorderPane
     {
         setPadding(new Insets(10, 20, 10, 20));
         setBorder(new Border(new BorderStroke(Color.DIMGRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(2))));
-        setOnMouseClicked(e -> switchView(getParent(), FullAccess.HOME));
+        setOnMouseClicked(e -> switchView(getParent(), View.HOME));
         setOnMouseEntered(e -> setCursor(Cursor.HAND));
         setOnMouseExited(e -> setCursor(Cursor.DEFAULT));
 
-        lockButton.setOnAction(event -> switchView(getParent(), FullAccess.LOCKED));
+        lockButton.setOnAction(event -> switchView(getParent(), View.LOCKED));
         lockButton.setFont(new Font(16));
 
         dragonSalesLabel.setFont(new Font(36));
 
-        quickSaleButton.setOnAction(event -> switchView(getParent(), FullAccess.QUICK_SALE)); // TODO: Make Dialog?
+        quickSaleButton.setOnAction(event -> switchView(getParent(), View.QUICK_SALE)); // TODO: Make Dialog?
         quickSaleButton.setFont(new Font(16));
     }
 

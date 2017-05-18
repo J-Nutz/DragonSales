@@ -9,25 +9,43 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.HBox;
-import mutual.views.FullAccess;
+import mutual.views.View;
 
 public class ViewSelector extends HBox
 {
-    private View saleView;
-    private View inventoryView;
-    private View employeeView;
-    private View statisticsView;
-    private View settingsView;
-    private View closeView;
+    private ViewSelection saleView;
+    private ViewSelection inventoryView;
+    private ViewSelection employeeView;
+    private ViewSelection statisticsView;
+    private ViewSelection settingsView;
+    private ViewSelection closeView;
 
-    public ViewSelector() // TODO: Recommend products to put on sale base on sales per week, last sold, frequency sold, etc.
+    public ViewSelector()
     {
-        saleView = new View("/sale.png", "Sales", FullAccess.SALE, new String[] {"Quick Sale", "Regular Sale", "View Discounts", "Add Discount"}, new FullAccess[] {FullAccess.QUICK_SALE, FullAccess.SALE, FullAccess.DISCOUNTS, FullAccess.ADD_DISCOUNT});
-        inventoryView = new View("/inventory.png", "Inventory", FullAccess.INVENTORY, new String[] {"View Products", "Add Product"}, new FullAccess[]{FullAccess.INVENTORY, FullAccess.STOCK});
-        employeeView = new View("/employees.png", "Employees", FullAccess.MANAGE, new String[] {"Manage", "Schedule", "Hire"}, new FullAccess[]{FullAccess.MANAGE, FullAccess.SCHEDULE, FullAccess.HIRE_EMPLOYEE});
-        statisticsView = new View("/statistics.png", "Statistics", FullAccess.STATS, new String[] {"Sales", "Products"}, new FullAccess[]{FullAccess.SALE_STATS, FullAccess.PRODUCT_STATS});
-        settingsView = new View("/settings.png", "Settings", FullAccess.SETTINGS, new String[] {"Coming Soon!"}, new FullAccess[] {FullAccess.NULL});
-        closeView = new View("/close.png", "Close", new Alert(Alert.AlertType.WARNING, "About To Close Dragon Sales!\n\nDo You Want To Continue?", ButtonType.YES, ButtonType.NO), new String[]{"Lock", "Logout"}, new FullAccess[]{FullAccess.LOCKED, FullAccess.LOGIN});
+        String[] saleViewTitles = new String[]{"Sales", "Quick Sale", "Regular Sale", "View Discounts", "Add Discount"};
+        View[] saleViewViews = new View[]{View.SALE, View.QUICK_SALE, View.SALE, View.DISCOUNTS, View.ADD_DISCOUNT};
+        saleView = new ViewSelection("/sale.png", saleViewTitles, saleViewViews);
+
+        String[] inventoryViewTitles = new String[]{"Inventory", "View Products", "Add Product"};
+        View[] inventoryViewViews = new View[]{View.INVENTORY, View.INVENTORY, View.STOCK};
+        inventoryView = new ViewSelection("/inventory.png", inventoryViewTitles, inventoryViewViews);
+
+        String[] employeeViewTitles = new String[]{"Employees", "Manage", "Schedule", "Hire"};
+        View[] employeeViewViews = new View[]{View.MANAGE, View.MANAGE, View.SCHEDULE, View.HIRE_EMPLOYEE};
+        employeeView = new ViewSelection("/employees.png", employeeViewTitles, employeeViewViews);
+
+        String[] statisticsViewTitles = new String[]{"Statistics", "Sales", "Products"};
+        View[] statisticsViewViews = new View[]{View.STATS, View.SALE_STATS, View.PRODUCT_STATS};
+        statisticsView = new ViewSelection("/statistics.png", statisticsViewTitles, statisticsViewViews);
+
+        String[] settingsViewTitles = new String[]{"Settings", "Coming Soon!"};
+        View[] settingsViewViews = new View[]{View.SETTINGS, View.NULL};
+        settingsView = new ViewSelection("/settings.png", settingsViewTitles, settingsViewViews);
+
+        Alert closeAlert = new Alert(Alert.AlertType.WARNING, "About To Close Dragon Sales!\n\nDo You Want To Continue?", ButtonType.YES, ButtonType.NO);
+        String[] closeViewTitles = new String[]{"Close", "Lock", "Logout"};
+        View[] closeViewViews = new View[]{View.NULL, View.LOCKED, View.LOGIN};
+        closeView = new ViewSelection("/close.png", closeAlert, closeViewTitles, closeViewViews);
 
         initComponents();
         addComponents();

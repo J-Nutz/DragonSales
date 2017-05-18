@@ -3,29 +3,29 @@ package mutual.views;
 /*
  * Created by Jonah on 12/17/2016.
  */
-public enum FullAccess
+
+public enum View
 {
     NULL,
 
-    NEW_USER,
+    SIGN_UP,
     LOGIN,
     LOCKED,
+
+    HOME,
 
     SALE,
     QUICK_SALE,
     DISCOUNTS,
     ADD_DISCOUNT,
 
-    HOME,
-
     INVENTORY,
     STOCK,
     RESTOCK,
 
-    MANAGE, // Hire/Fire/Promotion/Demotion/Etc of Employees
+    MANAGE,
     SCHEDULE,
     HIRE_EMPLOYEE,
-    //EMPLOYEE_STATS,  // Sales, Individual profit, etc.
 
     STATS,
     DAILY_STATS,
@@ -36,7 +36,6 @@ public enum FullAccess
 
     SALE_STATS,
     PRODUCT_STATS,
-    EMPLOYEE_STATS,
 
     SETTINGS
 }

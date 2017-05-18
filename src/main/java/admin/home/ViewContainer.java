@@ -7,7 +7,7 @@ package admin.home;
 import admin.employees.EmployeeScheduler;
 import admin.employees.HireEmployeeView;
 import admin.employees.ManageEmployeesView;
-import admin.inventory.AdminInventoryView;
+import admin.inventory.InventoryView;
 import admin.inventory.StockProductDialog;
 import database.tables.AllTimeStatsTable;
 import database.tables.DailyStatsTable;
@@ -19,12 +19,12 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.layout.BorderPane;
 import mutual.types.OrderFragment;
 import mutual.types.Product;
-import mutual.views.FullAccess;
+import mutual.views.View;
 import mutual.views.discounts.ProductDiscountSelector;
 import mutual.views.discounts.ProductDiscountsView;
 import mutual.views.login.LockedView;
 import mutual.views.login.LoginView;
-import mutual.views.login.NewUserView;
+import mutual.views.login.SignUpView;
 import mutual.views.sale.QuickSaleDialog;
 import mutual.views.sale.SaleView;
 import mutual.views.statistics.SaleStatsView;
@@ -32,14 +32,14 @@ import mutual.views.statistics.StatisticsTracker;
 
 import java.util.Optional;
 
-import static admin.inventory.AdminInventoryView.setProducts;
+import static admin.inventory.InventoryView.setProducts;
 
 public class ViewContainer extends BorderPane
 {
     private TopAdminHomeView topAdminHomeView;
-    private static FullAccess currentView;
+    private static View currentView;
 
-    public ViewContainer(FullAccess initialView)
+    public ViewContainer(View initialView)
     {
         currentView = initialView;
         topAdminHomeView = new TopAdminHomeView();
@@ -53,7 +53,7 @@ public class ViewContainer extends BorderPane
         setView(currentView);
     }
 
-    private void checkLock(Node view, boolean locked)
+    private void checkLock(Node view, boolean locked) //Optimize Switch View Methods
     {
         if(locked)
         {
@@ -67,12 +67,12 @@ public class ViewContainer extends BorderPane
         }
     }
 
-    private boolean setView(FullAccess view)
+    private boolean setView(View view)
     {
         switch(view)
         {
-            case NEW_USER:
-                checkLock(new NewUserView(), true);
+            case SIGN_UP:
+                checkLock(new SignUpView(), true);
                 break;
 
             case LOGIN:
@@ -108,11 +108,11 @@ public class ViewContainer extends BorderPane
                 break;
 
             case INVENTORY:
-                checkLock(new AdminInventoryView(), false);
+                checkLock(new InventoryView(), false);
                 break;
 
             case STOCK:
-                checkLock(new AdminInventoryView(), false);
+                checkLock(new InventoryView(), false);
                 Platform.runLater(this::showStockDialog);
                 break;
 
@@ -132,10 +132,6 @@ public class ViewContainer extends BorderPane
 
             case HIRE_EMPLOYEE:
                 checkLock(new HireEmployeeView(), false);
-                break;
-
-            case EMPLOYEE_STATS:
-                checkLock(new BorderPane(), false);
                 break;
 
             /////////////////////////////////////////////////////
@@ -162,7 +158,7 @@ public class ViewContainer extends BorderPane
                 return false;
         }
 
-        if(view != FullAccess.QUICK_SALE)
+        if(view != View.QUICK_SALE)
         {
             currentView = view;
         }
@@ -170,21 +166,26 @@ public class ViewContainer extends BorderPane
         return true;
     }
 
-    public static void switchView(Node node, FullAccess view)
+    public static void switchView(Node node, View view)
     {
+        final long startTime = System.currentTimeMillis();
+
         ViewContainer viewContainer = (ViewContainer) node.getScene().getRoot().lookup("#viewContainer");
 
-        if(viewContainer == null)
-        {
-            System.out.println("No Node Found");
-        }
-        else
+        if(viewContainer != null)
         {
             viewContainer.setView(view);
         }
+        else
+        {
+            System.err.println("View Container Not Found");
+        }
+
+        final long endTime = System.currentTimeMillis();
+        System.out.println("Switched View In: " + (endTime - startTime) + "ms");
     }
 
-    public static FullAccess getCurrentView()
+    public static View getCurrentView()
     {
         return currentView;
     }

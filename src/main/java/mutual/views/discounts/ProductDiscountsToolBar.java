@@ -15,7 +15,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import mutual.types.Category;
 import mutual.types.Discount;
-import mutual.views.FullAccess;
+import mutual.views.View;
 
 import java.util.ArrayList;
 
@@ -93,7 +93,7 @@ public class ProductDiscountsToolBar extends BorderPane
             parent.setProducts(DiscountsTable.getDiscounts());
         });
 
-        newDiscountBtn.setOnAction(event -> switchView(this, FullAccess.ADD_DISCOUNT));
+        newDiscountBtn.setOnAction(event -> switchView(this, View.ADD_DISCOUNT));
     }
 
     private void addComponents()

@@ -129,7 +129,7 @@ public class StockInventoryView extends GridPane
                 ProductsTable.addProduct(product); //TODO: Check if product exists
                 ProductsHeld.addProduct(product);
 
-                AdminInventoryView inventoryView = (AdminInventoryView) this.getParent();
+                InventoryView inventoryView = (InventoryView) this.getParent();
                 inventoryView.setProducts(ProductsTable.getProducts());
 
                 clearFields();

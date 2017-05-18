@@ -92,7 +92,7 @@ public class ProductsTable
                 {
                     Product product = new Product();
 
-                    for (Record r : fetchedProduct)
+                    for(Record r : fetchedProduct)
                     {
                         product.setName(r.get(products.NAME));
                         product.setCategory(r.get(products.CATEGORY));
@@ -151,8 +151,7 @@ public class ProductsTable
                                          newValues.getExpirationDate(),
                                          newValues.getDateLastSold(),
                                          newValues.getDateOrdered(),
-                                         newValues.getDateReceived())
-                                )
+                                         newValues.getDateReceived()))
                                 .where(products.NAME.equal(productToUpdate))
                                 .execute();
 
@@ -185,10 +184,9 @@ public class ProductsTable
             try(Connection connection = DatabaseExecutor.getConnection();
                 DSLContext database = H2DSL.using(connection))
             {
-                Result<Record> fetchedProducts =
-                        database.select()
-                                .from(products)
-                                .fetch();
+                Result<Record> fetchedProducts = database.select()
+                                                         .from(products)
+                                                         .fetch();
 
                 if(fetchedProducts.isNotEmpty())
                 {
@@ -213,8 +211,6 @@ public class ProductsTable
                         productsList.add(product);
                     }
 
-                    System.out.println("Returning Products");
-
                     return productsList;
                 }
                 else
@@ -224,7 +220,7 @@ public class ProductsTable
             }
             catch(DataAccessException dae)
             {
-                System.out.println("What");
+                dae.printStackTrace();
                 return null;
             }
         });
@@ -250,7 +246,7 @@ public class ProductsTable
                 }
                 else
                 {
-                    ArrayList<String> empty = new ArrayList<String>();
+                    ArrayList<String> empty = new ArrayList<>();
                     empty.add("Empty");
 
                     return empty;
@@ -435,18 +431,17 @@ public class ProductsTable
             {
                 int currentAmount = getAmountSold(productName);
 
-                int result =
-                      database.update(products)
-                              .set(row(products.TOTAL_SOLD,
-                                       products.LAST_SOLD_DATE),
-                                   row((currentAmount + amountToAdd),
-                                       Date.valueOf(LocalDate.now())))
-                              .where(products.NAME.equal(productName))
-                              .execute();
+                int result = database.update(products)
+                                     .set(row(products.TOTAL_SOLD,
+                                              products.LAST_SOLD_DATE),
+
+                                          row((currentAmount + amountToAdd),
+                                              Date.valueOf(LocalDate.now())))
+                                     .where(products.NAME.equal(productName))
+                                     .execute();
 
                 return result == 1;
             }
         });
     }
-
 }

@@ -42,7 +42,7 @@ public class BigDecimalSpinnerValueFactory extends SpinnerValueFactory<BigDecima
 
         while(steps > 0)
         {
-            if(currentValue.compareTo(BigDecimal.TEN) < 0)
+            if(currentValue.compareTo(BigDecimal.valueOf(100)) == -1)
             {
                 currentValue = currentValue.add(step);
             }

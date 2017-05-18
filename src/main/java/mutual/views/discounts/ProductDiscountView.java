@@ -15,7 +15,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import mutual.types.Discount;
 import mutual.types.ToggleButton2;
-import mutual.views.FullAccess;
+import mutual.views.View;
 
 import java.time.DayOfWeek;
 import java.util.HashMap;
@@ -109,7 +109,7 @@ public class ProductDiscountView extends GridPane
             if(editedDiscount.isPresent())
             {
                 DiscountsTable.editDiscount(discount.getProductName(), editedDiscount.get());
-                switchView(getParent(), FullAccess.DISCOUNTS);
+                switchView(getParent(), View.DISCOUNTS);
             }
         });
 
@@ -122,7 +122,7 @@ public class ProductDiscountView extends GridPane
             if(result.get().equals(ButtonType.YES))
             {
                 DiscountsTable.deleteDiscount(this.discount.getProductName());
-                switchView(getParent(), FullAccess.DISCOUNTS);
+                switchView(getParent(), View.DISCOUNTS);
             }
             else
             {

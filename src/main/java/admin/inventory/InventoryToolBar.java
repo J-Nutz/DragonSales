@@ -16,7 +16,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import mutual.types.Category;
 import mutual.types.Product;
-import mutual.views.FullAccess;
+import mutual.views.View;
 
 import java.util.ArrayList;
 
@@ -92,7 +92,7 @@ public class InventoryToolBar extends BorderPane
                 searchResults = new ArrayList<>(0);
             }
 
-            AdminInventoryView.setProducts(searchResults);
+            InventoryView.setProducts(searchResults);
         });
 
         clearButton.setOnAction(event1 ->
@@ -100,14 +100,14 @@ public class InventoryToolBar extends BorderPane
             productSearchField.clear();
             categoryComboBox.getSelectionModel().selectFirst();
 
-            AdminInventoryView.setProducts(ProductsTable.getProducts());
+            InventoryView.setProducts(ProductsTable.getProducts());
         });
 
         searchContainer.setAlignment(Pos.CENTER_LEFT);
 
         rightContainer.setAlignment(Pos.CENTER);
         rightContainer.setMinWidth(175);
-        newProductButton.setOnAction(event -> switchView(this, FullAccess.STOCK));
+        newProductButton.setOnAction(event -> switchView(this, View.STOCK));
     }
 
     private void addComponents()

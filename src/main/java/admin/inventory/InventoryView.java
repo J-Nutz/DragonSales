@@ -17,7 +17,7 @@ import mutual.types.Product;
 
 import java.util.ArrayList;
 
-public class AdminInventoryView extends BorderPane
+public class InventoryView extends BorderPane
 {
     private ArrayList<Product> products;
     private InventoryToolBar inventoryToolBar;
@@ -25,7 +25,7 @@ public class AdminInventoryView extends BorderPane
     private static VBox container;
     private static ScrollPane productsScrollPane;
 
-    public AdminInventoryView()
+    public InventoryView()
     {
         products = ProductsTable.getProducts();
         inventoryToolBar = new InventoryToolBar();
@@ -57,7 +57,7 @@ public class AdminInventoryView extends BorderPane
         setTop(inventoryToolBar);
         setCenter(productsScrollPane);
 
-        AdminInventoryView.setProducts(products);
+        InventoryView.setProducts(products);
     }
 
     public static void setProducts(ArrayList<Product> products)
@@ -80,8 +80,6 @@ public class AdminInventoryView extends BorderPane
 
             container.getChildren().add(gridPane);
 
-            double width = (Screen.getPrimary().getBounds().getWidth() / 4) - 15;
-
             for(Product product : products)
             {
                 final int finalColumn = column;
@@ -89,10 +87,9 @@ public class AdminInventoryView extends BorderPane
 
                 if(column < 4)
                 {
-                    AdminProductView productView = new AdminProductView(product);
-                    //productView.setMinWidth(width);
+                    InventoryProductView inventoryProductView = new InventoryProductView(product);
 
-                    gridPane.add(productView, finalColumn, finalRow);
+                    gridPane.add(inventoryProductView, finalColumn, finalRow);
                     column++;
                 }
                 else
@@ -102,9 +99,8 @@ public class AdminInventoryView extends BorderPane
                     gridPane = new GridPane();
                     gridPane.setHgap(10);
 
-                    AdminProductView productView = new AdminProductView(product);
-                    //productView.setMinWidth(width);
-                    gridPane.add(productView, 0, 0);
+                    InventoryProductView inventoryProductView = new InventoryProductView(product);
+                    gridPane.add(inventoryProductView, 0, 0);
 
                     container.getChildren().add(gridPane);
 

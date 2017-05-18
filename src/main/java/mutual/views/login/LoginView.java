@@ -17,7 +17,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import mutual.security.UserValidator;
 import mutual.types.User;
-import mutual.views.FullAccess;
+import mutual.views.View;
 
 import java.util.Arrays;
 
@@ -115,7 +115,7 @@ public class LoginView extends BorderPane
                     if(validLogin)
                     {
                         LoggedInUserTable.setLoggedInUser(attemptedUser);
-                        switchView(getParent(), FullAccess.HOME);
+                        switchView(getParent(), View.HOME);
                     }
                     else
                     {
@@ -146,7 +146,7 @@ public class LoginView extends BorderPane
         goToNewUserLabel.setFont(new Font(16));
 
         newUserBtn.setFont(new Font(14));
-        newUserBtn.setOnAction(e -> switchView(getParent(), FullAccess.NEW_USER));
+        newUserBtn.setOnAction(e -> switchView(getParent(), View.SIGN_UP));
     }
 
     private void addComponents()

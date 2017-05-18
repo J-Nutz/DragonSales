@@ -15,7 +15,7 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.text.Font;
 import mutual.types.Discount;
 import mutual.types.Product;
-import mutual.views.FullAccess;
+import mutual.views.View;
 import mutual.views.sale.selector.ProductView;
 
 import java.util.ArrayList;
@@ -57,12 +57,12 @@ public class ProductDiscountSelector extends BorderPane
                     if(productDiscount.isPresent())
                     {
                         DiscountsTable.addDiscount(productDiscount.get());
-                        switchView(this, FullAccess.DISCOUNTS);
+                        switchView(this, View.DISCOUNTS);
                     }
                     else
                     {
                         addDiscountDialog.close();
-                        switchView(this, FullAccess.ADD_DISCOUNT);
+                        switchView(this, View.ADD_DISCOUNT);
                     }
                 });
 

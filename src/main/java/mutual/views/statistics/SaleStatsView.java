@@ -91,10 +91,10 @@ public class SaleStatsView extends BorderPane
         salesAmountLabel = new Label("" + dayStats.getNumOfSales());
 
         rightGenStatsContainer = new GridPane();
-        bestSellingLabel = new Label("Best Selling Product: ");
+        bestSellingLabel = new Label("Best Selling Product:");
         bestSellingValueLabel = new Label();
         bestSellingSuggestionLabel = new Label("Suggestion: Increase Price");
-        worstSellingLabel = new Label("Worst Selling Product: ");
+        worstSellingLabel = new Label("Worst Selling Product:");
         worstSellingValueLabel = new Label();
         worstSellingSuggestionLabel = new Label("Suggestion: Lower Price Or Add Discount");
 
@@ -134,6 +134,10 @@ public class SaleStatsView extends BorderPane
         setToggleFunctionality(allBtn);
 
         graphContainer.setPadding(new Insets(10));
+
+        rightGenStatsContainer.setHgap(3);
+        rightGenStatsContainer.setVgap(3);
+        rightGenStatsContainer.setAlignment(Pos.BASELINE_RIGHT);
 
         genStatsCenterContainer.setAlignment(Pos.CENTER);
         genStatsCenterContainer.setPadding(new Insets(15));
@@ -180,6 +184,7 @@ public class SaleStatsView extends BorderPane
         leftGenStatsContainer.add(salesLabel, 0, 3);
         leftGenStatsContainer.add(salesAmountLabel, 1, 3);
 
+        GridPane.setHalignment(bestSellingLabel, HPos.RIGHT);
         rightGenStatsContainer.add(bestSellingLabel, 0, 0);
         rightGenStatsContainer.add(bestSellingValueLabel, 1, 0);
         GridPane.setColumnSpan(bestSellingSuggestionLabel, 2);
@@ -228,41 +233,32 @@ public class SaleStatsView extends BorderPane
 
         button.setOnAction(event ->
         {
-            /*if(!event.getSource().equals(allBtn))
-            {*/
-                if(!launchDialog(button))
-                {
-                    event.consume();
-                    intervalGroup.selectToggle(selected);
-
-                    if(selected.equals(dayBtn))
-                    {
-                        dayBtn.requestFocus();
-                    }
-                    else if(selected.equals(weekBtn))
-                    {
-                        weekBtn.requestFocus();
-                    }
-                    else if(selected.equals(monthBtn))
-                    {
-                        monthBtn.requestFocus();
-                    }
-                    else if(selected.equals(yearBtn))
-                    {
-                        yearBtn.requestFocus();
-                    }
-                    else if(selected.equals(allBtn))
-                    {
-                        allBtn.requestFocus();
-                    }
-                }
-            //}
-            /*else
+            if(!launchDialog(button))
             {
-                incomeVsProfitGraph.setData(Interval.ALL, LocalDate.now());
-                setCenter(incomeVsProfitGraph.getGraph());
-                setGeneralStats();
-            }*/
+                event.consume();
+                intervalGroup.selectToggle(selected);
+
+                if(selected.equals(dayBtn))
+                {
+                    dayBtn.requestFocus();
+                }
+                else if(selected.equals(weekBtn))
+                {
+                    weekBtn.requestFocus();
+                }
+                else if(selected.equals(monthBtn))
+                {
+                    monthBtn.requestFocus();
+                }
+                else if(selected.equals(yearBtn))
+                {
+                    yearBtn.requestFocus();
+                }
+                else if(selected.equals(allBtn))
+                {
+                    allBtn.requestFocus();
+                }
+            }
         });
     }
 

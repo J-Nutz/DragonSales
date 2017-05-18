@@ -36,9 +36,9 @@ public class Database
                     .execute();
 
             database.createTableIfNotExists("USERS")
-                    .column("NAME", H2DataType.VARCHAR_IGNORECASE) // TODO: Setting to show first initial of last name or not
-                    .column("USER_NAME", H2DataType.VARCHAR_CASESENSITIVE) // TODO: Let users know about char limits
-                    .column("EMAIL", H2DataType.VARCHAR_CASESENSITIVE) // TODO: Trim spaces/toLowercase/etc.
+                    .column("NAME", H2DataType.VARCHAR_IGNORECASE)
+                    .column("USER_NAME", H2DataType.VARCHAR_CASESENSITIVE)
+                    .column("EMAIL", H2DataType.VARCHAR_CASESENSITIVE)
                     .column("SALT", H2DataType.BINARY)
                     .column("PASSWORD", H2DataType.BINARY)
                     .execute();

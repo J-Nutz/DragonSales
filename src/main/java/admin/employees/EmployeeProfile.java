@@ -16,7 +16,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import mutual.types.Employee;
-import mutual.views.FullAccess;
+import mutual.views.View;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -111,7 +111,7 @@ public class EmployeeProfile extends GridPane
         statsButton.setFont(new Font(14));
         statsButton.setOnAction(event ->
         {
-            switchView(this, FullAccess.STATS);
+            switchView(this, View.STATS);
         });
 
         manageButton.setFont(new Font(14));
@@ -146,7 +146,7 @@ public class EmployeeProfile extends GridPane
             {
                 EmployeesTable.fireEmployee(employee.getName());
                 UsersTable.deleteUser(employee.getEmail());
-                switchView(this, FullAccess.MANAGE);
+                switchView(this, View.MANAGE);
             }
             else
             {

@@ -33,7 +33,7 @@ public class SaleDialog extends Dialog<OrderFragment>
 
         container = new GridPane();
         productName = new Label(product.getName());
-        quantitySelector = new Spinner<>(1, 99, 1);
+        quantitySelector = new Spinner<>(1, product.getCurrentQuantity(), 1);
         productPrice = new Label();
         addToOrderBtn = new ButtonType("Add", ButtonBar.ButtonData.OK_DONE);
 

@@ -4,7 +4,7 @@ import database.tables.UsersTable;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import mutual.views.FullAccess;
+import mutual.views.View;
 
 public class Main extends Application
 {
@@ -31,9 +31,11 @@ public class Main extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
+        final long startTime = System.currentTimeMillis();
+
         int numOfUsers = UsersTable.numberOfUsers();
 
-        ViewContainer viewContainer = numOfUsers < 1 ? new ViewContainer(FullAccess.NEW_USER) : new ViewContainer(FullAccess.LOGIN);
+        ViewContainer viewContainer = numOfUsers < 1 ? new ViewContainer(View.SIGN_UP) : new ViewContainer(View.LOGIN);
         Scene container = new Scene(viewContainer);
 
         primaryStage.setOnCloseRequest(e -> DatabaseExecutor.close());
@@ -41,13 +43,23 @@ public class Main extends Application
         primaryStage.setMaximized(true);
         primaryStage.setScene(container);
         primaryStage.show();
+
+        final long endTime = System.currentTimeMillis();
+
+        System.out.println("Launched In: " + ((endTime - startTime)) + "ms");
     }
 
     public static void main(String[] args)
     {
         try
         {
+            final long startTime = System.currentTimeMillis();
+
             Class.forName("org.h2.Driver");
+
+            final long endTime = System.currentTimeMillis();
+
+            System.out.println("Loaded Database Driver In: " + ((endTime - startTime)) + "ms");
         }
         catch(ClassNotFoundException e)
         {

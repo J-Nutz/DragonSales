@@ -44,6 +44,7 @@ public class QuickSaleDialog extends Dialog<ObservableList<OrderFragment>>
     private Label selectedLabel;
     private Label productLabel;
     private Label quantityLabel;
+    private SpinnerValueFactory.IntegerSpinnerValueFactory limitedValueFactory;
     private Spinner<Integer> quantitySpinner;
     private Button addBtn;
     private Button clearBtn;
@@ -71,7 +72,8 @@ public class QuickSaleDialog extends Dialog<ObservableList<OrderFragment>>
         selectedLabel = new Label("Selected:");
         productLabel = new Label();
         quantityLabel = new Label("Quantity:");
-        quantitySpinner = new Spinner<>(0, 99, 1, 1);
+        limitedValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10, 1, 1);
+        quantitySpinner = new Spinner<>(limitedValueFactory);
         addBtn = new Button("Add");
         clearBtn = new Button("Clear");
 
@@ -140,7 +142,7 @@ public class QuickSaleDialog extends Dialog<ObservableList<OrderFragment>>
 
         addBtn.setOnAction(event ->
         {
-            if(selectedProduct != null)
+            if(selectedProduct != null && quantitySpinner.getValue() > 0)
             {
                 OrderFragment orderFragment;
 
@@ -207,7 +209,7 @@ public class QuickSaleDialog extends Dialog<ObservableList<OrderFragment>>
 
                 while(steps > 0)
                 {
-                    if(currentValue.compareTo(BigDecimal.TEN) < 0)
+                    if(currentValue.compareTo(BigDecimal.valueOf(100)) < 0)
                     {
                         currentValue = currentValue.add(step);
                         returnAmount = returnAmount.subtract(step);
@@ -266,51 +268,54 @@ public class QuickSaleDialog extends Dialog<ObservableList<OrderFragment>>
         {
             for(Product product : products)
             {
-                VBox productContainer = new VBox(5);
-                Label productName = new Label(product.getName());
-                Label productPrice = new Label();
-
-                try
+                if(product.getCurrentQuantity() != 0 &&
+                   !product.getExpirationDate().toLocalDate().isBefore(LocalDate.now()))
                 {
-                    Discount discount = DiscountsTable.getDiscount(product.getName());
-                    if(discount.getDayOfSale(LocalDate.now()
-                                                      .getDayOfWeek()))
+                    VBox productContainer = new VBox(5);
+                    Label productName = new Label(product.getName());
+                    Label productPrice = new Label();
+
+                    try
                     {
-                        System.out.println(product.getDiscountPrice());
-                        productPrice.setText("$" + product.getDiscountPrice()
-                                                          .toString());
+                        Discount discount = DiscountsTable.getDiscount(product.getName());
+                        if(discount.getDayOfSale(LocalDate.now()
+                                                          .getDayOfWeek()))
+                        {
+                            System.out.println(product.getDiscountPrice());
+                            productPrice.setText("$" + product.getDiscountPrice()
+                                                              .toString());
+                        }
+                        else
+                        {
+                            productPrice.setText("$" + product.getSalePrice()
+                                                              .toString());
+                        }
                     }
-                    else
+                    catch(NullPointerException npe)
                     {
                         productPrice.setText("$" + product.getSalePrice()
                                                           .toString());
                     }
+
+                    productContainer.setPadding(new Insets(2));
+                    productContainer.setSpacing(3);
+                    productContainer.setAlignment(Pos.CENTER);
+                    productContainer.setBorder(new Border(new BorderStroke(Color.DIMGRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+                    productContainer.setOnMouseEntered(event -> productContainer.setCursor(Cursor.HAND));
+                    productContainer.setOnMouseExited(event -> productContainer.setCursor(Cursor.DEFAULT));
+                    productContainer.setOnMouseClicked(event ->
+                    {
+                        selectedProduct = ProductsTable.getProduct(product.getName());
+                        productLabel.setText(product.getName());
+                        limitedValueFactory.setMax(product.getCurrentQuantity());
+                    });
+
+                    productName.setFont(new Font(13));
+                    productPrice.setFont(new Font(12));
+
+                    productContainer.getChildren().addAll(productName, productPrice);
+                    productResultsPane.getChildren().add(productContainer);
                 }
-                catch(NullPointerException npe)
-                {
-                    productPrice.setText("$" + product.getSalePrice()
-                                                      .toString());
-                }
-
-                productContainer.setPadding(new Insets(2));
-                productContainer.setSpacing(3);
-                productContainer.setAlignment(Pos.CENTER);
-                productContainer.setBorder(new Border(
-                        new BorderStroke(Color.DIMGRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
-                productContainer.setOnMouseEntered(event -> productContainer.setCursor(Cursor.HAND));
-                productContainer.setOnMouseExited(event -> productContainer.setCursor(Cursor.DEFAULT));
-                productContainer.setOnMouseClicked(event -> {
-                    selectedProduct = ProductsTable.getProduct(product.getName());
-                    productLabel.setText(product.getName());
-                });
-
-                productName.setFont(new Font(13));
-                productPrice.setFont(new Font(12));
-
-                productContainer.getChildren()
-                                .addAll(productName, productPrice);
-                productResultsPane.getChildren()
-                                  .add(productContainer);
             }
         }
         else

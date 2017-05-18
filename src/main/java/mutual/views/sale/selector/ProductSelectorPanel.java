@@ -15,6 +15,7 @@ import javafx.scene.text.Font;
 import mutual.types.Product;
 import mutual.views.sale.components.SaleToolBar;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class ProductSelectorPanel extends BorderPane
@@ -44,9 +45,13 @@ public class ProductSelectorPanel extends BorderPane
         {
             for(Product product : products)
             {
-                ProductView productView = new ProductView(product);
+                if(product.getExpirationDate().toLocalDate().isAfter(LocalDate.now()) &&
+                   product.getCurrentQuantity() > 0)
+                {
+                    ProductView productView = new ProductView(product);
 
-                productViewContainer.getChildren().add(productView);
+                    productViewContainer.getChildren().add(productView);
+                }
             }
 
             setCenter(productViewContainer);

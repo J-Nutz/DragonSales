@@ -39,16 +39,15 @@ public class DatabaseExecutor
     {
         try
         {
-            long startTime = System.nanoTime();
+            long startTime = System.currentTimeMillis();
 
             Future<T> future = executor.submit(callable);
             T result = future.get();
 
-            long endTime = System.nanoTime();
+            long endTime = System.currentTimeMillis();
             if(result != null)
             {
-                System.out.println(result.getClass()
-                                         .getSimpleName() + " Call Done In: " + ((endTime - startTime) / 1000000) + "ms");
+                System.out.println(result.getClass().getSimpleName() + " Call Done In: " + (endTime - startTime) + "ms");
             }
 
             return result;
@@ -64,13 +63,13 @@ public class DatabaseExecutor
     {
         try
         {
-            long startTime = System.nanoTime();
+            long startTime = System.currentTimeMillis();
 
             Future<Boolean> future = executor.submit(callable);
             boolean result = future.get();
 
-            long endTime = System.nanoTime();
-            System.out.println("Boolean Call Done In: " + ((endTime - startTime) / 1000000) + "ms");
+            long endTime = System.currentTimeMillis();
+            System.out.println("Boolean Call Done In: " + (endTime - startTime) + "ms");
 
             return result;
         }

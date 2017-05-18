@@ -18,7 +18,7 @@ import javafx.scene.text.Font;
 import mutual.security.Salt;
 import mutual.security.UserValidator;
 import mutual.types.User;
-import mutual.views.FullAccess;
+import mutual.views.View;
 
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
@@ -27,15 +27,13 @@ import static admin.home.ViewContainer.switchView;
 import static mutual.security.Encryption.encrypt;
 import static worker.ErrorMessageShower.showErrorMessage;
 
-public class NewUserView extends BorderPane
+public class SignUpView extends BorderPane
 {
     private Label welcomeLabel;
     private Label signUpLabel;
-
     private VBox topBox;
-    private VBox centerBox;
-    private VBox bottomBox;
 
+    private VBox centerBox;
     private TextField emailTextField;
     private TextField nameTextField;
     private TextField usernameTextField;
@@ -45,12 +43,13 @@ public class NewUserView extends BorderPane
     private TextField verificationCodeTextField;
     private Button checkVerificationCodeButton;
 
+    private VBox bottomBox;
     private Label goToLoginLabel;
     private Button goToLoginButton;
 
     private String verificationCode;
 
-    public NewUserView()
+    public SignUpView()
     {
         welcomeLabel = new Label("Welcome To Dragon Sales!");
         signUpLabel = new Label("Sign Up For An Account Below");
@@ -115,7 +114,7 @@ public class NewUserView extends BorderPane
         verificationCodeTextField.setPromptText("Verification Code");
         verificationCodeTextField.setMaxWidth(160);
         verificationCodeTextField.setFont(new Font(14));
-        addToolTipListener(verificationCodeTextField, new Tooltip("Enter The 4 Digit Number \n    Sent To Your Email"));
+        //addToolTipListener(verificationCodeTextField, new Tooltip("Enter The 4 Digit Number \n    Sent To Your Email"));
 
         submitCredentialsButton.setFont(new Font(15));
         submitCredentialsButton.setOnAction(e ->
@@ -126,37 +125,38 @@ public class NewUserView extends BorderPane
             char[] password = confirmPasswordField.getText().toCharArray();
 
             boolean validEmail = (!email.isEmpty()) && UserValidator.validEmail(email);
-            boolean validName = (!name.isEmpty()) && (name.contains(" ")) && (name.length() > 3);
+            boolean validName = (name.length() > 3) && (name.contains(" "));
             boolean usernameValidAndAvailable = username.length() > 3 && UsersTable.usernameAvailable(username);
             boolean passwordsValidAndMatch = password.length > 5 && passwordField.getText().equals(confirmPasswordField.getText());
 
             if(validEmail && validName && usernameValidAndAvailable && passwordsValidAndMatch)
             {
-                fieldsEditable(false);
+                //SignUpView.this.fieldsEditable(false);
 
                 Arrays.fill(password, '0');
 
-                /*VerificationEmailSender emailSender = new VerificationEmailSender();
-                Result emailResult = emailSender.sendEmail(email, verificationCode);
+            /*VerificationEmailSender emailSender = new VerificationEmailSender();
+            Result emailResult = emailSender.sendEmail(email, verificationCode);
 
-                if(!emailResult.isCompleted())
-                {
-                    fieldsEditable(true);
-                    showErrorMessage(centerBox, "No Internet Connection Or SMTP Blocked \n Connect To Internet Or Switch Connection");
-                }
-                else
-                {*/
-                    Platform.runLater(() ->
-                    {
-                        fieldsEditable(false);
-                        centerBox.getChildren().addAll(verificationCodeTextField, checkVerificationCodeButton);
-                        System.out.println(verificationCode);
-                    });
+            if(!emailResult.isCompleted())
+            {
+                fieldsEditable(true);
+                showErrorMessage(centerBox, "No Internet Connection Or SMTP Blocked \n Connect To Internet Or Switch Connection");
+            }
+            else
+            {*/
+
+                SignUpView.this.fieldsEditable(false);
+                centerBox.getChildren().addAll(verificationCodeTextField, checkVerificationCodeButton);
+                addToolTipListener(verificationCodeTextField, new Tooltip("Enter The 4 Digit Number \n    Sent To Your Email"));
+
                 //}
+
+                System.out.println(verificationCode);
             }
             else
             {
-                fieldsEditable(true);
+                SignUpView.this.fieldsEditable(true);
 
                 if(!validEmail)
                 {
@@ -187,7 +187,7 @@ public class NewUserView extends BorderPane
             if(validVerificationCode())
             {
                 UsersTable.addUser(constructUser());
-                switchView(getParent(), FullAccess.LOGIN);
+                switchView(getParent(), View.LOGIN);
             }
             else
             {
@@ -200,7 +200,7 @@ public class NewUserView extends BorderPane
 
         goToLoginLabel.setFont(new Font(16));
         goToLoginButton.setFont(new Font(14));
-        goToLoginButton.setOnAction(e -> switchView(getParent(), FullAccess.LOGIN));
+        goToLoginButton.setOnAction(e -> switchView(getParent(), View.LOGIN));
     }
 
     private void addComponents()
@@ -274,7 +274,7 @@ public class NewUserView extends BorderPane
         user.setEmail(emailTextField.getText());
         user.setName(nameTextField.getText());
         user.setUsername(usernameTextField.getText());
-        user.setSalt(new Salt().addSalt(8)); // SET SALT BEFORE SETTING PASSWORD!! PASSWORD SETS SALT TO ALL 0'S
+        user.setSalt(new Salt().addSalt(8)); //SET SALT BEFORE SETTING PASSWORD!! PASSWORD SETS SALT TO ALL 0'S
         user.setPassword(encrypt(passwordField.getText().toCharArray(), user.getSalt()));
 
         return user;
@@ -282,15 +282,12 @@ public class NewUserView extends BorderPane
 
     public void fieldsEditable(boolean editable)
     {
-        Platform.runLater(() ->
-        {
-            emailTextField.setEditable(editable);
-            nameTextField.setEditable(editable);
-            usernameTextField.setEditable(editable);
-            passwordField.setEditable(editable);
-            confirmPasswordField.setEditable(editable);
-            submitCredentialsButton.setDisable(!editable);
-        });
+        emailTextField.setEditable(editable);
+        nameTextField.setEditable(editable);
+        usernameTextField.setEditable(editable);
+        passwordField.setEditable(editable);
+        confirmPasswordField.setEditable(editable);
+        submitCredentialsButton.setDisable(!editable);
     }
 
     @Override

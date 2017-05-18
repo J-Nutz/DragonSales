@@ -33,11 +33,11 @@ public class DailyStatsTable
            try(Connection connection = DatabaseExecutor.getConnection();
                DSLContext database = H2DSL.using(connection))
            {
-               if(LocalDate.now().getDayOfWeek().equals(DayOfWeek.SATURDAY)
+               if(LocalDate.now().getDayOfWeek().equals(DayOfWeek.SATURDAY) //Causes Hangup/Crash On Weekends
                   || LocalDate.now().getDayOfWeek().equals(DayOfWeek.SUNDAY))
                {
                    System.out.println("Weekend - Not Starting New Log");
-                    return false;
+                   return false;
                }
                else
                {

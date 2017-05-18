@@ -6,7 +6,6 @@ package mutual.views.sale.payment;
 
 import database.tables.AllTimeStatsTable;
 import database.tables.DailyStatsTable;
-import database.tables.ProductsTable;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -21,9 +20,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import mutual.types.OrderFragment;
-import mutual.types.Product;
+import mutual.views.View;
 import mutual.views.statistics.StatisticsTracker;
-import mutual.views.FullAccess;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -84,32 +82,17 @@ public class TotalView extends VBox
 
         finishedBtn.setOnAction(event ->
         {
-            //TODO: Log Stats
-            //Alert to make sure payed??
-
             ObservableList<OrderFragment> orderFragments = getOrderFragments();
-
-            for(OrderFragment orderFragment : orderFragments)
-            {
-                Product product = orderFragment.getProduct();
-                String productName = product.getName();
-                int quantityPurchased = orderFragment.getQuantity();
-                int currentQuantity = product.getCurrentQuantity();
-                int updatedQuantity = currentQuantity - quantityPurchased;
-                product.setCurrentQuantity(updatedQuantity);
-
-                ProductsTable.updateProduct(productName, product);
-            }
 
             statisticsTracker.logSale(orderFragments);
 
             DailyStatsTable.logSale(statisticsTracker);
             AllTimeStatsTable.updateStats(statisticsTracker);
 
-            switchView(getParent(), FullAccess.SALE);
+            switchView(getParent(), View.SALE);
         });
 
-        cancelBtn.setOnAction(event -> switchView(getParent(), FullAccess.SALE));
+        cancelBtn.setOnAction(event -> switchView(getParent(), View.SALE));
     }
 
     private void addComponents()

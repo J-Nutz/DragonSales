@@ -22,8 +22,8 @@ import javafx.stage.FileChooser;
 import mutual.security.UserValidator;
 import mutual.types.Employee;
 import mutual.types.Position;
-import mutual.views.FullAccess;
-import mutual.views.login.NewUserView;
+import mutual.views.View;
+import mutual.views.login.SignUpView;
 import worker.BigDecimalSpinnerValueFactory;
 
 import java.io.File;
@@ -59,7 +59,7 @@ public class HireEmployeeView extends VBox
     private Button hireButton;
     private Button cancelButton;
 
-    private NewUserView newUserView;
+    private SignUpView signUpView;
 
     public HireEmployeeView()
     {
@@ -81,7 +81,7 @@ public class HireEmployeeView extends VBox
         hireButton = new Button("Hire");
         cancelButton = new Button("Cancel");
 
-        newUserView = new NewUserView();
+        signUpView = new SignUpView();
 
         initComponents();
         addComponents();
@@ -138,16 +138,16 @@ public class HireEmployeeView extends VBox
             }
         });
 
-        cancelButton.setOnAction(event -> switchView(getParent(), FullAccess.MANAGE));
+        cancelButton.setOnAction(event -> switchView(getParent(), View.MANAGE));
 
-        newUserView.setBottom(null);
+        signUpView.setBottom(null);
 
-        newUserView.setOnValidSubmit(event ->
+        signUpView.setOnValidSubmit(event ->
         {
-            if(newUserView.validVerificationCode())
+            if(signUpView.validVerificationCode())
             {
                 EmployeesTable.addEmployee(constructEmployee());
-                switchView(getParent(), FullAccess.MANAGE);
+                switchView(getParent(), View.MANAGE);
             }
         });
     }
@@ -184,11 +184,11 @@ public class HireEmployeeView extends VBox
         GridPane.setRowSpan(separator, 6);
         container.add(separator, 5, 0);
 
-        GridPane.setColumnSpan(newUserView, 5);
-        GridPane.setRowSpan(newUserView, 8);
-        container.add(newUserView, 6, 0);
+        GridPane.setColumnSpan(signUpView, 5);
+        GridPane.setRowSpan(signUpView, 8);
+        container.add(signUpView, 6, 0);
 
-        newUserView.setCredentials(nameTextField.getText(), emailTextField.getText());
+        signUpView.setCredentials(nameTextField.getText(), emailTextField.getText());
     }
 
     private void resetFields()

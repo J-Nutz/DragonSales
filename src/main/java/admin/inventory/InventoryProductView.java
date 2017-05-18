@@ -23,9 +23,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-import static admin.inventory.AdminInventoryView.setRowSpanOnClick;
+import static admin.inventory.InventoryView.setRowSpanOnClick;
 
-public class AdminProductView extends GridPane
+public class InventoryProductView extends GridPane
 {
     private boolean isExpired = false;
 
@@ -49,7 +49,7 @@ public class AdminProductView extends GridPane
 
     private boolean selected = false;
 
-    public AdminProductView(Product product)
+    public InventoryProductView(Product product)
     {
         this.product = product;
 
@@ -77,7 +77,6 @@ public class AdminProductView extends GridPane
     {
         double width = (Screen.getPrimary().getBounds().getWidth() / 4) - 15;
         setMinWidth(width);
-        //setGridLinesVisible(true);
         setVgap(10);
         setHgap(20);
         setPadding(new Insets(10));
@@ -86,11 +85,17 @@ public class AdminProductView extends GridPane
         LocalDate expirationDate = product.getExpirationDate().toLocalDate();
         LocalDate today = LocalDate.now();
 
-        if(expirationDate.isBefore(today))
+        if(product.getCurrentQuantity() == 0)
         {
+            isExpired = true;
+            setRowSpanOnClick(this, true);
+            expiredLabel.setText("Out Of Stock");
+        }
+        else if(expirationDate.isBefore(today))
+        {
+            isExpired = true;
             setRowSpanOnClick(this, true);
             setBackground(new Background(new BackgroundFill(Color.rgb(255, 26, 26), CornerRadii.EMPTY, Insets.EMPTY)));
-            isExpired = true;
         }
         else
         {
@@ -138,7 +143,7 @@ public class AdminProductView extends GridPane
                 newProduct.setDateLastSold(product.getDateLastSold());
 
                 ProductsTable.updateProduct(product.getName(), newProduct);
-                AdminInventoryView.setProducts(ProductsTable.getProducts());
+                InventoryView.setProducts(ProductsTable.getProducts());
             }
         });
 
@@ -152,7 +157,7 @@ public class AdminProductView extends GridPane
             {
                 DiscountsTable.deleteDiscount(product.getName());
                 ProductsTable.deleteProduct(product.getName());
-                AdminInventoryView.setProducts(ProductsTable.getProducts());
+                InventoryView.setProducts(ProductsTable.getProducts());
             }
             else
             {
@@ -190,7 +195,6 @@ public class AdminProductView extends GridPane
             add(totalSoldLabel, 0, 5);
             add(dateLastSoldLabel, 1, 5);
         }
-
         else
         {
             GridPane.setColumnSpan(productLabel, 2);

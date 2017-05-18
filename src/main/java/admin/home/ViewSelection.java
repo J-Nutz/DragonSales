@@ -15,50 +15,48 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.WindowEvent;
-import mutual.views.FullAccess;
+import mutual.views.View;
 
 import java.util.Optional;
 
 import static admin.home.ViewContainer.switchView;
 
-public class View extends GridPane
+public class ViewSelection extends GridPane
 {
     private ImageView imageView;
     private Label viewLabel;
     private Alert alert;
-    private FullAccess viewToGoTo;
 
     private String[] titles;
-    private FullAccess[] subViews;
+    private View[] views;
 
-    public View(String imageName, String title, FullAccess mainView, String[] titles, FullAccess[] subViews)
+    public ViewSelection(String imageName, String[] titles, View[] views)
     {
         Image image = new Image(getClass().getResourceAsStream(imageName));
 
         imageView = new ImageView(image);
-        viewLabel = new Label(title);
-        viewToGoTo = mainView;
+        viewLabel = new Label(titles[0]);
 
         this.titles = titles;
-        this.subViews = subViews;
+        this.views = views;
 
-        viewLabel.setOnMouseClicked(e -> switchView(getParent(), viewToGoTo));
-        imageView.setOnMouseClicked(e -> switchView(getParent(), viewToGoTo));
+        viewLabel.setOnMouseClicked(e -> switchView(getParent(), views[0]));
+        imageView.setOnMouseClicked(e -> switchView(getParent(), views[0]));
 
         initComponents();
         addComponents();
     }
 
-    public View(String imageName, String title, Alert confirmation, String[] titles, FullAccess[] subViews)
+    public ViewSelection(String imageName, Alert confirmation, String[] titles, View[] views)
     {
         Image image = new Image(getClass().getResourceAsStream(imageName));
 
         imageView = new ImageView(image);
-        viewLabel = new Label(title);
+        viewLabel = new Label(titles[0]);
         alert = confirmation;
 
         this.titles = titles;
-        this.subViews = subViews;
+        this.views = views;
 
         viewLabel.setOnMouseClicked(e -> showAlert());
         imageView.setOnMouseClicked(e -> showAlert());
@@ -78,21 +76,20 @@ public class View extends GridPane
 
     private void addComponents()
     {
-        int column = 0;
-        int row = 3;
-
         add(imageView, 0, 0);
-        //add(new Separator(Orientation.HORIZONTAL), 0, 1);
-        add(viewLabel, 0, 2);
+        add(viewLabel, 0, 1);
 
-        for(int i = 0; i < titles.length; i++)
+        int column = 0;
+        int row = 2;
+
+        for(int i = 1; i < titles.length; i++)
         {
             final int finalI = i;
 
             Label subViewLabel = new Label(titles[finalI]);
             subViewLabel.setPadding(new Insets(0, 0, 0, 15));
             subViewLabel.setFont(new Font(18));
-            subViewLabel.setOnMouseClicked(e -> switchView(getParent(), subViews[finalI]));
+            subViewLabel.setOnMouseClicked(e -> switchView(getParent(), views[finalI]));
 
             add(subViewLabel, column, row);
             row++;
