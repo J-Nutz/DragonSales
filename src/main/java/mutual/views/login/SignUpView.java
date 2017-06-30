@@ -15,6 +15,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import mutual.security.Salt;
 import mutual.security.UserValidator;
 import mutual.types.User;
@@ -89,22 +90,22 @@ public class SignUpView extends BorderPane
         emailTextField.setPromptText("Email");
         emailTextField.setMaxWidth(160);
         emailTextField.setFont(new Font(14));
-        addToolTipListener(emailTextField, new Tooltip("Provide Correct Email As It \nWill Be Used In The Future"));
+        addToolTipListener(emailTextField, new Tooltip("Provide Correct Email As It\nWill Be Used In The Future"));
 
         nameTextField.setPromptText("First & Last Name");
         nameTextField.setMaxWidth(160);
         nameTextField.setFont(new Font(14));
-        addToolTipListener(nameTextField, new Tooltip("Enter First And Last Name \n   Separated By A Space"));
+        addToolTipListener(nameTextField, new Tooltip("Enter First And Last Name\nSeparated By A Space"));
 
         usernameTextField.setPromptText("Username");
         usernameTextField.setMaxWidth(160);
         usernameTextField.setFont(new Font(14));
-        addToolTipListener(usernameTextField, new Tooltip("Enter Username That \n   Is > 3 Characters"));
+        addToolTipListener(usernameTextField, new Tooltip("Enter Username That\nIs > 3 Characters"));
 
         passwordField.setPromptText("Password");
         passwordField.setMaxWidth(160);
         passwordField.setFont(new Font(14));
-        addToolTipListener(passwordField, new Tooltip("Enter Password That \n   Is > 5 Characters"));
+        addToolTipListener(passwordField, new Tooltip("Enter Password That\nIs > 5 Characters"));
 
         confirmPasswordField.setPromptText("Confirm Password");
         confirmPasswordField.setMaxWidth(160);
@@ -114,7 +115,6 @@ public class SignUpView extends BorderPane
         verificationCodeTextField.setPromptText("Verification Code");
         verificationCodeTextField.setMaxWidth(160);
         verificationCodeTextField.setFont(new Font(14));
-        //addToolTipListener(verificationCodeTextField, new Tooltip("Enter The 4 Digit Number \n    Sent To Your Email"));
 
         submitCredentialsButton.setFont(new Font(15));
         submitCredentialsButton.setOnAction(e ->
@@ -122,41 +122,45 @@ public class SignUpView extends BorderPane
             String email = emailTextField.getText();
             String name = nameTextField.getText();
             String username = usernameTextField.getText();
-            char[] password = confirmPasswordField.getText().toCharArray();
+            char[] password1 = passwordField.getText().toCharArray();
+            char[] password2 = confirmPasswordField.getText().toCharArray();
 
-            boolean validEmail = (!email.isEmpty()) && UserValidator.validEmail(email);
-            boolean validName = (name.length() > 3) && (name.contains(" "));
-            boolean usernameValidAndAvailable = username.length() > 3 && UsersTable.usernameAvailable(username);
-            boolean passwordsValidAndMatch = password.length > 5 && passwordField.getText().equals(confirmPasswordField.getText());
+            boolean validEmail = UserValidator.validEmail(email);
+            boolean validName = UserValidator.validName(name);
+            boolean validUsername = UserValidator.validUsername(username);
+            boolean validPasswords = UserValidator.validPasswords(password1, password2);
 
-            if(validEmail && validName && usernameValidAndAvailable && passwordsValidAndMatch)
+            if(validEmail && validName && validUsername && validPasswords)
             {
-                //SignUpView.this.fieldsEditable(false);
+                fieldsEditable(false);
 
-                Arrays.fill(password, '0');
+                Arrays.fill(password1, '0');
+                Arrays.fill(password2, '0');
 
-            /*VerificationEmailSender emailSender = new VerificationEmailSender();
-            Result emailResult = emailSender.sendEmail(email, verificationCode);
+                //VerificationEmailSender emailSender = new VerificationEmailSender();
+                //Result emailResult = emailSender.sendEmail(email, verificationCode);
 
-            if(!emailResult.isCompleted())
+            /*if(!emailResult.isCompleted())
             {
                 fieldsEditable(true);
                 showErrorMessage(centerBox, "No Internet Connection Or SMTP Blocked \n Connect To Internet Or Switch Connection");
             }
             else
             {*/
+                fieldsEditable(false);
+                centerBox.getChildren()
+                         .addAll(verificationCodeTextField, checkVerificationCodeButton);
 
-                SignUpView.this.fieldsEditable(false);
-                centerBox.getChildren().addAll(verificationCodeTextField, checkVerificationCodeButton);
-                addToolTipListener(verificationCodeTextField, new Tooltip("Enter The 4 Digit Number \n    Sent To Your Email"));
+                addToolTipListener(verificationCodeTextField, new Tooltip("Enter The 4 Digit Code\nSent To Your Email"));
 
-                //}
+                requestFocus();
 
                 System.out.println(verificationCode);
+                //}
             }
             else
             {
-                SignUpView.this.fieldsEditable(true);
+                fieldsEditable(true);
 
                 if(!validEmail)
                 {
@@ -166,11 +170,11 @@ public class SignUpView extends BorderPane
                 {
                     showErrorMessage(centerBox, "Name Doesn't Meet Requirements");
                 }
-                else if(!usernameValidAndAvailable)
+                else if(!validUsername)
                 {
                     showErrorMessage(centerBox, "Username Taken Or Doesn't Meet Requirements");
                 }
-                else if(!(password.length > 5))
+                else if(!(password1.length > 5))
                 {
                     showErrorMessage(centerBox, "Password Not Long Enough");
                 }
@@ -233,6 +237,7 @@ public class SignUpView extends BorderPane
                     y = control.getScene().getWindow().getY() + control.getLayoutY() + control.getHeight() + topBox.getHeight();
                 }
 
+                tooltip.setTextAlignment(TextAlignment.CENTER);
                 tooltip.show(control, x, y);
             }
             else

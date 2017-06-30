@@ -82,11 +82,10 @@ public class ProductsTable
             try(Connection connection = DatabaseExecutor.getConnection();
                 DSLContext database = H2DSL.using(connection))
             {
-                Result<Record> fetchedProduct =
-                        database.select()
-                                .from(products)
-                                .where(products.NAME.equal(productName))
-                                .fetch();
+                Result<Record> fetchedProduct = database.select()
+                                                        .from(products)
+                                                        .where(products.NAME.equal(productName))
+                                                        .fetch();
 
                 if(fetchedProduct.isNotEmpty())
                 {
@@ -390,6 +389,24 @@ public class ProductsTable
         });
     }
 
+    public static Integer getCurrentQuantity(String productName)
+    {
+        return DatabaseExecutor.submitObject(() ->
+        {
+            try(Connection connection = DatabaseExecutor.getConnection();
+                DSLContext database = H2DSL.using(connection))
+            {
+                Record1<Integer> fetchedAmount =
+                        database.select(products.CUR_QUANTITY)
+                                .from(products)
+                                .where(products.NAME.equal(productName))
+                                .fetchOne();
+
+                return fetchedAmount.value1();
+            }
+        });
+    }
+
     public static HashMap<String, Integer> getProductsAndAmountsSold()
     {
         return DatabaseExecutor.submitObject(() ->
@@ -422,20 +439,23 @@ public class ProductsTable
         });
     }
 
-    public static boolean updateAmountAndDateSold(String productName, int amountToAdd)
+    public static boolean updateProductInformation(String productName, int amountToAdd)
     {
         return DatabaseExecutor.submitBoolean(() ->
         {
             try(Connection connection = DatabaseExecutor.getConnection();
-              DSLContext database = H2DSL.using(connection))
+                DSLContext database = H2DSL.using(connection))
             {
-                int currentAmount = getAmountSold(productName);
+                int currentAmountSold = getAmountSold(productName);
+                int currentQuantity = getCurrentQuantity(productName);
 
                 int result = database.update(products)
-                                     .set(row(products.TOTAL_SOLD,
+                                     .set(row(products.CUR_QUANTITY,
+                                              products.TOTAL_SOLD,
                                               products.LAST_SOLD_DATE),
 
-                                          row((currentAmount + amountToAdd),
+                                          row((currentQuantity - amountToAdd),
+                                              (currentAmountSold + amountToAdd),
                                               Date.valueOf(LocalDate.now())))
                                      .where(products.NAME.equal(productName))
                                      .execute();

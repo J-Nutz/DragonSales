@@ -15,6 +15,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import mutual.types.Category;
 import mutual.types.Product;
+import mutual.types.SpinnerAutoCommit;
 import worker.BigDecimalSpinnerValueFactory;
 
 import java.math.BigDecimal;
@@ -34,7 +35,7 @@ public class StockProductDialog extends Dialog<Product>
     private Label categoryLabel;
     private ComboBox<Category> categoryComboBox;
     private Label purchasePriceLabel;
-    private Spinner<BigDecimal> purchasePriceSpinner;
+    private SpinnerAutoCommit<BigDecimal> purchasePriceSpinner;
     private Label salePriceLabel;
     private Spinner<BigDecimal> salePriceSpinner;
     private Label initialQuantityLabel;
@@ -87,7 +88,8 @@ public class StockProductDialog extends Dialog<Product>
         categoryLabel = new Label("Category:");
         categoryComboBox = new ComboBox<>();
         purchasePriceLabel = new Label("Purchase Price");
-        purchasePriceSpinner = new Spinner<>();
+        //purchasePriceSpinner = new Spinner<>();
+        purchasePriceSpinner = new SpinnerAutoCommit<>(new BigDecimalSpinnerValueFactory(new BigDecimal("0.01")));
         salePriceLabel = new Label("Sale Price:");
         salePriceSpinner = new Spinner<>();
         initialQuantityLabel = new Label("Quantity:");
@@ -123,9 +125,15 @@ public class StockProductDialog extends Dialog<Product>
         categoryComboBox.setMaxWidth(105);
         categoryComboBox.setMinWidth(105);
 
-        purchasePriceSpinner.setValueFactory(new BigDecimalSpinnerValueFactory(new BigDecimal("0.01")));
-        purchasePriceSpinner.getValueFactory().setValue(zero);
+        //purchasePriceSpinner.setValueFactory(new BigDecimalSpinnerValueFactory(new BigDecimal("0.01")));
+        purchasePriceSpinner.increment(0);
+        purchasePriceSpinner.setEditable(true);
         purchasePriceSpinner.setMaxWidth(105);
+
+        purchasePriceSpinner.getEditor().onKeyPressedProperty().addListener((observable, oldValue, newValue) ->
+        {
+            commitChange(purchasePriceSpinner);
+        });
 
         salePriceSpinner.setValueFactory(new BigDecimalSpinnerValueFactory(new BigDecimal("0.25")));
         salePriceSpinner.getValueFactory().setValue(zero);
@@ -144,6 +152,8 @@ public class StockProductDialog extends Dialog<Product>
         buttonContainer.setAlignment(Pos.CENTER);
 
         errorMessageContainer.setAlignment(Pos.CENTER);
+
+        container.requestFocus();
     }
 
     private void addComponents()
@@ -266,5 +276,18 @@ public class StockProductDialog extends Dialog<Product>
         expirationDatePicker.setValue(product.getExpirationDate().toLocalDate());
         orderedDatePicker.setValue(product.getDateOrdered().toLocalDate());
         receivedDatePicker.setValue(product.getDateReceived().toLocalDate());
+    }
+
+    private void commitChange(Spinner<BigDecimal> spinner)
+    {
+        if (!spinner.isEditable()) return;
+
+        String text = spinner.getEditor().getText();
+        SpinnerValueFactory<BigDecimal> valueFactory = spinner.getValueFactory();
+
+        if(valueFactory != null)
+        {
+            valueFactory.setValue(valueFactory.getConverter().fromString(text));
+        }
     }
 }

@@ -28,16 +28,24 @@ public class VerificationEmailSender implements Runnable
      * PDF or some sort for statistics table/employment info/etc.
      */
 
-    private volatile Result result = new Result();
+    private Properties properties;
+    private Session session;
+    private Transport transporter;
+
+    private Result result = new Result();
     private String receiver;
     private String verificationCode;
 
-    public VerificationEmailSender() {}
-
-    public VerificationEmailSender(String receiver, String verificationCode)
+    public VerificationEmailSender()
     {
-        this.receiver = receiver;
-        this.verificationCode = verificationCode;
+        properties = System.getProperties();
+        properties.put("mail.smtp.port", "587");
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.smtp.connectiontimeout", 1500);
+        properties.put("mail.smtp.timeout", 1500);
+
+        session = Session.getDefaultInstance(properties, null);
     }
 
     public void setReceiver(String receiver)
@@ -55,19 +63,10 @@ public class VerificationEmailSender implements Runnable
     {
         try
         {
-            Properties properties = System.getProperties();
-            properties.put("mail.smtp.port", "587");
-            properties.put("mail.smtp.auth", "true");
-            properties.put("mail.smtp.starttls.enable", "true");
-            properties.put("mail.smtp.connectiontimeout", 1500);
-            properties.put("mail.smtp.timeout", 1500);
-
-            Session session = Session.getDefaultInstance(properties, null);
-            Transport transporter = session.getTransport("smtp");
+            transporter = session.getTransport("smtp");
             InternetAddress receiversAddress = new InternetAddress(receiver);
             MimeMessage email = new MimeMessage(session);
-            String content = "Your Verification Code Is: " + verificationCode +
-                    "\n\n Enter This Code Within 24 Hours Of Receiving It To Start Using Dragon Sales";
+            String content = "Your Verification Code Is: " + verificationCode + "\n\n Enter This Code Within 24 Hours Of Receiving It To Start Using Dragon Sales";
 
             receiversAddress.validate();
 
@@ -75,7 +74,7 @@ public class VerificationEmailSender implements Runnable
             email.setSubject("Dragon Sales Verification");
             email.setContent(content, "text/html");
 
-            transporter.connect("smtp.gmail.com", "jonah.stieglitz17@gmail.com", "2369rocks");
+            transporter.connect("smtp.gmail.com", "jdaldragonsales@gmail.com", "johndewey17");
 
             if(transporter.isConnected())
             {

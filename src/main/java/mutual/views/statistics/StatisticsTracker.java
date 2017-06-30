@@ -46,7 +46,7 @@ public class StatisticsTracker
 
         for(OrderFragment orderFragment : orderFragments)
         {
-            ProductsTable.updateAmountAndDateSold(orderFragment.getProductName(), orderFragment.getQuantity());
+            ProductsTable.updateProductInformation(orderFragment.getProductName(), orderFragment.getQuantity());
 
             numOfItemsSold += orderFragment.getQuantity();
 

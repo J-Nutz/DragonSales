@@ -21,7 +21,16 @@ public class BigDecimalSpinnerValueFactory extends SpinnerValueFactory<BigDecima
     @Override
     public void decrement(int steps)
     {
-        BigDecimal currentValue = this.getValue();
+        BigDecimal currentValue;
+
+        if(this.getValue() != null)
+        {
+            currentValue = this.getValue();
+        }
+        else
+        {
+            currentValue = BigDecimal.ZERO;
+        }
 
         while(steps > 0)
         {
@@ -38,7 +47,16 @@ public class BigDecimalSpinnerValueFactory extends SpinnerValueFactory<BigDecima
     @Override
     public void increment(int steps)
     {
-        BigDecimal currentValue = this.getValue();
+        BigDecimal currentValue;
+
+        if(this.getValue() != null)
+        {
+            currentValue = this.getValue();
+        }
+        else
+        {
+            currentValue = BigDecimal.ZERO;
+        }
 
         while(steps > 0)
         {

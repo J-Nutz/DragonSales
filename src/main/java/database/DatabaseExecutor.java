@@ -13,7 +13,7 @@ import java.util.concurrent.*;
 public class DatabaseExecutor
 {
     private static JdbcConnectionPool connectionPool = JdbcConnectionPool.create("jdbc:h2:~/JDALSchoolStore", "JDAL", "johndewey");
-    private static ExecutorService executor = Executors.newFixedThreadPool(20);
+    private static ExecutorService executor = Executors.newFixedThreadPool(30);
 
     static
     {

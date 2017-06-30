@@ -15,7 +15,7 @@ public class Database
 {
     public Database() {}
 
-    public static synchronized void createTables()
+    public static void createTables()
     {
         try(Connection connection = DatabaseExecutor.getConnection();
             DSLContext database = H2DSL.using(connection))

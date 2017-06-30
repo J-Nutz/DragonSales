@@ -20,28 +20,45 @@ public class UserValidator
 
     public static boolean validEmail(String email)
     {
-        try
+        if(!email.isEmpty())
         {
-            InternetAddress emailAddress = new InternetAddress(email);
-            emailAddress.validate();
-            return true;
+            try
+            {
+                InternetAddress emailAddress = new InternetAddress(email);
+                emailAddress.validate();
+                return true;
+            }
+            catch(AddressException e)
+            {
+                return false;
+            }
         }
-        catch(AddressException e)
+        else
         {
             return false;
         }
     }
 
+    public static boolean validName(String name)
+    {
+        return (name.length() > 3) && (name.contains(" "));
+    }
+
     public static boolean validUsername(String username)
     {
-        return UsersTable.usernameAvailable(username);
+        return (username.length() > 3) && (UsersTable.usernameAvailable(username));
+    }
+
+    public static boolean validPasswords(char[] pass1, char[] pass2)
+    {
+        return (pass1.length > 5) && (Arrays.equals(pass2, pass1));
     }
 
     public static boolean validPassword(String username, byte[] attemptedPassword)
     {
         User correctUser = UsersTable.getUser(username);
 
-        return correctUser != null && Arrays.equals(attemptedPassword, correctUser.getPassword());
+        return (correctUser != null) && (Arrays.equals(attemptedPassword, correctUser.getPassword()));
     }
 
     public boolean validLockedLogin(char[] attemptedPassword)

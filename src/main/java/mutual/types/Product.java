@@ -14,7 +14,7 @@ import java.time.LocalDate;
 
 public class Product
 {
-    private SimpleIntegerProperty id;
+    //private SimpleIntegerProperty id;
     private SimpleStringProperty name;
     private SimpleStringProperty category;
     private SimpleObjectProperty<BigDecimal> purchasePrice;
@@ -28,7 +28,7 @@ public class Product
     private SimpleObjectProperty<Date> dateOrdered;
     private SimpleObjectProperty<Date> dateReceived;
 
-    private SimpleIntegerProperty idProperty() // TODO: Do I Even Need An ID?
+    /*private SimpleIntegerProperty idProperty() // TODO: Do I Even Need An ID?
     {
         if(id == null)
         {
@@ -45,7 +45,7 @@ public class Product
     public int getId()
     {
         return idProperty().get();
-    }
+    }*/
 
     private SimpleStringProperty nameProperty()
     {

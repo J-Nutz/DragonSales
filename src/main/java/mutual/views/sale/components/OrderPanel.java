@@ -71,7 +71,7 @@ public class OrderPanel extends BorderPane
 
     public static void addToOrder(OrderFragment orderFragment)
     {
-        boolean containsOrder = false;
+        boolean containsProduct = false;
 
         for(OrderFragment orderFragment1 : orderTable.getItems())
         {
@@ -80,12 +80,12 @@ public class OrderPanel extends BorderPane
             {
                 orderFragment1.setQuantity(orderFragment1.getQuantity() + orderFragment.getQuantity());
                 orderTable.refresh();
-                containsOrder = true;
+                containsProduct = true;
                 break;
             }
         }
 
-        if(!containsOrder)
+        if(!containsProduct)
         {
             orderTable.getItems().add(orderFragment);
         }

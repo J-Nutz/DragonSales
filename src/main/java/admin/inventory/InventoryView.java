@@ -66,8 +66,8 @@ public class InventoryView extends BorderPane
 
         if(productsScrollPane.getContent() != container)
         {
-            container.setFillWidth(true);
-            container.setAlignment(Pos.CENTER);
+            //container.setFillWidth(true);
+            //container.setAlignment(Pos.CENTER);
             productsScrollPane.setContent(container);
         }
 
@@ -117,7 +117,11 @@ public class InventoryView extends BorderPane
             hBox.setPadding(new Insets(25));
             hBox.setAlignment(Pos.CENTER);
 
-            productsScrollPane.setContent(hBox);
+            container.getChildren().clear();
+            container.getChildren().add(hBox);
+
+            //productsScrollPane.setContent(hBox);
+            //productsScrollPane.setMinWidth(Double.MAX_VALUE);
         }
     }
 
